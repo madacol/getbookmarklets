@@ -1,0 +1,2 @@
+exports.up = pgm => pgm.sql`INSERT INTO permissions (name) VALUES ('create_users'),('read_users'),('update_users'),('delete_users');`;
+exports.down = pgm => pgm.sql`DELETE FROM permissions WHERE name IN ('create_users','read_users','update_users','delete_users')`;

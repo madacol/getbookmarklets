@@ -1,12 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		%sveltekit.head%
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
-	</body>
+    <head>
+        <meta charset="utf-8" />
+        <title>Get Bookmarklets</title>
+
+        <style>
+            html {
+                font-size: calc(10px + 0.6vmin);
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: DM Sans , sans-serif;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                min-height: 400px;
+                align-items: stretch;
+                --primary-color: #3d74a6;
+                --primary-hover-color: #1d5b96;
+                --secondary-color: #EBF7FF;
+                --secondary-hover-color: #e1f4ff;
+            }
+
+            .box {
+                background-color: white;
+                border-radius: 2rem;
+                box-shadow: 0 0.5rem 1.5rem 0 rgba(6, 81, 126, 0.18);
+                padding: 1rem;
+            }
+        </style>
+
+        <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+        <meta name="viewport" content="width=device-width" />
+        %sveltekit.head%
+    </head>
+    <body data-sveltekit-preload-data="hover">
+        <div style="display: contents">%sveltekit.body%</div>
+    </body>
 </html>
