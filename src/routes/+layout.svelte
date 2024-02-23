@@ -19,6 +19,7 @@
 
   </div>
   <div id="right-menu">
+    <LinkButton href="/scripts/add">Add Script</LinkButton>
     {#if data.user}
       <div id="profile">
         <PrimaryButton
@@ -96,8 +97,8 @@
     #right-menu {
       position: relative;
       display: flex;
-      gap: 1em;
-      align-items: stretch;
+      gap: 1rem;
+      align-items: center;
       align-self: stretch;
     }
 
