@@ -3,7 +3,6 @@
 ```sql
 CREATE USER getbookmarklets PASSWORD 'password'; -- replace 'password'
 CREATE DATABASE getbookmarklets OWNER getbookmarklets;
--- GRANT ALL PRIVILEGES ON DATABASE getbookmarklets TO getbookmarklets;
 ```
 
 # Setup Environment

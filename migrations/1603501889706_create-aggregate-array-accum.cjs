@@ -1,6 +1,7 @@
 exports.up = pgm => {
+    // If fails, replace all "anyarray" with "anycompatiblearray" or check what type is expected from array_cat
     pgm.sql`
-        CREATE FUNCTION array_sort_unique (anycompatiblearray) RETURNS anycompatiblearray
+        CREATE FUNCTION array_sort_unique (anyarray) RETURNS anyarray
         LANGUAGE SQL
         AS $body$
           SELECT ARRAY(
@@ -10,11 +11,11 @@ exports.up = pgm => {
           );
         $body$;
 
-        CREATE AGGREGATE array_merge_agg (anycompatiblearray)
+        CREATE AGGREGATE array_merge_agg (anyarray)
         (
             sfunc = array_cat,
             FINALFUNC = array_sort_unique,
-            stype = anycompatiblearray,
+            stype = anyarray,
             initcond = '{}'
         );
     `
@@ -22,7 +23,7 @@ exports.up = pgm => {
 
 exports.down = pgm => {
     pgm.sql`
-        DROP AGGREGATE array_merge_agg (anycompatiblearray);
-        DROP FUNCTION array_sort_unique (anycompatiblearray);
+        DROP AGGREGATE array_merge_agg (anyarray);
+        DROP FUNCTION array_sort_unique (anyarray);
     `
 };
