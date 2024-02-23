@@ -65,10 +65,12 @@
     </div>
 
     <div class="source">
-        <PrimaryButton onclick={() => editMode = !editMode}>
-            {#if editMode}Close editor{:else}Edit with Monaco{/if}
-        </PrimaryButton>
-        {#if editMode}
+        {#if source_url}
+            <PrimaryButton onclick={() => editMode = !editMode}>
+                {#if editMode}Close editor{:else}Edit with Monaco{/if}
+            </PrimaryButton>
+        {/if}
+        {#if editMode || !source_url}
             <MonacoEditor onchange={updatedSource => source = updatedSource} value={source} />
         {:else}
             <pre><code bind:this={codeElement} class="language-javascript">{@html sourceHighlighted}</code></pre>
