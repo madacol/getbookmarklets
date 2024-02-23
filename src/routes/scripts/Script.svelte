@@ -50,7 +50,7 @@
 <article class="box">
     {#if name}<h1>{name}</h1>{/if}
 
-    {#if description}<p>{description}</p>{/if}
+    {#if description}<pre>{description}</pre>{/if}
 
     <div class="metadata">
         {#if author}<span><span>Author:</span> {author}</span>{/if}
