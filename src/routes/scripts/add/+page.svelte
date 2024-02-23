@@ -18,7 +18,7 @@
                 ? pathTree.pop() || ''
                 : original_filename;
 
-        name = toSnakeCase(filename);
+        if (filename) name = toSnakeCase(filename);
     })
 
 </script>
@@ -27,7 +27,7 @@
     <form class="box" method="post">
         <Input
             onblur={event => source_url = decodeURIComponent(event.target.value)}
-            onpaste={event => source_url = decodeURIComponent(event.clipboardData.getData('text/plain'))}
+            onpaste={event => source_url = decodeURIComponent(event.clipboardData.getData('text/plain').trim())}
             name="source_url"
             type="text"
             required
@@ -50,13 +50,11 @@
         <PrimaryButton type="submit">Add Script</PrimaryButton>
     </form>
 
-    {#if source_url}
-        <Script
-            {name}
-            {source_url}
-            bind:description
-        />
-    {/if}
+    <Script
+        {name}
+        {source_url}
+        bind:description
+    />
 </main>
 
 <style>

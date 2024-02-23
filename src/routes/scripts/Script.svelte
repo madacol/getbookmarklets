@@ -1,20 +1,26 @@
 <script>
     import LinkButton from "$lib/components/LinkButton.svelte";
+    import MonacoEditor from "$lib/components/MonacoEditor.svelte";
     import { minify_sync } from "terser";
     import hljs from 'highlight.js/lib/core';
     import javascript from 'highlight.js/lib/languages/javascript';
     import 'highlight.js/styles/stackoverflow-dark.min.css';
+    import PrimaryButton from "$lib/components/PrimaryButton.svelte";
 
     let { name = '', author = '', source_url = '', description = '' } = $props();
 
     let source = $state('')
     let bookmarklet = $state('')
 
+    let editMode = $state(!source_url);
+
     $effect(() => {
+        if (!source_url) return;
         (async () => {
             const responseBody = await (await fetch(source_url)).text();
             // remove "javascript:" prefix if present
             source = responseBody.replace(/^javascript:/, '');
+            editMode = false;
 
             // try to extract description from the source in the case it is a userscript
             const match = source.match(/\/\/\s*@description\s*(.*)/);
@@ -42,13 +48,13 @@
 </script>
 
 <article class="box">
-    <h1>{name}</h1>
+    {#if name}<h1>{name}</h1>{/if}
 
     {#if description}<p>{description}</p>{/if}
 
     <div class="metadata">
         {#if author}<span><span>Author:</span> {author}</span>{/if}
-        <span><span>Source URL:</span> <a href={source_url}>{source_url}</a></span>
+        {#if source_url}<span><span>Source URL:</span> <a href={source_url}>{source_url}</a></span>{/if}
     </div>
 
     <div>
@@ -58,7 +64,16 @@
         </LinkButton>
     </div>
 
-    <pre><code bind:this={codeElement} class="language-javascript">{@html sourceHighlighted}</code></pre>
+    <div class="source">
+        <PrimaryButton onclick={() => editMode = !editMode}>
+            {#if editMode}Close editor{:else}Edit with Monaco{/if}
+        </PrimaryButton>
+        {#if editMode}
+            <MonacoEditor onchange={updatedSource => source = updatedSource} value={source} />
+        {:else}
+            <pre><code bind:this={codeElement} class="language-javascript">{@html sourceHighlighted}</code></pre>
+        {/if}
+    </div>
 </article>
 
 <style>
@@ -69,6 +84,7 @@
         padding: 2rem;
         gap: 1.5rem;
         max-width: 90vw;
+        min-width: 60vw
     }
     .metadata {
         display: flex;
@@ -80,6 +96,11 @@
     }
     span > span {
         font-weight: bold;
+    }
+    .source {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
     pre {
         background-color: #333;
