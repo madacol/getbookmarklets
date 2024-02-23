@@ -83,8 +83,8 @@
         border-radius: 3em;
         padding: 2rem;
         gap: 1.5rem;
-        max-width: 90vw;
-        min-width: 60vw
+        max-width: 100vw;
+        min-width: max(60vw, 25rem);
     }
     .metadata {
         display: flex;
@@ -102,8 +102,8 @@
         flex-direction: column;
         gap: 1rem;
     }
-    pre {
-        background-color: #333;
+    .source > pre {
+        background-color: #1e1e1e;
         color: white;
         padding: 1rem;
         border-radius: 1em;

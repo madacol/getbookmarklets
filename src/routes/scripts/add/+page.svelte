@@ -61,8 +61,8 @@
     main {
         display: flex;
         justify-content: center;
-        flex-direction: column;
-        align-items: center;
+        align-items: start;
+        flex-wrap: wrap;
         margin: auto;
         gap: 2rem;
     }
@@ -71,6 +71,6 @@
         flex-direction: column;
         align-items: stretch;
         gap: 2rem;
-        max-width: 50rem;
+        max-width: 30rem;
     }
 </style>

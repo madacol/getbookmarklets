@@ -87,6 +87,5 @@
         flex-direction: column;
         gap: 1rem;
         max-width: 20rem;
-        padding: 1rem;
     }
 </style>
