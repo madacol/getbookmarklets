@@ -15,7 +15,8 @@
     let editMode = $state(!source_url);
 
     $effect(() => {
-        if (!source_url) return;
+        if (!source_url || source_url.toLowerCase().match(/^data:/)) return;
+
         (async () => {
             const responseBody = await (await fetch(source_url)).text();
             // remove "javascript:" prefix if present
@@ -40,9 +41,16 @@
     })
 
     /**
+     * @param {string} newSource
+     */
+    function handleSourceChanged(newSource) {
+        source = newSource;
+        source_url = `data:text/javascript;charset=utf-8,${encodeURIComponent(source)}`;
+    }
+
+    /**
      * @type {HTMLElement}
      */
-    let codeElement;
     hljs.registerLanguage('javascript', javascript);
     let sourceHighlighted = $derived(hljs.highlight(source, { language: 'javascript' }).value);
 </script>
@@ -54,7 +62,7 @@
 
     <div class="metadata">
         {#if author}<span><span>Author:</span> {author}</span>{/if}
-        {#if source_url}<span><span>Source URL:</span> <a href={source_url}>{source_url}</a></span>{/if}
+        {#if source_url}<span class="source_url"><span>Source URL:</span> <a href={source_url}>{source_url}</a></span>{/if}
     </div>
 
     <div>
@@ -71,9 +79,9 @@
             </PrimaryButton>
         {/if}
         {#if editMode || !source_url}
-            <MonacoEditor onchange={updatedSource => source = updatedSource} value={source} />
+            <MonacoEditor onchange={handleSourceChanged} value={source} />
         {:else}
-            <pre><code bind:this={codeElement} class="language-javascript">{@html sourceHighlighted}</code></pre>
+            <pre><code class="language-javascript">{@html sourceHighlighted}</code></pre>
         {/if}
     </div>
 </article>
@@ -90,6 +98,13 @@
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
+        overflow: hidden;
+
+    }
+    .source_url {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     h1, h3 {
         margin: 0;

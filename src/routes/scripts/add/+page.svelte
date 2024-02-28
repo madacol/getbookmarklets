@@ -10,24 +10,29 @@
     let name = $state('')
     let description = $state('')
 
-    $effect(() => {
-        const pathTree = source_url.split('/');
-        const original_filename = pathTree?.pop()?.split('.').shift() || '';
+    /**
+     * @param {string} value
+     */
+    function sourceUrlInputChanged(value) {
+        source_url = decodeURIComponent(value);
+        const pathList = source_url.split('/');
+        const original_filename = pathList?.pop()?.split('.').shift() || '';
 
         const filename = (original_filename === "index")
-                ? pathTree.pop() || ''
-                : original_filename;
+                            ? pathList.pop() || ''
+                            : original_filename;
 
         if (filename) name = toSnakeCase(filename);
-    })
+    }
 
 </script>
 
 <main>
     <form class="box" method="post">
         <Input
-            onblur={event => source_url = decodeURIComponent(event.target.value)}
-            onpaste={event => source_url = decodeURIComponent(event.clipboardData.getData('text/plain').trim())}
+            onchange={event => sourceUrlInputChanged(event.target.value)}
+            onpaste={event => sourceUrlInputChanged(event.clipboardData.getData('text/plain').trim())}
+            value={source_url}
             name="source_url"
             type="text"
             required
@@ -52,7 +57,7 @@
 
     <Script
         {name}
-        {source_url}
+        bind:source_url
         bind:description
     />
 </main>

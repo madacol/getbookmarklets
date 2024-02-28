@@ -1,5 +1,6 @@
 <script>
     import 'monaco-editor/min/vs/editor/editor.main.css';
+    import { onMount } from 'svelte';
 
     /**
      * source code
@@ -11,8 +12,7 @@
    * @type {HTMLElement}
    */
     let editorContainer;
-
-    $effect(() => {
+    onMount(() => {
         /**
          * @type {import("monaco-editor").editor.IStandaloneCodeEditor}
          */
@@ -25,10 +25,13 @@
                 theme: 'vs-dark',
             });
 
-            editor.onDidChangeModelContent(() => {
-                const updatedSource = editor.getValue();
-                onchange(updatedSource);
-            });
+            editor.onDidChangeModelContent(() => onchange(editor.getValue()));
+        });
+
+        $effect(() => {
+            if (editor) {
+                editor.setValue(value);
+            }
         });
 
         return () => {
