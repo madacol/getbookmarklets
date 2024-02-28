@@ -35,7 +35,7 @@
         });
 
         return () => {
-            editor.dispose();
+            editor?.dispose();
         }
     });
 </script>
