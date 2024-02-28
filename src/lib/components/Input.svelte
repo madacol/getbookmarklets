@@ -1,6 +1,32 @@
 <script>
-    let { value = '', ...props } = $props();
+    import { replaceState } from "$app/navigation";
+    import { onMount } from "svelte";
 
+    /**
+     * @type {{value: string, name?: string, [x: string]: any}}
+     */
+    let { value = '', name, ...props } = $props();
+
+    onMount(() => {
+        if (name && props.type !== 'password') {
+            // load the value from the URL
+            const url = new URL(window.location.href);
+            const paramValue = url.searchParams.get(name);
+            if (paramValue) {
+                value = paramValue;
+                if (props.onchange) props.onchange({target: {value}})
+            }
+
+            // update the URL when the value changes
+            $effect(() => {
+                if (name) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set(name, value);
+                    replaceState(url, {});
+                }
+            })
+        }
+    });
 </script>
 
 <input
