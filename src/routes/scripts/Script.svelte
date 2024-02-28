@@ -82,8 +82,6 @@
     article {
         display: flex;
         flex-direction: column;
-        border-radius: 3em;
-        padding: 2rem;
         gap: 1.5rem;
         max-width: 100vw;
         min-width: max(60vw, 25rem);

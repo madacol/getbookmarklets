@@ -137,8 +137,6 @@
     }
 
     #content {
-      overflow: auto;
-      flex-grow: 1;
       background: #EBF7FF;
       padding: 2rem;
     }
