@@ -15,7 +15,7 @@
     let editMode = $state(!source_url);
 
     $effect(() => {
-        if (!source_url || source_url.toLowerCase().match(/^data:/)) return;
+        if (!source_url || (source_url.toLowerCase().match(/^data:/) && source)) return;
 
         (async () => {
             const responseBody = await (await fetch(source_url)).text();

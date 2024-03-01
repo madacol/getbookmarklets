@@ -14,8 +14,8 @@
      * @param {string} value
      */
     function sourceUrlInputChanged(value) {
-        source_url = decodeURIComponent(value);
-        const pathList = source_url.split('/');
+        source_url = value;
+        const pathList = decodeURIComponent(source_url).split('/');
         const original_filename = pathList?.pop()?.split('.').shift() || '';
 
         const filename = (original_filename === "index")
