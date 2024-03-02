@@ -19,20 +19,19 @@
         let editor;
 
         import('monaco-editor').then(monaco => {
+            if (!editorContainer) return;
+
             editor = monaco.editor.create(editorContainer, {
                 value,
                 language: 'javascript',
                 theme: 'vs-dark',
+                scrollBeyondLastLine: false,
             });
 
             editor.onDidChangeModelContent(() => onchange(editor.getValue()));
         });
 
-        $effect(() => {
-            if (editor) {
-                editor.setValue(value);
-            }
-        });
+        $effect(() => editor?.setValue(value));
 
         return () => {
             editor?.dispose();

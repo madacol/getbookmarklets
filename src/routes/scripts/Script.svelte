@@ -20,7 +20,7 @@
         (async () => {
             const responseBody = await (await fetch(source_url)).text();
             // remove "javascript:" prefix if present
-            source = responseBody.replace(/^javascript:/, '');
+            source = responseBody.trim().replace(/^javascript:/, '');
             editMode = false;
 
             // try to extract description from the source in the case it is a userscript
@@ -45,7 +45,7 @@
      */
     function handleSourceChanged(newSource) {
         source = newSource;
-        source_url = `data:text/javascript;charset=utf-8,${encodeURIComponent(source)}`;
+        source_url = `data:text/javascript,${encodeURIComponent(source)}`;
     }
 
     /**
