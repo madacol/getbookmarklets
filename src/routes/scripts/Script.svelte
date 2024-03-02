@@ -7,7 +7,7 @@
     import 'highlight.js/styles/stackoverflow-dark.min.css';
     import PrimaryButton from "$lib/components/PrimaryButton.svelte";
 
-    let { name = '', author = '', source_url = '', description = '' } = $props();
+    let { name = '', uploader = '', source_url = '', description = '' } = $props();
 
     let source = $state('')
     let bookmarklet = $state('')
@@ -61,11 +61,11 @@
     {#if description}<pre>{description}</pre>{/if}
 
     <div class="metadata">
-        {#if author}<span><span>Author:</span> {author}</span>{/if}
-        {#if source_url}<span class="source_url"><span>Source URL:</span> <a href={source_url}>{source_url}</a></span>{/if}
+        {#if uploader}<div><span>Uploaded by:</span> {uploader}</div>{/if}
+        {#if source_url}<div class="source_url"><span>Source URL:</span> <a href={source_url}>{source_url}</a></div>{/if}
     </div>
 
-    <div>
+    <div class="install_buttons">
         <LinkButton href={bookmarklet}>
             <span class="label"><!-- Drag to bookmarks --></span>
             <span class="name">{name}</span>
@@ -99,7 +99,6 @@
         flex-direction: column;
         gap: 0.5rem;
         overflow: hidden;
-
     }
     .source_url {
         white-space: nowrap;
@@ -109,7 +108,7 @@
     h1, h3 {
         margin: 0;
     }
-    span > span {
+    .metadata span {
         font-weight: bold;
     }
     .source {
@@ -134,11 +133,10 @@
     span.name {
         display: none;
     }
-    article > div {
+    .install_buttons {
         display: flex;
         flex-direction: row;
         gap: 2rem;
-        bottom: 0;
     }
 </style>
 
