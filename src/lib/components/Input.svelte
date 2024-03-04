@@ -3,15 +3,15 @@
     import { onMount } from "svelte";
 
     /**
-     * @type {{value: string, name?: string, [x: string]: any}}
+     * @type {{value: string, [x: string]: any}}
      */
-    let { value = '', name, ...props } = $props();
+    let { value = '', ...props } = $props();
 
     onMount(() => {
-        if (name && props.type !== 'password') {
+        if (props.name && props.type !== 'password') {
             // load the value from the URL
             const url = new URL(window.location.href);
-            const paramValue = url.searchParams.get(name);
+            const paramValue = url.searchParams.get(props.name);
             if (paramValue) {
                 value = paramValue;
                 if (props.onchange) props.onchange({target: {value}})
@@ -19,9 +19,9 @@
 
             // update the URL when the value changes
             $effect(() => {
-                if (name) {
+                if (props.name) {
                     const url = new URL(window.location.href);
-                    url.searchParams.set(name, value);
+                    url.searchParams.set(props.name, value);
                     replaceState(url, {});
                 }
             })
