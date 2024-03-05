@@ -1,5 +1,37 @@
 <script>
+    import { replaceState } from "$app/navigation";
+    import { onMount } from "svelte";
+
+    /**
+     * @type {{value: string, [x: string]: any}}
+     */
     let { value = '', ...props } = $props();
+
+    onMount(() => {
+        if (props.name && props.type !== 'password') {
+            // load the value from the URL
+            const url = new URL(window.location.href);
+            const paramValue = url.searchParams.get(props.name);
+            if (paramValue) {
+                value = paramValue;
+                if (props.onchange) props.onchange({target: {value}})
+            }
+
+            // update the URL when the value changes
+            $effect(() => {
+                if (props.name) {
+                    const url = new URL(window.location.href);
+                    if (value === '') {
+                        url.searchParams.delete(props.name);
+                    } else {
+                        url.searchParams.set(props.name, value);
+                    }
+                    url.searchParams.set(props.name, value);
+                    replaceState(url, {});
+                }
+            })
+        }
+    });
 </script>
 
 <textarea
