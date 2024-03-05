@@ -12,8 +12,9 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
-		"test": "npm run test:integration && npm run test:unit",
-		"test:integration": "playwright test",
+		"test": "run-s test:build test:integration test:unit",
+		"test:build": "run-s 'migrate redo 9999 --envPath ./.env.test' 'build:vite --mode test'",
+		"test:integration": "playwright test -c ./playwright.config.full.js",
 		"test:unit": "vitest"
 	},
 	"devDependencies": {

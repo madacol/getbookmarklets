@@ -1,12 +1,11 @@
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 const config = {
 	webServer: {
-		command: 'npm run dev',
-		port: 5173,
-		reuseExistingServer: !process.env.CI,
+		command: 'npm run preview',
+		port: 4173,
 	},
 	testDir: 'tests',
-	testMatch: /(.+\.)?(test|spec)\.[jt]s/
+	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
 };
 
 export default config;
