@@ -1,17 +1,15 @@
 <script>
-// @ts-nocheck
-
     import Input from '$lib/components/Input.svelte'
     import PrimaryButton from '$lib/components/PrimaryButton.svelte'
     import { PASSWORD_MINLENGTH } from '$lib/config.js'
 
     let { form } = $props()
 
-    let username = ''
-    let password = ''
-    let password_repeat = ''
+    let username = $state('')
+    let password = $state('')
+    let password_repeat = $state('')
     /** @type {string | null} */
-    let error = null
+    let error = $state(null)
     $effect(() => {
         error = (password !== password_repeat)
             ? 'Passwords do not match'
@@ -33,9 +31,7 @@
 </script>
 
 <main>
-    {#if error}
-        <p class="error">{error}</p>
-    {/if}
+    <p class="error">{error}</p>
     <h1>Sign Up</h1>
 
     <form class="box" method="post">
@@ -87,5 +83,9 @@
         flex-direction: column;
         gap: 1rem;
         max-width: 20rem;
+    }
+    .error {
+        min-height: 2rem;
+        color: red;
     }
 </style>
