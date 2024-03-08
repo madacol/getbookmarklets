@@ -8,6 +8,10 @@ const config = {
 	testDir: 'tests',
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
 	timeout: 5000,
+	use: {
+		screenshot: 'only-on-failure',
+		trace: 'retain-on-failure',
+	},
 	projects: [
 		{ name: 'login', testMatch: 'signup login.test.js' },
 		{
