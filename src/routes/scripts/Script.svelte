@@ -72,15 +72,17 @@
         </LinkButton>
     </div>
 
-    <div class="source">
-            <PrimaryButton onclick={() => editMode = !editMode}>
-                {#if editMode}Close editor{:else}Edit with Monaco{/if}
-            </PrimaryButton>
-        {#if editMode || !source_url}
-            <MonacoEditor onchange={handleSourceChanged} value={source} />
-        {:else}
-            <pre><code class="language-javascript">{@html sourceHighlighted}</code></pre>
-        {/if}
+    <div class="source_editor">
+        <PrimaryButton onclick={() => editMode = !editMode}>
+            {#if editMode}Close editor{:else}Edit with Monaco{/if}
+        </PrimaryButton>
+        <div class="source">
+            {#if editMode}
+                <MonacoEditor onchange={handleSourceChanged} value={source} />
+            {:else}
+                <pre><code class="language-javascript">{@html sourceHighlighted}</code></pre>
+            {/if}
+        </div>
     </div>
 </article>
 
@@ -109,7 +111,7 @@
     .metadata span {
         font-weight: bold;
     }
-    .source {
+    .source_editor {
         display: flex;
         flex-direction: column;
         gap: 1rem;

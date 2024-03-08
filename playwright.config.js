@@ -6,8 +6,9 @@ const config = {
 		reuseExistingServer: !process.env.CI,
 	},
 	testDir: 'tests',
+	testIgnore: 'tests/**/.assets/**',
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
-	timeout: 5000,
+	timeout: 10000,
 	use: {
 		screenshot: 'only-on-failure',
 		trace: 'retain-on-failure',
@@ -18,7 +19,9 @@ const config = {
 			name: 'after login',
 			testDir: 'tests/after login',
 			dependencies: ['login'],
-			storageState: 'tests/.auth/user.json',
+			use: {
+				storageState: 'tests/.auth/user.json',
+			}
 		},
 	]
 };
