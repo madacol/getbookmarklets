@@ -1,6 +1,6 @@
 <script>
     import Script from "../Script.svelte";
-    
+
     let { data } = $props();
 </script>
 

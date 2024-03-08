@@ -29,27 +29,14 @@
 
 <main>
     <form class="box" method="post">
-        <Input
+        <TextArea
             onchange={event => sourceUrlInputChanged(event.target.value)}
             onpaste={event => sourceUrlInputChanged(event.clipboardData.getData('text/plain').trim())}
             value={source_url}
             name="source_url"
-            type="text"
             required
             placeholder="Source url"
             autofocus
-        />
-        <Input
-            bind:value={name}
-            name="name"
-            type="text"
-            required
-            placeholder="Script name"
-        />
-        <TextArea
-            bind:value={description}
-            name="description"
-            placeholder="Description"
         />
 
         <PrimaryButton type="submit">Add Script</PrimaryButton>

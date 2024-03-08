@@ -3,7 +3,7 @@ exports.up = pgm => {
         CREATE TABLE logs (
             log_id SERIAL PRIMARY KEY,
             method VARCHAR(16),
-            path VARCHAR(1024),
+            path TEXT,
             body TEXT,
             user_session JSONB,
             params JSONB,

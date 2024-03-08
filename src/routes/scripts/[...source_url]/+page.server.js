@@ -2,19 +2,21 @@ import { sql } from "$lib/server/db";
 
 export async function load({ params }) {
 
-    const {rows: [script]} = await sql`
+    const source_url = decodeURIComponent(params.source_url);
+
+    let {rows: [script]} = await sql`
         SELECT
-            name,
             username as author,
             source_url,
-            description,
             scripts.created_at
         FROM scripts
         JOIN users USING (user_id)
-        WHERE script_id = ${params.script_id}
-        ORDER BY name
+        WHERE source_url = ${source_url}
+        ORDER BY scripts.created_at
         ;
     `
+
+    script = script || {source_url}
 
     return { script }
 }
