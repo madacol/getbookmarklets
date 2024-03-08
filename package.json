@@ -12,13 +12,14 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
-		"test": "run-s test:build test:integration test:unit",
+		"test": "npm run test:unit",
+		"test:full": "run-s test:build test:integration test:unit",
 		"test:build": "run-s 'migrate redo 9999 --envPath ./.env.test' 'build:vite --mode test'",
 		"test:integration": "playwright test -c ./playwright.config.full.js",
 		"test:unit": "vitest"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.28.1",
+		"@playwright/test": "^1.42.1",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",

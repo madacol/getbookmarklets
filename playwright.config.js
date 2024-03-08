@@ -6,7 +6,17 @@ const config = {
 		reuseExistingServer: !process.env.CI,
 	},
 	testDir: 'tests',
-	testMatch: /(.+\.)?(test|spec)\.[jt]s/
+	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
+	timeout: 5000,
+	projects: [
+		{ name: 'login', testMatch: 'signup login.test.js' },
+		{
+			name: 'after login',
+			testDir: 'tests/after login',
+			dependencies: ['login'],
+			storageState: 'tests/.auth/user.json',
+		},
+	]
 };
 
 export default config;
