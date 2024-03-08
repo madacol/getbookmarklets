@@ -12,7 +12,7 @@
     let source = $state('')
     let bookmarklet = $state('')
 
-    let editMode = $state(!source_url);
+    let editMode = $state(false);
 
     $effect(() => {
         if (!source_url || (source_url.toLowerCase().match(/^data:/) && source)) return;
@@ -73,11 +73,9 @@
     </div>
 
     <div class="source">
-        {#if source_url}
             <PrimaryButton onclick={() => editMode = !editMode}>
                 {#if editMode}Close editor{:else}Edit with Monaco{/if}
             </PrimaryButton>
-        {/if}
         {#if editMode || !source_url}
             <MonacoEditor onchange={handleSourceChanged} value={source} />
         {:else}
@@ -91,7 +89,7 @@
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
-        max-width: 100vw;
+        max-width: 1000px;
         min-width: max(60vw, 25rem);
     }
     .metadata {
