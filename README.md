@@ -1,7 +1,8 @@
 # Setup Database
 
 ```sql
-CREATE USER getbookmarklets PASSWORD 'password'; -- replace 'password'
+ -- replace 'password' - openssl rand -base64 30
+CREATE USER getbookmarklets PASSWORD 'password';
 CREATE DATABASE getbookmarklets OWNER getbookmarklets;
 ```
 

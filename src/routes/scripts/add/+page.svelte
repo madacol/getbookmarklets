@@ -1,5 +1,4 @@
 <script>
-    import Input from '$lib/components/Input.svelte'
     import PrimaryButton from '$lib/components/PrimaryButton.svelte'
     import TextArea from '$lib/components/TextArea.svelte'
     import 'highlight.js/styles/stackoverflow-dark.min.css';
