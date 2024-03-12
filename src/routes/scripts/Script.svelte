@@ -24,6 +24,12 @@
             editMode = false;
 
             // try to extract description from the source in the case it is a userscript
+            if (!name) {
+                const match = source.match(/\/\/\s*@name\s*(.*)/);
+                if (match) {
+                    name = match[1].trim();
+                }
+            }
             const match = source.match(/\/\/\s*@description\s*(.*)/);
             if (match) {
                 description = match[1].trim();
@@ -53,6 +59,55 @@
      */
     hljs.registerLanguage('javascript', javascript);
     let sourceHighlighted = $derived(hljs.highlight(source, { language: 'javascript' }).value);
+
+    /**
+     * @param event {{target: HTMLAnchorElement}}
+     */
+    async function handleUserscriptInstall(event) {
+
+        let userscript_source;
+        if (source.match(/==UserScript==/)) {
+            if (!source_url.endsWith('.user.js')) {
+                event.target.href += '#.user.js';
+            }
+            if (source_url.startsWith("http")) {
+                return
+            }
+            userscript_source = source;
+        } else {
+            userscript_source = addUserscriptHeaders(name, description, uploader, source_url, source)
+        }
+
+        // send file to the server in the url
+        const href = `/userscript/${encodeURIComponent(userscript_source)}#${name||"userscript"}.user.js`;
+        event.target.href = href;
+    }
+
+    /**
+     * @param name {string}
+     * @param description {string}
+     * @param uploader {string}
+     * @param source_url {string}
+     * @param source {string}
+     */
+    function addUserscriptHeaders(name, description, uploader, source_url, source) {
+        /**
+         * @type {{[key: string]: string}}
+         */
+        const headers = {
+            name: name || 'Unnamed',
+            match: '*://*/*',
+            grant: 'none',
+        }
+        if (description) headers.description = description;
+        if (uploader) headers.uploader = uploader;
+        if (source_url) headers.downloadURL = source_url
+
+        const headers_str = Object.entries(headers).map(([key, value]) => `// @${key}  ${value}`).join('\n')
+        return `// ==UserScript==\n${headers_str}\n// ==/UserScript==
+
+${source}`;
+    }
 </script>
 
 <article class="box">
@@ -70,6 +125,10 @@
             <span class="label"><!-- Drag to bookmarks --></span>
             <span class="name">{name}</span>
         </LinkButton>
+        <LinkButton
+            href={source_url}
+            onclick={handleUserscriptInstall}
+        >Install as Userscript</LinkButton>
     </div>
 
     <div class="source_editor">
@@ -139,4 +198,3 @@
         gap: 2rem;
     }
 </style>
-
