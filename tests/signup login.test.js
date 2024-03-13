@@ -11,7 +11,7 @@ test('signup', async ({ page }) => {
     // Click the signup link
     await page.getByRole('link', {name: 'Sign up'}).click();
 
-    await page.waitForURL('/signup/');
+    await page.waitForURL('/signup');
 
     // get a random string
     const username_and_password = Math.random().toString(36).substring(3);
