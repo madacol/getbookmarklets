@@ -1,22 +1,22 @@
 <script>
-    import PrimaryButton from "./PrimaryButton.svelte"
+    import PrimaryButtonStyle from "./PrimaryButtonStyle.svelte"
 
     let { ...props } = $props();
+    /**
+     * @type {HTMLAnchorElement | undefined}
+     */
+    let anchor;
 </script>
 
-<a {...props}>
-    <PrimaryButton>
+<a {...props} bind:this={anchor}>
+    <PrimaryButtonStyle onclick={e=>anchor?.click()}>
         <slot />
-    </PrimaryButton>
+    </PrimaryButtonStyle>
 </a>
 
 <style>
     a {
         text-decoration: none;
-        color: inherit;
         display: block;
-    }
-    a > :global(*) {
-        pointer-events: none;
     }
 </style>
