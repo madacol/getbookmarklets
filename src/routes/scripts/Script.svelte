@@ -14,6 +14,8 @@
 
     let editMode = $state(false);
 
+    let isDataURL = $derived(source_url.startsWith('data:'));
+
     $effect(() => {
         if (!source_url || (source_url.toLowerCase().match(/^data:/) && source)) return;
 
@@ -70,7 +72,7 @@
             if (!source_url.endsWith('.user.js')) {
                 event.target.href += '#.user.js';
             }
-            if (source_url.startsWith("http")) {
+            if (!isDataURL) {
                 return
             }
             userscript_source = source;
@@ -101,7 +103,7 @@
         }
         if (description) headers.description = description;
         if (uploader) headers.uploader = uploader;
-        if (source_url) headers.downloadURL = source_url
+        if (!isDataURL) headers.downloadURL = source_url
 
         const headers_str = Object.entries(headers).map(([key, value]) => `// @${key}  ${value}`).join('\n')
         return `// ==UserScript==\n${headers_str}\n// ==/UserScript==
