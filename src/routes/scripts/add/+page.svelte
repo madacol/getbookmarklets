@@ -5,6 +5,8 @@
     import Script from '../Script.svelte';
     import { toSnakeCase } from '$lib';
 
+    let { form } = $props();
+
     let source_url = $state('')
     let name = $state('')
     let description = $state('')
@@ -27,19 +29,23 @@
 </script>
 
 <main>
-    <form class="box" method="post">
-        <TextArea
-            onchange={event => sourceUrlInputChanged(event.target.value)}
-            onpaste={event => sourceUrlInputChanged(event.clipboardData.getData('text/plain').trim())}
-            value={source_url}
-            name="source_url"
-            required
-            placeholder="Source url"
-            autofocus
-        />
+    <div>
+        <p class="error" class:show={form?.error}>{form?.error}</p>
 
-        <PrimaryButton type="submit">Add Script</PrimaryButton>
-    </form>
+        <form class="box" method="post">
+            <TextArea
+                onchange={event => sourceUrlInputChanged(event.target.value)}
+                onpaste={event => sourceUrlInputChanged(event.clipboardData.getData('text/plain').trim())}
+                value={source_url}
+                name="source_url"
+                required
+                placeholder="Source url"
+                autofocus
+            />
+
+            <PrimaryButton type="submit">Add Script</PrimaryButton>
+        </form>
+    </div>
 
     <Script
         {name}
@@ -63,5 +69,16 @@
         align-items: stretch;
         gap: 2rem;
         max-width: 30rem;
+    }
+    .error {
+        color: red;
+        height: 2rem;
+        margin: 0;
+        font-size: 1rem;
+        text-align: center;
+        display: none;
+    }
+    .error.show {
+        display: block;
     }
 </style>
