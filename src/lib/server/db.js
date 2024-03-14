@@ -86,7 +86,7 @@ export async function sql(querySegments, ...params) {
     try {
         return await query(queryString, params);
     } catch (error) {
-        console.log(queryString, params);
+        console.log(queryString, params, error?.message);
         throw error;
     }
 }
