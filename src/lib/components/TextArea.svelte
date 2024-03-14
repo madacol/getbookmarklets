@@ -1,11 +1,12 @@
 <script>
-    import { replaceState } from "$app/navigation";
     import { onMount } from "svelte";
 
     /**
      * @type {{value: string, [x: string]: any}}
      */
-    let { value = '', ...props } = $props();
+    let { value: propValue = '', ...props } = $props();
+
+    let value = $state(propValue);
 
     onMount(() => {
         if (props.name && props.type !== 'password') {
@@ -21,13 +22,10 @@
             $effect(() => {
                 if (props.name) {
                     const url = new URL(window.location.href);
-                    if (value === '') {
-                        url.searchParams.delete(props.name);
-                    } else {
-                        url.searchParams.set(props.name, value);
-                    }
-                    url.searchParams.set(props.name, value);
-                    replaceState(url, {});
+                    (value === '')
+                        ? url.searchParams.delete(props.name)
+                        : url.searchParams.set(props.name, value);
+                    history.replaceState(history.state, '', url);
                 }
             })
         }
