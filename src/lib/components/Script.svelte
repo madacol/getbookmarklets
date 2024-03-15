@@ -7,7 +7,10 @@
     import 'highlight.js/styles/stackoverflow-dark.min.css';
     import PrimaryButton from "$lib/components/PrimaryButton.svelte";
 
-    let { name = '', uploader = '', source_url = '', description = '' } = $props();
+    let { uploader = '', source_url = '', showCode = true } = $props();
+
+    let name = $state('');
+    let description = $state('');
 
     let source = $state('')
     let bookmarklet = $state('')
@@ -113,16 +116,9 @@ ${source}`;
 </script>
 
 <article class="box">
-    {#if name}<h1>{name}</h1>{/if}
 
-    {#if description}<pre>{description}</pre>{/if}
-
-    <div class="metadata">
-        {#if uploader}<div><span>Uploaded by:</span> {uploader}</div>{/if}
-        {#if source_url}<div class="source_url"><span>Source URL:</span> <a href={source_url}>{source_url}</a></div>{/if}
-    </div>
-
-    <div class="install_buttons">
+    <div class="title_row">
+        <a class="name" href={`/scripts/${encodeURIComponent(source_url)}`} title={name}><h1>{name}</h1></a>
         <LinkButton href={bookmarklet}>
             <span class="label"><!-- Drag to bookmarks --></span>
             <span class="name">{name}</span>
@@ -133,25 +129,36 @@ ${source}`;
         >Install as Userscript</LinkButton>
     </div>
 
-    <div class="source_editor">
-        <PrimaryButton onclick={() => editMode = !editMode}>
-            {#if editMode}Close editor{:else}Edit with Monaco{/if}
-        </PrimaryButton>
-        <div class="source">
-            {#if editMode}
-                <MonacoEditor onchange={handleSourceChanged} value={source} />
-            {:else}
-                <pre><code class="language-javascript">{@html sourceHighlighted}</code></pre>
-            {/if}
-        </div>
+
+    {#if description}<p>{description}</p>{/if}
+
+    <div class="metadata">
+        {#if uploader}<div><span>Uploaded by:</span> {uploader}</div>{/if}
+        {#if source_url}<div class="source_url"><span>Source URL:</span> <a href={source_url}>{decodeURIComponent(source_url)}</a></div>{/if}
     </div>
+    {#if showCode}
+        <div class="source_editor">
+            <PrimaryButton onclick={() => editMode = !editMode}>
+                {#if editMode}Close editor{:else}Edit with Monaco{/if}
+            </PrimaryButton>
+            <div class="source">
+                {#if editMode}
+                    <MonacoEditor onchange={handleSourceChanged} value={source} />
+                {:else}
+                    <pre><code class="language-javascript">{@html sourceHighlighted}</code></pre>
+                {/if}
+            </div>
+        </div>
+    {:else}
+        <PrimaryButton onclick={() => showCode = true}>Show code</PrimaryButton>
+    {/if}
 </article>
 
 <style>
     article {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1rem;
         max-width: 1000px;
         min-width: max(60vw, 25rem);
     }
@@ -177,6 +184,9 @@ ${source}`;
         flex-direction: column;
         gap: 1rem;
     }
+    pre, p {
+        margin: 0;
+    }
     .source > pre {
         background-color: #1e1e1e;
         color: white;
@@ -184,7 +194,6 @@ ${source}`;
         border-radius: 1em;
         overflow: auto;
         max-height: 100vh;
-        margin: 0;
     }
     span.label::after {
         content: "Drag to bookmarks";
@@ -194,9 +203,23 @@ ${source}`;
     span.name {
         display: none;
     }
-    .install_buttons {
+    .title_row {
         display: flex;
         flex-direction: row;
+        align-items: center;
         gap: 2rem;
+        align-self: stretch;
+        overflow: hidden;
+    }
+    .name {
+        flex-grow: 1;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        flex-basis: 20rem;
+    }
+    .name > h1 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 </style>
