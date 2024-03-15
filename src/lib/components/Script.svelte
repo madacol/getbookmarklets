@@ -6,6 +6,7 @@
     import javascript from 'highlight.js/lib/languages/javascript';
     import 'highlight.js/styles/stackoverflow-dark.min.css';
     import PrimaryButton from "$lib/components/PrimaryButton.svelte";
+    import { urlToName } from "$lib";
 
     let { uploader = '', source_url = '', showCode = true } = $props();
 
@@ -33,6 +34,8 @@
                 const match = source.match(/\/\/\s*@name\s*(.*)/);
                 if (match) {
                     name = match[1].trim();
+                } else {
+                    name = urlToName(source_url);
                 }
             }
             const match = source.match(/\/\/\s*@description\s*(.*)/);

@@ -3,7 +3,6 @@
     import TextArea from '$lib/components/TextArea.svelte'
     import 'highlight.js/styles/stackoverflow-dark.min.css';
     import Script from '$lib/components/Script.svelte';
-    import { toSnakeCase } from '$lib';
 
     let { form } = $props();
 
@@ -16,14 +15,6 @@
      */
     function sourceUrlInputChanged(value) {
         source_url = value;
-        const pathList = decodeURIComponent(source_url).split('/');
-        const original_filename = pathList?.pop()?.split('.').shift() || '';
-
-        const filename = (original_filename === "index")
-                            ? pathList.pop() || ''
-                            : original_filename;
-
-        if (filename) name = toSnakeCase(filename);
     }
 
 </script>
