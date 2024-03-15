@@ -1,5 +1,5 @@
 <script>
-    import Script from "../Script.svelte";
+    import Script from "$lib/components/Script.svelte";
 
     let { data } = $props();
 </script>

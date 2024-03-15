@@ -2,7 +2,7 @@
     import PrimaryButton from '$lib/components/PrimaryButton.svelte'
     import TextArea from '$lib/components/TextArea.svelte'
     import 'highlight.js/styles/stackoverflow-dark.min.css';
-    import Script from '../Script.svelte';
+    import Script from '$lib/components/Script.svelte';
     import { toSnakeCase } from '$lib';
 
     let { form } = $props();
