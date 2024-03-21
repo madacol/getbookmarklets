@@ -2,13 +2,12 @@ import { sql } from "$lib/server/db";
 
 export async function load({ params }) {
 
-    const source_url = decodeURIComponent(params.source_url);
+    const {source_url} = params;
 
     let {rows: [script]} = await sql`
         SELECT
-            username as author,
-            source_url,
-            scripts.created_at
+            username as uploader,
+            source_url
         FROM scripts
         JOIN users USING (user_id)
         WHERE source_url = ${source_url}
