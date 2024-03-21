@@ -14,27 +14,38 @@ export const actions = {
         if (!user_id) return fail(401, {error: "You must be logged in to add a script"});
 
         // Validate URL is http or dataURL
-        if (
-            !source_url.startsWith("data:")
-            && !source_url.match(/^https?:\/\//)
-        ) {
+        if (source_url.startsWith("data:")) {
+            // Validate if it is javascript and parses correctly
+            try {
+                const response = await fetch(source_url);
+                const text = await response.text();
+                if (text.length > 100000) {
+                    return fail(400, {error: "DataURL is too large"});
+                }
+                new Function(text);
+            } catch (e) {
+                return fail(400, {error: "DataURL is not valid JavaScript"});
+            }
+
+        } else if (source_url.match(/^https?:\/\//)) {
+
+            // Validate if server response is valid
+            try {
+                const response = await fetch(source_url, {method: "HEAD"})
+                if (!response.ok) {
+                    return fail(400, {error: "URL's server did not respond with 200 OK"});
+                }
+
+                // Validate allow origin header
+                const allowOrigin = response.headers.get("access-control-allow-origin");
+                if (!allowOrigin || allowOrigin !== "*") {
+                    return fail(400, {error: "URL's server does not allow cross-origin requests"});
+                }
+            } catch (e) {
+                return fail(400, {error: "failed to fetch URL"});
+            }
+        } else {
             return fail(400, {error: "URL must be HTTP or DataURL"})
-        }
-
-        // Validate if server response is valid
-        try {
-            const response = await fetch(source_url, {method: "HEAD"})
-            if (!response.ok) {
-                return fail(400, {error: "URL's server did not respond with 200 OK"});
-            }
-
-            // Validate allow origin header
-            const allowOrigin = response.headers.get("access-control-allow-origin");
-            if (!allowOrigin || allowOrigin !== "*") {
-                return fail(400, {error: "URL's server does not allow cross-origin requests"});
-            }
-        } catch (e) {
-            return fail(400, {error: "failed to fetch URL"});
         }
 
         try {
