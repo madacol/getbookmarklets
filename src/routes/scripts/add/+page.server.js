@@ -31,7 +31,7 @@ export const actions = {
 
             // Validate if server response is valid
             try {
-                const response = await fetch(source_url, {method: "HEAD"})
+                const response = await fetch(source_url)
                 if (!response.ok) {
                     return fail(400, {error: "URL's server did not respond with 200 OK"});
                 }
@@ -43,6 +43,15 @@ export const actions = {
                 }
             } catch (e) {
                 return fail(400, {error: "failed to fetch URL"});
+            }
+
+            // validate if it parses correctly
+            try {
+                const response = await fetch(source_url);
+                const text = await response.text();
+                new Function(text);
+            } catch (e) {
+                return fail(400, {error: "URL is not valid JavaScript"});
             }
         } else {
             return fail(400, {error: "URL must be HTTP or DataURL"})
