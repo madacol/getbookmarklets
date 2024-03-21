@@ -204,7 +204,8 @@ ${source}`;
         min-width: 10rem;
     }
     span.name {
-        display: none;
+        position: absolute;
+        opacity: 0;
     }
     .title_row {
         display: flex;
