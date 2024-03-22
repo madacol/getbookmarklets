@@ -19,7 +19,7 @@ export const actions = {
             try {
                 const response = await fetch(source_url);
                 const text = await response.text();
-                if (text.length > 100000) {
+                if (text.length > 10000) {
                     return fail(400, {error: "DataURL is too large"});
                 }
                 new Function(text);
