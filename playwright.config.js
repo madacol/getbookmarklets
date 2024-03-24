@@ -16,8 +16,8 @@ const config = {
 	projects: [
 		{ name: 'login', testMatch: 'signup login.test.js' },
 		{
-			name: 'after login',
-			testDir: 'tests/after login',
+			name: 'logged in',
+			testDir: 'tests/logged in',
 			dependencies: ['login'],
 			use: {
 				storageState: 'tests/.auth/user.json',
