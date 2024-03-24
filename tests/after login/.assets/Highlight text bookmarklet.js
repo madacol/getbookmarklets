@@ -1,4 +1,4 @@
-export default (`(function() {
+(function() {
     let selection = window.getSelection();
     if (selection.rangeCount > 0) {
         let range = selection.getRangeAt(0);
@@ -72,5 +72,3 @@ export default (`(function() {
         return selectedRanges;
     }
 })();
-
-`)
