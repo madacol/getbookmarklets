@@ -23,6 +23,7 @@ const config = {
 				storageState: 'tests/.auth/user.json',
 			}
 		},
+		{ name: 'logged off', testDir: 'tests/logged off' },
 	]
 };
 
