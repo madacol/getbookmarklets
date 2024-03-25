@@ -8,7 +8,7 @@ export async function load() {
             source_url
         FROM scripts
         JOIN users USING (user_id)
-        ;
+        ORDER BY scripts.created_at DESC;
     `
     return {
         scripts
