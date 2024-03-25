@@ -22,41 +22,42 @@ export async function handle({ event, resolve }) {
     const session_id = event.cookies.get('session');
     const isPathProtected = privateRoutes.some(regex => regex.test(event.url.pathname));
 
+    let user;
     if (!session_id) {
         if (isPathProtected) {
             return redirect(`/login?redirectTo=${event.url.pathname}`, 'Not authenticated user.');
         }
-        return await resolve(event);
-    }
+    } else {
 
-    const {rows: [user]} = await sql`
-        SELECT
-            users.user_id,
-            users.username,
-            sessions.expires_at < NOW() AS expired,
-            ARRAY_REMOVE(ARRAY_AGG(role_id), NULL) AS roles,
-            array_merge_agg(permissions) AS permissions
-            -- ARRAY_AGG(DISTINCT unnest(permissions)) permissions
-        FROM sessions
-        JOIN users USING (user_id)
-        LEFT JOIN join_users_roles USING (user_id)
-        LEFT JOIN (
+        ({rows: [user]} = await sql`
             SELECT
-                role_id,
-                roles.name,
-                ARRAY_AGG(permissions.name) permissions
-            FROM roles
-            JOIN join_roles_permissions USING (role_id)
-            JOIN permissions USING (permission_id)
-            GROUP BY role_id
-        ) roles USING (role_id)
-        WHERE session_id = ${session_id}
-        GROUP BY
-            users.user_id,
-            users.username,
-            sessions.expires_at
-            ;
-    `;
+                users.user_id,
+                users.username,
+                sessions.expires_at < NOW() AS expired,
+                ARRAY_REMOVE(ARRAY_AGG(role_id), NULL) AS roles,
+                array_merge_agg(permissions) AS permissions
+                -- ARRAY_AGG(DISTINCT unnest(permissions)) permissions
+            FROM sessions
+            JOIN users USING (user_id)
+            LEFT JOIN join_users_roles USING (user_id)
+            LEFT JOIN (
+                SELECT
+                    role_id,
+                    roles.name,
+                    ARRAY_AGG(permissions.name) permissions
+                FROM roles
+                JOIN join_roles_permissions USING (role_id)
+                JOIN permissions USING (permission_id)
+                GROUP BY role_id
+            ) roles USING (role_id)
+            WHERE session_id = ${session_id}
+            GROUP BY
+                users.user_id,
+                users.username,
+                sessions.expires_at
+                ;
+        `);
+    }
 
     // Invalid session
     if (user?.expired) {
@@ -90,10 +91,6 @@ export async function handle({ event, resolve }) {
     const params = Object.fromEntries(event.url.searchParams);
     const headers = Object.fromEntries(event.request.headers);
 
-    let image_data_url;
-    let user_session;
-    if (user) ({image_data_url, ...user_session} = user);
-
     const logPromise = sql`
         INSERT INTO logs (
             path,
@@ -106,7 +103,7 @@ export async function handle({ event, resolve }) {
             ${method},
             ${params},
             ${headers},
-            ${user_session}
+            ${user}
         ) RETURNING log_id
         ;
     `
@@ -123,7 +120,7 @@ export async function handle({ event, resolve }) {
 
     if (response.status >= 500) {
         const body = await request_clone.text();
-        await sql`
+        sql`
             UPDATE logs
                 SET response_status = ${response.status}
                     , body = ${body}
@@ -131,7 +128,7 @@ export async function handle({ event, resolve }) {
             ;
         `
     } else {
-        await sql`
+        sql`
             UPDATE logs
                 SET response_status = ${response.status}
                 WHERE log_id = ${log_id}
