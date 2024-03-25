@@ -2,6 +2,10 @@ import { test, expect } from "@playwright/test";
 
 test.describe.configure({ mode: 'parallel' });
 
+test.beforeEach(async ({ page }) => {
+    await page.goto('/scripts/add', {waitUntil: "networkidle"}); // Navigate to the login page
+});
+
 import { createServer } from 'http';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
@@ -12,7 +16,7 @@ test('add an HTTP script', async ({ page }) => {
 
     // Serve the testing script located in `./.assets/Highlight text bookmarklet.js`
     const fileBuffer = await readFile(join(dirname(fileURLToPath(import.meta.url)), '.assets/Highlight text bookmarklet.js'));
-    createServer(async (_, res) => {
+    const server = createServer(async (_, res) => {
         // set content type and allow cross-origin requests
         res.setHeader('Content-Type', 'application/javascript');
         res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,10 +24,8 @@ test('add an HTTP script', async ({ page }) => {
     }).listen(3000);
 
 
-    await page.goto('/scripts/add', {waitUntil: "networkidle"}); // Navigate to the page with the form
-
     const test_url = `http://localhost:3000/Highlight%20text%20bookmarklet.js`
-    sql`DELETE FROM scripts WHERE source_url = ${test_url}`
+    await sql`DELETE FROM scripts WHERE source_url = ${test_url}`
     // Fill the input field with a URL
     await page.locator('[name=source_url]').fill(test_url);
 
@@ -35,15 +37,16 @@ test('add an HTTP script', async ({ page }) => {
 
     // verify source code is correct
     await expect(page.locator('pre')).toHaveText(fileBuffer.toString());
-});
 
+    // Close the server
+    server.close();
+
+});
 
 test('add a dataURL script', async ({ page }) => {
 
-    await page.goto('/scripts/add', {waitUntil: "networkidle"}); // Navigate to the page with the form
-
     const dataURL = 'data:text/javascript,alert("hello"); alert("world");';
-    sql`DELETE FROM scripts WHERE source_url = ${dataURL}`
+    await sql`DELETE FROM scripts WHERE source_url = ${dataURL}`
     // Fill the input field with a URL
     await page.locator('[name=source_url]').fill(dataURL);
 
@@ -57,8 +60,6 @@ test('add a dataURL script', async ({ page }) => {
 
 test('invalid URL', async ({ page }) => {
 
-    await page.goto('/scripts/add', {waitUntil: "networkidle"}); // Navigate to the page with the form
-
     // Fill the input field with a URL
     await page.locator('[name=source_url]').fill('invalid');
 
@@ -71,8 +72,6 @@ test('invalid URL', async ({ page }) => {
 });
 
 test('invalid URL response', async ({ page }) => {
-
-    await page.goto('/scripts/add', {waitUntil: "networkidle"}); // Navigate to the page with the form
 
     // get current page URL domain
     const { origin } = new URL(page.url());
@@ -89,8 +88,6 @@ test('invalid URL response', async ({ page }) => {
 
 test('invalid domain', async ({ page }) => {
 
-    await page.goto('/scripts/add', {waitUntil: "networkidle"}); // Navigate to the page with the form
-
     // Fill the input field with a URL
     await page.locator('[name=source_url]').fill('http://invalid');
 
@@ -103,8 +100,6 @@ test('invalid domain', async ({ page }) => {
 });
 
 test('invalid URL cross-origin', async ({ page }) => {
-
-    await page.goto('/scripts/add', {waitUntil: "networkidle"}); // Navigate to the page with the form
 
     // Fill the input field with a URL
     await page.locator('[name=source_url]').fill('http://example.com');
@@ -119,8 +114,6 @@ test('invalid URL cross-origin', async ({ page }) => {
 
 test('invalid URL size', async ({ page }) => {
 
-    await page.goto('/scripts/add', {waitUntil: "networkidle"}); // Navigate to the page with the form
-
     // Fill the input field with a URL
     await page.locator('[name=source_url]').fill('data:text/javascript,' + 'a'.repeat(11000));
 
@@ -134,8 +127,6 @@ test('invalid URL size', async ({ page }) => {
 
 test('invalid URL type', async ({ page }) => {
 
-    await page.goto('/scripts/add', {waitUntil: "networkidle"}); // Navigate to the page with the form
-
     // Fill the input field with a URL
     await page.locator('[name=source_url]').fill('ftp://example.com');
 
@@ -148,8 +139,6 @@ test('invalid URL type', async ({ page }) => {
 });
 
 test('invalid JavaScript', async ({ page }) => {
-
-    await page.goto('/scripts/add', {waitUntil: "networkidle"}); // Navigate to the page with the form
 
     // Fill the input field with a URL
     await page.locator('[name=source_url]').fill('data:text/javascript,const');
