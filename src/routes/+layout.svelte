@@ -57,7 +57,8 @@
 
 <footer>
   <div class="social">
-    <!-- TODO: add github -->
+    <a href="https://github.com/madacol/getbookmarklets">
+      Github
   </div>
 </footer>
 
@@ -139,6 +140,7 @@
     #content {
       background: #EBF7FF;
       padding: 2rem;
+      flex-grow: 1;
     }
 
     a {
@@ -165,6 +167,8 @@
       justify-content: center;
       align-items: center;
       gap: 1rem;
+      padding: 1rem;
+      font-size: large;
     }
     .social {
       display: flex;
