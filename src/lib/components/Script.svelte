@@ -206,6 +206,7 @@ ${source}`;
     span.name {
         position: absolute;
         opacity: 0;
+        pointer-events: none;
     }
     .title_row {
         display: flex;
