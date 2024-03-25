@@ -128,7 +128,7 @@ test('invalid URL size', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the error message is displayed
-    await expect(page.locator('.error')).toHaveText("DataURL is too large");
+    await expect(page.locator('.error')).toHaveText("URL is too large");
 
 });
 

@@ -38,15 +38,16 @@ export const actions = {
 
             if (!url) return fail(400, {error: "You must provide a URL"})
 
+            if (url.length > 10000) {
+                return fail(400, {error: "URL is too large"});
+            }
+
             // Validate URL is http or dataURL
             if (url.startsWith("data:")) {
                 // Validate if it is javascript and parses correctly
                 try {
                     const response = await fetch(url);
                     const text = await response.text();
-                    if (text.length > 10000) {
-                        return fail(400, {error: "DataURL is too large"});
-                    }
                     new Function(text);
                 } catch (e) {
                     return fail(400, {error: "DataURL is not valid JavaScript"});
