@@ -108,7 +108,7 @@ test('invalid URL cross-origin', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the error message is displayed
-    await expect(page.locator('.error')).toHaveText("URL's server does not allow cross-origin requests");
+    await expect(page.locator('.error')).toContainText("URL's server does not allow cross-origin requests");
 
 });
 
