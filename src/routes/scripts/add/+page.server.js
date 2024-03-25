@@ -64,7 +64,7 @@ export const actions = {
 
                     // Validate allow origin header
                     const allowOrigin = response.headers.get("access-control-allow-origin");
-                    if (!allowOrigin || allowOrigin !== "*") {
+                    if (allowOrigin !== "*") {
                         return fail(400, {error: "URL's server does not allow cross-origin requests"});
                     }
                 } catch (e) {
