@@ -18,12 +18,15 @@ const config = {
 		{
 			name: 'logged in',
 			testDir: 'tests/logged in',
-			dependencies: ['login'],
+			// dependencies: ['login'],
 			use: {
 				storageState: 'tests/.auth/user.json',
 			}
 		},
-		{ name: 'logged off', testDir: 'tests/logged off' },
+		{
+			name: 'logged off',
+			testIgnore: ['tests/logged in/**', 'tests/signup login.test.js'],
+		},
 	]
 };
 
