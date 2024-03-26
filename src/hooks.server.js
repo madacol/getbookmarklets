@@ -120,7 +120,7 @@ export async function handle({ event, resolve }) {
 
     if (response.status >= 500) {
         const body = await request_clone.text();
-        sql`
+        await sql`
             UPDATE logs
                 SET response_status = ${response.status}
                     , body = ${body}
@@ -128,7 +128,7 @@ export async function handle({ event, resolve }) {
             ;
         `
     } else {
-        sql`
+        await sql`
             UPDATE logs
                 SET response_status = ${response.status}
                 WHERE log_id = ${log_id}
