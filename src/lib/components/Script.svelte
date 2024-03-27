@@ -20,6 +20,8 @@
 
     let isDataURL = $derived(source_url.startsWith('data:'));
 
+    $effect(() => { showCode && fetch(`/shown/${encodeURIComponent(source_url)}`) })
+
     $effect(() => {
         if (!source_url || (source_url.toLowerCase().match(/^data:/) && source)) return;
 
