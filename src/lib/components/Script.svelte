@@ -215,6 +215,7 @@ ${source}`;
         gap: 2rem;
         align-self: stretch;
         overflow: hidden;
+        flex-wrap: wrap;
     }
     .name {
         flex-grow: 1;
