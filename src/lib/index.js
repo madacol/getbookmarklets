@@ -25,6 +25,7 @@ export function urlToName(url) {
                         ? pathList.pop() || ''
                         : original_filename;
 
-    console.log({filename, original_filename, pathList});
-    return (filename) ? toTitleCase(filename) : '';
+    return filename
+        ? toTitleCase(filename)
+        : '';
 }
