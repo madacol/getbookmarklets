@@ -71,14 +71,14 @@
     let sourceHighlighted = $derived(hljs.highlight(source, { language: 'javascript' }).value);
 
     /**
-     * @param event {{target: HTMLAnchorElement}}
+     * @param event {{currentTarget: HTMLAnchorElement}}
      */
     async function handleUserscriptInstall(event) {
 
         let userscript_source;
         if (source.match(/==UserScript==/)) {
             if (!source_url.endsWith('.user.js')) {
-                event.target.href += '#.user.js';
+                event.currentTarget.href += '#.user.js';
             }
             if (!isDataURL) {
                 return
@@ -90,7 +90,7 @@
 
         // send file to the server in the url
         const href = `/userscript/${encodeURIComponent(userscript_source)}#${name||"userscript"}.user.js`;
-        event.target.href = href;
+        event.currentTarget.href = href;
     }
 
     /**
