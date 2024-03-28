@@ -123,15 +123,17 @@ ${source}`;
 <article class="box">
 
     <div class="title_row">
-        <a class="name" href={`/scripts/${encodeURIComponent(source_url)}`} title={name}><h1>{name}</h1></a>
-        <LinkButton href={bookmarklet}>
-            <span class="label"><!-- Drag to bookmarks --></span>
-            <span class="name">{name}</span>
-        </LinkButton>
-        <LinkButton
-            href={source_url}
-            onclick={handleUserscriptInstall}
-        >Install as Userscript</LinkButton>
+        <div class="title"><a href={`/scripts/${encodeURIComponent(source_url)}`} title={name} data-sveltekit-preload-data="tap"><h1>{name}</h1></a></div>
+        <div class="install">
+            <LinkButton href={bookmarklet}>
+                <span class="label"><!-- Drag to bookmarks --></span>
+                <span class="name">{name}</span>
+            </LinkButton>
+            <LinkButton
+                href={source_url}
+                onclick={handleUserscriptInstall}
+            >Install as Userscript</LinkButton>
+        </div>
     </div>
 
 
@@ -219,15 +221,20 @@ ${source}`;
         overflow: hidden;
         flex-wrap: wrap;
     }
-    .name {
+    .title {
+        display: flex;
         flex-grow: 1;
         text-overflow: ellipsis;
         overflow: hidden;
         flex-basis: 20rem;
     }
-    .name > h1 {
+    .title * {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+    .install {
+        display: flex;
+        gap: 1rem;
     }
 </style>
