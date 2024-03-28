@@ -114,9 +114,7 @@
         if (!isDataURL) headers.downloadURL = source_url
 
         const headers_str = Object.entries(headers).map(([key, value]) => `// @${key}  ${value}`).join('\n')
-        return `// ==UserScript==\n${headers_str}\n// ==/UserScript==
-
-${source}`;
+        return `// ==UserScript==\n${headers_str}\n// ==/UserScript==\n\n${source}`;
     }
 </script>
 
