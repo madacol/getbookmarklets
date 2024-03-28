@@ -9,7 +9,7 @@
 </script>
 
 <a {...props} bind:this={anchor}>
-    <PrimaryButtonStyle onclick={e=>anchor?.click()}>
+    <PrimaryButtonStyle>
         <slot />
     </PrimaryButtonStyle>
 </a>
