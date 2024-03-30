@@ -131,7 +131,8 @@
         {#if uploader}<div><span>Uploaded by:</span> {uploader}</div>{/if}
         {#if source_url}<div class="source_url"><span>Source URL:</span> <a href={source_url}>{decodeURIComponent(source_url)}</a></div>{/if}
     </div>
-    {#if showCode}
+    <details bind:open={showCode}>
+        <summary>Source code</summary>
         <div class="source_editor">
             <PrimaryButton onclick={() => editMode = !editMode}>
                 {#if editMode}Close editor{:else}Edit with Monaco{/if}
@@ -144,9 +145,7 @@
                 {/if}
             </div>
         </div>
-    {:else}
-        <PrimaryButton onclick={() => showCode = true}>Show code</PrimaryButton>
-    {/if}
+    </details>
 </article>
 
 <style>
@@ -233,5 +232,24 @@
     .install {
         display: flex;
         gap: 1rem;
+    }
+    details {
+        font-size: larger;
+    }
+    details > summary {
+        cursor: pointer;
+        display: inline list-item;
+    }
+    details > summary:hover {
+        opacity: 0.7;
+    }
+    details > summary::before {
+        content: "Show ";
+    }
+    details[open] > summary::before {
+        content: "Hide ";
+    }
+    details > summary + *{
+        margin-top: 1rem;
     }
 </style>
