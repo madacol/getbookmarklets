@@ -113,7 +113,7 @@
     <div class="title_row">
         <div class="title"><a href={`/scripts/${encodeURIComponent(source_url)}`} title={name} data-sveltekit-preload-data="tap"><h1>{name}</h1></a></div>
         <div class="install">
-            <LinkButton href={bookmarklet}>
+            <LinkButton href={bookmarklet} disabled={!bookmarklet}>
                 <span class="label"><!-- Drag to bookmarks --></span>
                 <span class="name">{name}</span>
             </LinkButton>
