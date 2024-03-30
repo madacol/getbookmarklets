@@ -43,7 +43,7 @@
 
 <style>
     div {
-        height: 90vh;
+        height: 70vh;
         border-radius: 1rem;
         overflow: hidden;
     }

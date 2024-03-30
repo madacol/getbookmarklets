@@ -188,7 +188,7 @@
         padding: 1rem;
         border-radius: 1em;
         overflow: auto;
-        max-height: 100vh;
+        max-height: 70vh;
     }
     span.label::after {
         content: "Install bookmarklet";
