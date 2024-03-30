@@ -226,6 +226,12 @@
         overflow: hidden;
         flex-basis: 20rem;
     }
+    .title a {
+        text-decoration: none;
+    }
+    .title a:hover {
+        opacity: 0.6;
+    }
     .title * {
         overflow: hidden;
         text-overflow: ellipsis;
