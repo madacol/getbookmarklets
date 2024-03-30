@@ -206,7 +206,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 2rem;
+        gap: 1rem;
         align-self: stretch;
         overflow: hidden;
         flex-wrap: wrap;
