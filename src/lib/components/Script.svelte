@@ -188,6 +188,7 @@
         border-radius: 1em;
         overflow: auto;
         max-height: 70vh;
+        font-size: medium;
     }
     span.label::after {
         content: "Install bookmarklet";
@@ -216,7 +217,7 @@
         flex-grow: 1;
         text-overflow: ellipsis;
         overflow: hidden;
-        flex-basis: 20rem;
+        flex-basis: 15rem;
     }
     .title a {
         text-decoration: none;
