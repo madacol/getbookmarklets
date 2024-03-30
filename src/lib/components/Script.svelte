@@ -191,9 +191,12 @@
         max-height: 100vh;
     }
     span.label::after {
-        content: "Drag to bookmarks";
+        content: "Install bookmarklet";
         color: white;
         min-width: 10rem;
+    }
+    :global(a:hover) span.label::after {
+        content: "Drag to bookmarks";
     }
     span.name {
         position: absolute;
