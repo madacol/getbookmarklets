@@ -16,7 +16,7 @@
         text-align: center;
         font-size: 1rem;
         font-weight: bold;
-        border-radius: 2rem;
+        border-radius: .4rem;
         box-shadow: 0 0.3rem 0.9rem 0 rgba(6, 81, 126, 0.18);
     }
     div:not(:disabled):hover {
