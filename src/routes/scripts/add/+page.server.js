@@ -57,7 +57,7 @@ export const actions = {
 
             // Validate if server response is valid
                 try {
-                    const response = await fetch(url)
+                    const response = await fetch(url, {method: "HEAD"})
                     if (!response.ok) {
                         return fail(400, {error: "URL's server did not respond with 200 OK"});
                     }
