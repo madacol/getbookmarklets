@@ -6,15 +6,12 @@
     import javascript from 'highlight.js/lib/languages/javascript';
     import 'highlight.js/styles/stackoverflow-dark.min.css';
     import PrimaryButton from "$lib/components/PrimaryButton.svelte";
-    import { urlToName } from "$lib";
+    import { getScriptMetadata, urlToName } from "$lib";
+    import { untrack } from "svelte";
 
     let { uploader = '', source_url = '', showCode = true } = $props();
 
-    let name = $state('');
-    let description = $state('');
-
     let source = $state('')
-    let bookmarklet = $state('')
 
     let editMode = $state(false);
 
@@ -30,29 +27,22 @@
             // remove "javascript:" prefix if present
             source = responseBody.trim().replace(/^javascript:/, '');
             editMode = false;
-
-            // try to extract description from the source in the case it is a userscript
-            if (!name) {
-                const match = source.match(/\/\/\s*@name\s*(.*)/);
-                if (match) {
-                    name = match[1].trim();
-                } else {
-                    name = urlToName(source_url);
-                }
-            }
-            const match = source.match(/\/\/\s*@description\s*(.*)/);
-            if (match) {
-                description = match[1].trim();
-            }
         })()
     })
 
-    $effect(() => {
+    let {name = '', description = ''} = $derived.by(() => {
+        let {name, description} = getScriptMetadata(source)
+        if (!name) name = urlToName(untrack(()=>source_url));
+        return {name, description}
+    })
+
+    let bookmarklet = $derived.by(() => {
         try {
             const minified = minify_sync(source)?.code || '';
-            bookmarklet = `javascript:(function(){${encodeURIComponent(minified)}})();`
+            return `javascript:(function(){${encodeURIComponent(minified)}})();`
         } catch (error) {
             console.error(error);
+            return ''
         }
     })
 

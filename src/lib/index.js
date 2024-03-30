@@ -29,3 +29,21 @@ export function urlToName(url) {
         ? toTitleCase(filename)
         : '';
 }
+
+/**
+ * @param {string} source
+ * @returns {{name: string, description: string}}
+ */
+export function getScriptMetadata(source) {
+    const nameMatch = source.match(/\/\/\s*@name\s*(.*)/);
+    const name = nameMatch
+        ? nameMatch[1].trim()
+        : '';
+
+    const descriptionMatch = source.match(/\/\/\s*@description\s*(.*)/);
+    const description = descriptionMatch
+        ? descriptionMatch[1].trim()
+        : '';
+
+    return {name, description};
+}
