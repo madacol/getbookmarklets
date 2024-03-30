@@ -20,7 +20,7 @@
     $effect(() => { showCode && fetch(`/shown/${encodeURIComponent(source_url)}`) })
 
     $effect(() => {
-        if (!source_url || (source_url.toLowerCase().match(/^data:/) && source)) return;
+        if (!source_url || (isDataURL && source)) return;
 
         (async () => {
             const responseBody = await (await fetch(source_url)).text();
@@ -168,7 +168,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    h1, h3 {
+    h1 {
         margin: 0;
     }
     .metadata span {
@@ -220,7 +220,7 @@
         text-decoration: none;
     }
     .title a:hover {
-        opacity: 0.6;
+        opacity: 0.7;
     }
     .title * {
         overflow: hidden;
