@@ -113,6 +113,14 @@
       padding: 1em;
     }
 
+    .logo > a {
+      text-decoration: none;
+    }
+
+    .logo > a:hover {
+      opacity: 0.8;
+    }
+
     #profile {
       position: relative;
     }

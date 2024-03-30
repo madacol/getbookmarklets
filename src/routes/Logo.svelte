@@ -17,8 +17,8 @@
 
     span {
         color: #06517E;
-        font-family: Euclid Circular A;
-        font-size: 1.7rem;
+        font-family: 'Roboto', sans-serif;
+        font-size: 2rem;
         font-style: normal;
         font-weight: 700;
     }
