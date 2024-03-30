@@ -155,7 +155,6 @@
         flex-direction: column;
         gap: 1rem;
         max-width: 1000px;
-        min-width: max(60vw, 25rem);
     }
     .metadata {
         display: flex;
