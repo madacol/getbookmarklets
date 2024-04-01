@@ -134,9 +134,6 @@
     <details bind:open={showCode}>
         <summary>Source code</summary>
         <div class="source_editor">
-            <PrimaryButton onclick={() => editMode = !editMode}>
-                {#if editMode}Close editor{:else}Edit with Monaco{/if}
-            </PrimaryButton>
             <div class="source">
                 {#if editMode}
                     <MonacoEditor onchange={handleSourceChanged} value={source} />
@@ -144,6 +141,9 @@
                     <pre><code class="language-javascript">{@html sourceHighlighted}</code></pre>
                 {/if}
             </div>
+            <PrimaryButton onclick={() => editMode = !editMode}>
+                {#if editMode}Close editor{:else}Edit with Monaco{/if}
+            </PrimaryButton>
         </div>
     </details>
 </article>
