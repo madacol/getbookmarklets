@@ -6,7 +6,7 @@
 
 <main>
     {#each data.scripts as {uploader, source_url}}
-        <Script {uploader} {source_url} showCode={false} />
+        <Script {uploader} {source_url} collapseCode={true} />
     {/each}
 </main>
 

@@ -1,21 +1,19 @@
 <script>
+    import Source from './Source.svelte';
     import LinkButton from "$lib/components/LinkButton.svelte";
-    import MonacoEditor from "$lib/components/MonacoEditor.svelte";
     import { minify_sync } from "terser";
-    import hljs from 'highlight.js/lib/core';
-    import javascript from 'highlight.js/lib/languages/javascript';
-    import 'highlight.js/styles/stackoverflow-dark.min.css';
-    import PrimaryButton from "$lib/components/PrimaryButton.svelte";
     import { getScriptMetadata, urlToName } from "$lib";
     import { untrack } from "svelte";
 
-    let { uploader = '', source_url = '', showCode = true } = $props();
+    let { uploader = '', source_url = '', collapseCode = false } = $props();
 
     let source = $state('')
 
     let editMode = $state(false);
 
     let isDataURL = $derived(source_url.startsWith('data:'));
+
+    let showCode = $state(!collapseCode);
 
     $effect(() => { showCode && fetch(`/shown/${encodeURIComponent(source_url)}`) })
 
@@ -53,12 +51,6 @@
         source = newSource;
         source_url = `data:text/javascript,${encodeURIComponent(source)}`;
     }
-
-    /**
-     * @type {HTMLElement}
-     */
-    hljs.registerLanguage('javascript', javascript);
-    let sourceHighlighted = $derived(hljs.highlight(source, { language: 'javascript' }).value);
 
     /**
      * @param event {{currentTarget: HTMLAnchorElement}}
@@ -131,20 +123,9 @@
         {#if uploader}<div><span>Uploaded by:</span> {uploader}</div>{/if}
         {#if source_url}<div class="source_url"><span>Source URL:</span> <a href={source_url}>{decodeURIComponent(source_url)}</a></div>{/if}
     </div>
-    <details bind:open={showCode}>
-        <summary>Source code</summary>
-        <div class="source_editor">
-            <div class="source">
-                {#if editMode}
-                    <MonacoEditor onchange={handleSourceChanged} value={source} />
-                {:else}
-                    <pre><code class="language-javascript">{@html sourceHighlighted}</code></pre>
-                {/if}
-            </div>
-            <PrimaryButton onclick={() => editMode = !editMode}>
-                {#if editMode}Close editor{:else}Edit with Monaco{/if}
-            </PrimaryButton>
-        </div>
+    <details bind:open={showCode} >
+        <summary class:hidden={!collapseCode}>Source code</summary>
+        <Source {source} {handleSourceChanged} />
     </details>
 </article>
 
@@ -166,28 +147,11 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    h1 {
+    h1, p {
         margin: 0;
     }
     .metadata span {
         font-weight: bold;
-    }
-    .source_editor {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-    pre, p {
-        margin: 0;
-    }
-    .source > pre {
-        background-color: #1e1e1e;
-        color: white;
-        padding: 1rem;
-        border-radius: 1em;
-        overflow: auto;
-        max-height: 70vh;
-        font-size: medium;
     }
     span.label::after {
         content: "Install bookmarklet";
@@ -249,7 +213,10 @@
     details[open] > summary::before {
         content: "Hide ";
     }
-    details > summary + *{
+    details > summary.hidden {
+        display: none;
+    }
+    details > summary:not(.hidden) + :global(*){
         margin-top: 1rem;
     }
 </style>
