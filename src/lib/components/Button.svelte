@@ -1,8 +1,12 @@
 <script>
-    let { ...props } = $props();
+
+    /**
+     * @type {{type: "button" | "submit" | "reset", [x: string]: any}}
+     */
+    let { type = "button", ...props } = $props();
 </script>
 
-<button {...props}>
+<button {type} { ...props }>
     <slot />
 </button>
 
