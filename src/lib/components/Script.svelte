@@ -31,7 +31,7 @@
 
     let {name = '', description = ''} = $derived.by(() => {
         let {name, description} = getScriptMetadata(source)
-        if (!name) name = urlToName(untrack(()=>source_url));
+        if (!name && !isDataURL) name = urlToName(untrack(()=>source_url));
         return {name, description}
     })
 
