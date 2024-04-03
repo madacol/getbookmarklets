@@ -35,12 +35,12 @@ export function urlToName(url) {
  * @returns {{name: string, description: string}}
  */
 export function getScriptMetadata(source) {
-    const nameMatch = source.match(/\/\/\s*@name\s*(.*)/);
+    const nameMatch = source.match(/\/\/\s*@name:? +(.*)/);
     const name = nameMatch
         ? nameMatch[1].trim()
         : '';
 
-    const descriptionMatch = source.match(/\/\/\s*@description\s*(.*)/);
+    const descriptionMatch = source.match(/\/\/\s*@description:? +(.*)/);
     const description = descriptionMatch
         ? descriptionMatch[1].trim()
         : '';
