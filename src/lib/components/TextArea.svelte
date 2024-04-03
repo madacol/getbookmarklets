@@ -2,11 +2,9 @@
     import { onMount } from "svelte";
 
     /**
-     * @type {{value: string, [x: string]: any}}
+     * @type {{value?: string, [x: string]: any}}
      */
-    let { value: propValue = '', ...props } = $props();
-
-    let value = $state(propValue);
+    let { value = $bindable(''), ...props } = $props();
 
     onMount(() => {
         if (props.name && props.type !== 'password') {

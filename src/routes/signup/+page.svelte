@@ -5,7 +5,6 @@
 
     let { form } = $props()
 
-    let username = $state('')
     let password = $state('')
     let password_repeat = $state('')
     /** @type {string | null} */
@@ -36,7 +35,6 @@
 
     <form class="box" method="post">
         <Input
-            bind:value={username}
             name="username"
             type="text"
             required
