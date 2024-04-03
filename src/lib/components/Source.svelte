@@ -6,11 +6,9 @@
     import 'highlight.js/styles/stackoverflow-dark.min.css';
 
     /**
-    * @type {{ source: string, handleSourceChanged: (newSource: string) => void}}
+    * @type {{ source: string, handleSourceChanged: (newSource: string) => void, editMode?: boolean}}
      */
-    let { source , handleSourceChanged } = $props();
-
-    let editMode = $state(false);
+    let { source, handleSourceChanged, editMode = $bindable(false) } = $props();
 
     /**
      * @type {HTMLElement}

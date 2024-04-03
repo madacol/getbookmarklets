@@ -13,7 +13,9 @@
             const paramValue = url.searchParams.get(props.name);
             if (paramValue) {
                 value = paramValue;
-                if (props.onchange) props.onchange({target: {value}})
+                const event = {target: {value}}
+                if (props.onchange) props.onchange(event)
+                else if (props.oninput) props.oninput(event)
             }
 
             // update the URL when the value changes
@@ -40,8 +42,6 @@
         font-size: 1em;
         border-radius: 2rem;
         padding: 2rem;
-        min-width: 20rem;
-        min-height: 10rem;
         border: 1px solid #e5e5e5;
         box-shadow: 0 0.3rem 0.9rem 0 rgba(6, 81, 126, 0.18);
     }

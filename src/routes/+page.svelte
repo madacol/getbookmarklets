@@ -6,7 +6,9 @@
 
 <main>
     {#each data.scripts as {uploader, source_url}}
-        <Script {uploader} {source_url} collapseCode={true} />
+        <div class="box">
+            <Script {uploader} {source_url} collapseCode={true} />
+        </div>
     {/each}
 </main>
 
@@ -18,5 +20,8 @@
         gap: 2rem;
         max-width: fit-content;
         margin: auto;
+    }
+    .box {
+        max-width: 1000px;
     }
 </style>

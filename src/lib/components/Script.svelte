@@ -5,11 +5,12 @@
     import { getScriptMetadata, urlToName } from "$lib";
     import { untrack } from "svelte";
 
-    let { uploader = '', source_url = '', collapseCode = false } = $props();
+    /**
+     * @type {{ uploader?: string, source_url?: string, collapseCode?: boolean, editMode?: boolean }}
+     */
+    let { uploader = '', source_url = $bindable(''), collapseCode = false, editMode = $bindable(false) } = $props();
 
     let source = $state('')
-
-    let editMode = $state(false);
 
     let isDataURL = $derived(source_url.startsWith('data:'));
 
@@ -100,7 +101,7 @@
     }
 </script>
 
-<article class="box">
+<article>
 
     <div class="title_row">
         <div class="title"><a href={`/scripts/${encodeURIComponent(source_url)}`} title={name} data-sveltekit-preload-data="tap"><h1>{name}</h1></a></div>
@@ -125,7 +126,7 @@
     </div>
     <details bind:open={showCode} >
         <summary class:hidden={!collapseCode}>Source code</summary>
-        <Source {source} {handleSourceChanged} />
+        <Source {source} {handleSourceChanged} {editMode}/>
     </details>
 </article>
 
@@ -134,7 +135,6 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        max-width: 1000px;
     }
     .metadata {
         display: flex;

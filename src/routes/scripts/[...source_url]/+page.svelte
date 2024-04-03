@@ -5,15 +5,17 @@
 </script>
 
 <main>
-    <Script
-        {...data.script}
-    />
+    <div class="box">
+        <Script
+            {...data.script}
+        />
+    </div>
 </main>
 
 
 <style>
     main {
-        max-width: 70vw;
+        max-width: 1000px;
         margin: auto;
     }
 </style>

@@ -47,3 +47,25 @@ export function getScriptMetadata(source) {
 
     return {name, description};
 }
+
+/**
+ * Debounce a function. Returns a new function that will only call the original function after a delay.
+ * It saves the timeout ID in the context of the returned function as `this.timeoutId`.
+ * 
+ * @param {Function} fn - The function to debounce.
+ * @param {number} delay - The delay in milliseconds.
+ * @returns {[Function, {value: number | undefined}]} - The debounced function and the timeout ID.
+ */
+export function debounce(fn, delay = 1000) {
+    /**
+     * @type {{value: number | undefined}}
+     */
+    const timeoutId = { value: undefined };
+    return [
+        function(...args) {
+            clearTimeout(timeoutId.value);
+            timeoutId.value = setTimeout(() => fn(...args), delay);
+        },
+        timeoutId
+    ]
+}
