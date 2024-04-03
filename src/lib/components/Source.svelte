@@ -20,7 +20,11 @@
 <div class="source_editor">
     <div class="source">
         {#if editMode}
-            <MonacoEditor onchange={handleSourceChanged} value={source} />
+            <MonacoEditor
+                onchange={handleSourceChanged}
+                value={source}
+                placeholder={"// @name Unnamed\n// @description \n\n// your code here\n"}
+            />
         {:else}
             <pre><code class="language-javascript">{@html sourceHighlighted}</code></pre>
         {/if}

@@ -4,9 +4,11 @@
 
     /**
      * source code
-     * @type {{value: string, onchange: (changedSource: string)=>void, [x: string]: any}}
+     * @type {{value: string, onchange?: (changedSource: string)=>void, placeholder?: string, [x: string]: any}}
      */
-    let { value, onchange=()=>{}, ...props } = $props();
+    let { value: _value, onchange=()=>{}, placeholder = '', ...props } = $props();
+
+    let value = $derived(_value || placeholder);
 
     /**
    * @type {HTMLElement}
