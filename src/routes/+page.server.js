@@ -8,7 +8,8 @@ export async function load() {
             source_url
         FROM scripts
         JOIN users USING (user_id)
-        ORDER BY random();
+        ORDER BY random()
+        LIMIT 100;
     `
     return {
         scripts
