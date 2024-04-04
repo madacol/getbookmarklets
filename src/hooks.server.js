@@ -14,6 +14,7 @@ function redirect(location, body) {
 }
 
 const privateRoutes = [
+    /^\/logs\/?$/,
 ];
 
 
