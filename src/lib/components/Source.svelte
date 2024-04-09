@@ -47,6 +47,7 @@
         border-radius: 1em;
         overflow: auto;
         max-height: 70vh;
+        min-height: 5rem;
         font-size: medium;
         margin: 0;
     }

@@ -130,6 +130,7 @@
             &:has(input:checked) {
                 opacity: 1;
                 border-bottom: 0;
+                cursor: auto;
             }
         }
     }
