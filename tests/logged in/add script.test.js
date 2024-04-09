@@ -43,19 +43,35 @@ test('add an HTTP script', async ({ page }) => {
 
 });
 
-test('add a dataURL script', async ({ page }) => {
+test.describe('add dataURL', () => {
 
-    const dataURL = 'data:text/javascript,alert("hello"); alert("world");';
-    await sql`DELETE FROM scripts WHERE source_url = ${dataURL}`
-    // Fill the input field with a URL
-    await page.locator('[name=source_url]').fill(dataURL);
+    test.describe.configure({ mode: 'serial' });
+    const testDataURL = 'data:text/javascript,alert("hello"); alert("world");';
 
-    // Submit the form by clicking the submission button
-    await page.locator('[type=submit]').click();
+    test('add', async ({ page }) => {
+        await sql`DELETE FROM scripts WHERE source_url = ${testDataURL}`
+        // Fill the input field with a URL
+        await page.locator('[name=source_url]').fill(testDataURL);
 
-    // Verify the url is correct
-    await page.waitForURL('/scripts/' + encodeURIComponent(dataURL));
+        // Submit the form by clicking the submission button
+        await page.locator('[type=submit]').click();
 
+        // Verify the url is correct
+        await page.waitForURL('/scripts/' + encodeURIComponent(testDataURL));
+
+    });
+
+    test('duplicate script', async ({ page }) => {
+
+        // Enter a script URL that already exists for that user
+        await page.locator('textarea[name="source_url"]').fill(testDataURL);
+
+        // Submit the form
+        await page.getByRole('button', { name: 'Add Script' }).click();
+
+        // Verify error message is shown that URL already exists
+        await expect(page.locator('.error')).toHaveText('URL already exists in database');
+    });
 });
 
 test('invalid URL', async ({ page }) => {
