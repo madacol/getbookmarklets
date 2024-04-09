@@ -21,7 +21,7 @@ export async function load() {
             body
         FROM logs
         ORDER BY created_at DESC
-        LIMIT 100;
+        LIMIT 500;
     `
     return {
         logs
