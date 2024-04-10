@@ -40,3 +40,10 @@ test('install as userscript', async ({ page }) => {
 
 });
 
+test('non-users cannot access logs', async ({ page }) => {
+    // Try to access the `/logs` route directly
+    await page.goto('/logs');
+
+    // Verify it was redirected to the login page
+    await expect(page).toHaveURL(/\/login\?redirectTo=%2Flogs$/);
+});
