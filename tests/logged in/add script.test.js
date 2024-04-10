@@ -166,3 +166,27 @@ test('invalid JavaScript', async ({ page }) => {
     await expect(page.locator('.error')).toHaveText('DataURL is not valid JavaScript');
 
 });
+
+test('URL encoding/decoding', async ({ page }) => {
+    // Add a new script with URL containing special characters
+    const specialCharsUrl = 'data:text/javascript,alert("Hello World!?/=+");'
+    await sql`DELETE FROM scripts WHERE source_url = ${specialCharsUrl}`
+    await page.locator('textarea[name="source_url"]').fill(specialCharsUrl);
+
+    // Verify the URL is encoded correctly in the search params
+    const extractedUrl = await page.evaluate(() => new URLSearchParams(window.location.search).get('source_url'));
+
+    expect(extractedUrl).toBe(specialCharsUrl);
+
+    await page.locator('[type=submit]').click();
+
+    // Replace `(` with `\(` and `)` with `\)` to escape them in regex
+    const regexEscapedUrl = encodeURIComponent(specialCharsUrl).replace(/[()]/g,'\\$&')
+
+    // Verify the URL is encoded in the path
+    await expect(page).toHaveURL(new RegExp('/scripts/' + regexEscapedUrl));
+
+    // Check the URL is encoded properly in the href
+    const sourceLink = await page.locator('.source_url > a').getAttribute('href');
+    expect(sourceLink).toBe(specialCharsUrl);
+});
