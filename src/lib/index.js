@@ -16,29 +16,28 @@ function toTitleCase(str) {
  * Takes a URL and returns the last part of the path in title case.
  * 
  * @param {string} url
+ * @returns {string}
  */
 export function urlToName(url) {
-    const pathList = decodeURIComponent(url).split('/');
-    const original_filename = pathList?.pop()?.split('.').shift() || '';
+    const [filename, foldername] = decodeURIComponent(url).split('/').reverse();
 
-    const filename = (original_filename === "index")
-                        ? pathList.pop() || ''
-                        : original_filename;
+    const filename_no_extensions = filename.split('.')[0];
 
-    return filename
-        ? toTitleCase(filename)
-        : '';
+    const name = (filename_no_extensions === "index") ? foldername : filename_no_extensions;
+
+    return toTitleCase(name);
 }
 
 /**
  * @param {string} source
+ * @param {string} url
  * @returns {{name: string, description: string}}
  */
-export function getScriptMetadata(source) {
-    const nameMatch = source.match(/\/\/\s*@name:? +(.*)/);
+export function getScriptMetadata(source, url) {
+    const nameMatch = source.match(/\/\/\s*@name:? +(.+)/);
     const name = nameMatch
         ? nameMatch[1].trim()
-        : '';
+        : urlToName(url)
 
     const descriptionMatch = source.match(/\/\/\s*@description:? +(.*)/);
     const description = descriptionMatch

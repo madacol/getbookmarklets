@@ -2,7 +2,7 @@
     import Source from './Source.svelte';
     import LinkButton from "$lib/components/LinkButton.svelte";
     import { minify_sync } from "terser";
-    import { getScriptMetadata, urlToName } from "$lib";
+    import { getScriptMetadata } from "$lib";
     import { untrack } from "svelte";
 
     /**
@@ -29,11 +29,7 @@
         })()
     })
 
-    let {name = '', description = ''} = $derived.by(() => {
-        let {name, description} = getScriptMetadata(source)
-        if (!name && !isDataURL) name = urlToName(untrack(()=>source_url));
-        return {name, description}
-    })
+    let { name, description } = $derived(getScriptMetadata(source, untrack(()=>source_url)))
 
     let bookmarklet = $derived.by(() => {
         try {
