@@ -5,6 +5,21 @@
 </script>
 
 <main>
+    <div class="box">
+        <h1>Welcome!</h1>
+
+        <p>Find, install and share bookmarklets.</p>
+
+        <h2>What are Bookmarklets?</h2>
+
+        <p>They are small JavaScript programs stored as browser bookmarks.</p>
+
+        <p>When you click the bookmark, the code runs on the current web page, allowing you to modify it, automate actions or extract information.</p>
+
+        <h2>Installing Bookmarklets</h2>
+        <p>Drag the <strong>"Install bookmarklet"</strong> button to your browser's bookmarks toolbar.</p>
+    </div>
+
     {#each data.scripts as {uploader, source_url}}
         <div class="box">
             <Script {uploader} {source_url} collapseCode={true} />
