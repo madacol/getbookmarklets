@@ -1,7 +1,6 @@
 <script>
+    import Install_Buttons from './Install_Buttons.svelte';
     import Source from './Source.svelte';
-    import LinkButton from "$lib/components/LinkButton.svelte";
-    import { minify_sync } from "terser";
     import { getScriptMetadata } from "$lib";
     import { untrack } from "svelte";
 
@@ -31,16 +30,6 @@
 
     let { name, description } = $derived(getScriptMetadata(source, untrack(()=>source_url)))
 
-    let bookmarklet = $derived.by(() => {
-        try {
-            const minified = minify_sync(source)?.code || '';
-            return `javascript:(function(){${encodeURIComponent(minified)}})();`
-        } catch (error) {
-            console.error(error);
-            return ''
-        }
-    })
-
     /**
      * @param {string} newSource
      */
@@ -48,69 +37,13 @@
         source = newSource;
         source_url = `data:text/javascript,${encodeURIComponent(source)}`;
     }
-
-    /**
-     * @param event {{currentTarget: HTMLAnchorElement}}
-     */
-    async function handleUserscriptInstall(event) {
-
-        let userscript_source;
-        if (source.match(/==UserScript==/)) {
-            if (!source_url.endsWith('.user.js')) {
-                event.currentTarget.href += '#.user.js';
-            }
-            if (!isDataURL) {
-                return
-            }
-            userscript_source = source;
-        } else {
-            userscript_source = addUserscriptHeaders(name, description, uploader, source_url, source)
-        }
-
-        // send file to the server in the url
-        const href = `/userscript/${encodeURIComponent(userscript_source)}#${name||"userscript"}.user.js`;
-        event.currentTarget.href = href;
-    }
-
-    /**
-     * @param name {string}
-     * @param description {string}
-     * @param uploader {string}
-     * @param source_url {string}
-     * @param source {string}
-     */
-    function addUserscriptHeaders(name, description, uploader, source_url, source) {
-        /**
-         * @type {{[key: string]: string}}
-         */
-        const headers = {
-            name: name || 'Unnamed',
-            match: '*://*/*',
-            grant: 'none',
-        }
-        if (description) headers.description = description;
-        if (uploader) headers.uploader = uploader;
-        if (!isDataURL) headers.downloadURL = source_url
-
-        const headers_str = Object.entries(headers).map(([key, value]) => `// @${key}  ${value}`).join('\n')
-        return `// ==UserScript==\n${headers_str}\n// ==/UserScript==\n\n${source}`;
-    }
 </script>
 
 <article>
 
     <div class="title_row">
         <div class="title"><a href={`/scripts/${encodeURIComponent(source_url)}`} title={name} data-sveltekit-preload-data="tap"><h1>{name}</h1></a></div>
-        <div class="install">
-            <LinkButton href={bookmarklet} disabled={!bookmarklet}>
-                <span class="label"><!-- Drag to bookmarks --></span>
-                <span class="name">{name}</span>
-            </LinkButton>
-            <LinkButton
-                href={source_url}
-                onclick={handleUserscriptInstall}
-            >Install as Userscript</LinkButton>
-        </div>
+        <Install_Buttons {source} {source_url} />
     </div>
 
 
@@ -149,19 +82,6 @@
     .metadata span {
         font-weight: bold;
     }
-    span.label::after {
-        content: "Install bookmarklet";
-        color: white;
-        min-width: 10rem;
-    }
-    :global(a:hover) span.label::after {
-        content: "Drag to bookmarks";
-    }
-    span.name {
-        position: absolute;
-        opacity: 0;
-        pointer-events: none;
-    }
     .title_row {
         display: flex;
         flex-direction: row;
@@ -188,10 +108,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-    }
-    .install {
-        display: flex;
-        gap: 1rem;
     }
     details {
         font-size: larger;
