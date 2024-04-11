@@ -173,10 +173,9 @@ test('URL encoding/decoding', async ({ page }) => {
     await sql`DELETE FROM scripts WHERE source_url = ${specialCharsUrl}`
     await page.locator('textarea[name="source_url"]').fill(specialCharsUrl);
 
-    // Verify the URL is encoded correctly in the search params
-    const extractedUrl = await page.evaluate(() => new URLSearchParams(window.location.search).get('source_url'));
-
-    expect(extractedUrl).toBe(specialCharsUrl);
+    // Verify the URL is encoded and decoded correctly by the textarea after refresh
+    await page.reload();
+    await expect(page.locator('textarea[name="source_url"]')).toHaveValue(specialCharsUrl);
 
     await page.locator('[type=submit]').click();
 
@@ -186,7 +185,6 @@ test('URL encoding/decoding', async ({ page }) => {
     // Verify the URL is encoded in the path
     await expect(page).toHaveURL(new RegExp('/scripts/' + regexEscapedUrl));
 
-    // Check the URL is encoded properly in the href
-    const sourceLink = await page.locator('.source_url > a').getAttribute('href');
-    expect(sourceLink).toBe(specialCharsUrl);
+    // Check the exact same URL is reconstructed in the href
+    await expect(page.locator('.source_url > a')).toHaveAttribute('href', specialCharsUrl)
 });
