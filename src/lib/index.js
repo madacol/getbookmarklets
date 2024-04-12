@@ -61,9 +61,9 @@ export function debounce(fn, delay = 1000) {
      */
     const timeoutId = { value: undefined };
     return [
-        function(...args) {
+        function(/** @type {any} */ ...args) {
             clearTimeout(timeoutId.value);
-            timeoutId.value = setTimeout(() => fn(...args), delay);
+            timeoutId.value = window.setTimeout(() => fn(...args), delay);
         },
         timeoutId
     ]
