@@ -35,8 +35,14 @@
         gap: 2rem;
         max-width: fit-content;
         margin: auto;
+        max-width: 1000px;
     }
     .box {
-        max-width: 1000px;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        * {
+            margin: 0;
+        }
     }
 </style>
