@@ -55,7 +55,7 @@ export const actions = {
 
             } else if (url.match(/^https?:\/\//)) {
 
-            // Validate if server response is valid
+                // Validate if server response is valid
                 try {
                     const response = await fetch(url, {method: "HEAD"})
                     if (!response.ok) {
