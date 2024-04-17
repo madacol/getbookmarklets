@@ -27,6 +27,17 @@
             />
         {:else}
             <pre><code class="language-javascript">{@html sourceHighlighted}</code></pre>
+            <button onclick={event => {
+                const button = event.currentTarget;
+                navigator.clipboard.writeText(source)
+                    .then(() => {
+                        const defaultText = button.textContent;
+                        button.textContent = 'Copied!'
+                        setTimeout(() => button.textContent = defaultText, 1000);
+                    })
+                    .catch(() => button.textContent = 'Failed to copy!');
+                }}
+            >Copy code</button>
         {/if}
     </div>
     <PrimaryButton onclick={() => editMode = !editMode}>
@@ -39,6 +50,28 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
+    }
+    .source {
+        position: relative;
+
+        button {
+            display: none;
+            font-size: medium;
+            color: white;
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.5rem;
+            border: 2px dashed white;
+            border-radius: 0.5rem;
+            background-color: #1e1e1eb0;
+            box-sizing: border-box;
+            text-align: center;
+            cursor: pointer;
+        }
+        &:hover:has(code:not(:hover)) button {
+            display: block;
+        }
     }
     pre {
         background-color: #1e1e1e;
