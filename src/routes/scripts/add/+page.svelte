@@ -36,6 +36,13 @@
             <label>From Code<input type="radio" value="code" bind:group={selected_tab} name="tab"></label>
         </div>
         <form class="box" method="post">
+            <div class="instructions">
+                {#if isTabUrl}
+                    <p>URL must link to a RAW file.</p>
+                {:else}
+                    <p>Code must be less than 10,000 characters.</p>
+                {/if}
+            </div>
             <div class="textarea" class:hidden={!isTabUrl}>
                 <TextArea
                     onpaste={event => sourceUrlInputChanged(event.clipboardData.getData('text/plain').trim())}
