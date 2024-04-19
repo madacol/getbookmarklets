@@ -17,9 +17,9 @@ const privateRoutes = [
     /^\/logs\/?$/,
 ];
 
-
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
+
     const session_id = event.cookies.get('session');
     const isPathProtected = privateRoutes.some(regex => regex.test(event.url.pathname));
 
@@ -91,24 +91,6 @@ export async function handle({ event, resolve }) {
     const path = event.url.pathname;
     const params = Object.fromEntries(event.url.searchParams);
     const headers = Object.fromEntries(event.request.headers);
-
-    const logPromise = sql`
-        INSERT INTO logs (
-            path,
-            method,
-            params,
-            headers,
-            user_session
-        ) VALUES (
-            ${path},
-            ${method},
-            ${params},
-            ${headers},
-            ${user}
-        ) RETURNING log_id
-        ;
-    `
-
     const request_clone = event.request.clone();
 
     /*********************/
@@ -117,25 +99,36 @@ export async function handle({ event, resolve }) {
 
     /*********************/
 
-    const {rows: [{log_id}]} = await logPromise;
-
-    if (response.status >= 500) {
-        const body = await request_clone.text();
-        await sql`
-            UPDATE logs
-                SET response_status = ${response.status}
-                    , body = ${body}
-                WHERE log_id = ${log_id}
-            ;
-        `
-    } else {
-        await sql`
-            UPDATE logs
-                SET response_status = ${response.status}
-                WHERE log_id = ${log_id}
-            ;
-        `
+    // exit if route is not found
+    if (response.status === 404) {
+        return response;
     }
+
+    let body = null;
+    if (response.status >= 500) {
+        body = await request_clone.text();
+    }
+
+    await sql`
+        INSERT INTO logs (
+            path,
+            method,
+            params,
+            headers,
+            user_session,
+            body,
+            response_status
+        ) VALUES (
+            ${path},
+            ${method},
+            ${params},
+            ${headers},
+            ${user},
+            ${body},
+            ${response.status}
+        ) RETURNING log_id
+        ;
+    `;
 
     return response;
 }
