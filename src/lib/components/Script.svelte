@@ -55,7 +55,12 @@
     </div>
     <details bind:open={showCode} >
         <summary class:hidden={!collapseCode}>Source code</summary>
-        <Source {source} {handleSourceChanged} {editMode}/>
+        <Source
+            {source}
+            {handleSourceChanged}
+            {editMode}
+            logCopy={()=>fetch(`/logs/copy/${encodeURIComponent(source_url)}`, { method: 'POST' })}
+        />
     </details>
 </article>
 

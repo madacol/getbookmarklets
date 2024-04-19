@@ -28,6 +28,8 @@
      */
     async function handleUserscriptInstall(event) {
 
+        fetch(`/logs/userscript/${encodeURIComponent(source_url)}`, { method: 'POST' });
+
         let userscript_source;
         if (source.match(/==UserScript==/)) {
             if (!source_url.endsWith('.user.js')) {
@@ -71,7 +73,22 @@
 </script>
 
 <div class="install">
-    <LinkButton href={bookmarklet} disabled={!bookmarklet}>
+    <LinkButton
+        href={bookmarklet}
+        disabled={!bookmarklet}
+        ondragstart={startEvent => {
+            const dropHandler = event => {
+                if (event.relatedTarget === null) {
+                    fetch(`/logs/drag/${encodeURIComponent(source_url)}`, { method: 'POST' })
+                }
+            }
+            window.addEventListener('dragleave', dropHandler)
+
+            // cleanup, remove event listener once drag ends
+            startEvent.currentTarget.addEventListener('dragend', () => window.removeEventListener('dragleave', dropHandler))
+        }}
+        oncontextmenu={()=>fetch(`/logs/rightclick/${encodeURIComponent(source_url)}`, { method: 'POST' })}
+    >
         <span class="label"><!-- Drag to bookmarks --></span>
         <span class="name">{name}</span>
     </LinkButton>
