@@ -27,7 +27,7 @@
             />
         {:else}
             <pre><code class="language-javascript">{@html sourceHighlighted}</code></pre>
-            <button onclick={event => {
+            <button type="button" onclick={event => {
                 const button = event.currentTarget;
                 navigator.clipboard.writeText(source)
                     .then(() => {
