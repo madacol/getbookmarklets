@@ -15,7 +15,7 @@
 
     let showCode = $state(!collapseCode);
 
-    $effect(() => { showCode && fetch(`/logs/shown/${encodeURIComponent(source_url)}`, { method: 'POST' }) });
+    $effect(() => { showCode && fetch(`/logs/shown/${encodeURIComponent(untrack(()=>source_url))}`, { method: 'POST' }) });
 
     $effect(() => {
         if (!source_url || (isDataURL && source)) return;
