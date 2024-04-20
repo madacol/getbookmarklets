@@ -8,6 +8,7 @@
     <table class="box">
         <thead>
             <tr>
+                <th title="response time in milliseconds">ms</th>
                 <th>Path</th>
                 <th>Username</th>
                 <th>Created At</th>
@@ -26,8 +27,9 @@
             </tr>
         </thead>
         <tbody>
-            {#each logs as {path, username, created_at, method, status, referer, city, timezone, country, ip, user_agent, headers, user_session, params, body}}
+            {#each logs as {path, username, created_at, method, status, referer, city, timezone, country, ip, user_agent, headers, user_session, params, body, response_time}}
                 <tr>
+                    <td title={response_time}>{response_time}</td>
                     <td title={path}>{path}</td>
                     <td title={username}>{username}</td>
                     <td title={created_at}>{created_at}</td>

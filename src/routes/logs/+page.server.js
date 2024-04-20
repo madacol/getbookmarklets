@@ -21,6 +21,7 @@ export const load = checkPermissions_MW(
                 headers,
                 user_session,
                 params,
+                response_time,
                 body
             FROM logs
             ORDER BY created_at DESC

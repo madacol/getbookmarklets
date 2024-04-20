@@ -19,6 +19,7 @@ const privateRoutes = [
 
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
+    const request_start_time = Date.now();
 
     const session_id = event.cookies.get('session');
     const isPathProtected = privateRoutes.some(regex => regex.test(event.url.pathname));
@@ -109,6 +110,9 @@ export async function handle({ event, resolve }) {
         body = await request_clone.text();
     }
 
+    // get response time in milliseconds
+    const response_time = Date.now() - request_start_time;
+
     await sql`
         INSERT INTO logs (
             path,
@@ -117,6 +121,7 @@ export async function handle({ event, resolve }) {
             headers,
             user_session,
             body,
+            response_time,
             response_status
         ) VALUES (
             ${path},
@@ -125,6 +130,7 @@ export async function handle({ event, resolve }) {
             ${headers},
             ${user},
             ${body},
+            ${response_time},
             ${response.status}
         ) RETURNING log_id
         ;
