@@ -125,7 +125,7 @@
         opacity: 0.7;
     }
     details > summary::before {
-        content: "Show ";
+        content: "View ";
     }
     details[open] > summary::before {
         content: "Hide ";
