@@ -1,20 +1,6 @@
-<div>
-    <!-- <img src="/logo.png" alt="logo"/> -->
-    <span>Get Bookmarklets</span>
-</div>
+<span>Get Bookmarklets</span>
 
 <style>
-    div {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        gap: 1em;
-    }
-    img {
-        width: 5rem;
-    }
-
     span {
         color: #06517E;
         font-family: 'Roboto', sans-serif;
@@ -23,4 +9,3 @@
         font-weight: 700;
     }
 </style>
-

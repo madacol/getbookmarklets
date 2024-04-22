@@ -78,23 +78,6 @@
       overflow: auto;
     }
 
-    .links {
-      display: flex;
-      gap: 1em;
-      overflow: auto;
-      align-items: center;
-      padding-left: 1em;
-    }
-    .links a {
-      text-decoration: none;
-      color: #000000;
-      font-weight: bold;
-      font-size: 1.2em;
-    }
-    .links a:hover {
-      color: #fffafa;
-    }
-
     #right-menu {
       position: relative;
       display: flex;
@@ -161,13 +144,6 @@
 
     a.logout {
       color: #9d0000;
-    }
-    #profile-menu hr {
-      align-self: stretch;
-      margin: 0;
-    }
-    hr {
-      margin: 2rem 0 1rem 0;
     }
     footer {
       display: flex;
