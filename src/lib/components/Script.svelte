@@ -42,7 +42,7 @@
 <article>
 
     <div class="title_row">
-        <div class="title"><a href={`/scripts/${encodeURIComponent(source_url)}`} title={name} data-sveltekit-preload-data="tap"><h1>{name}</h1></a></div>
+        <div class="title"><h1 title={name}>{name}</h1></div>
         <Install_Buttons {source} {source_url} />
     </div>
 
@@ -70,22 +70,8 @@
         flex-direction: column;
         gap: 1rem;
     }
-    .metadata {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        overflow: hidden;
-    }
-    .source_url {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
     h1, p {
         margin: 0;
-    }
-    .metadata span {
-        font-weight: bold;
     }
     .title_row {
         display: flex;
@@ -95,45 +81,59 @@
         align-self: stretch;
         overflow: hidden;
         flex-wrap: wrap;
+
+        .title {
+            display: flex;
+            flex-grow: 1;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            flex-basis: 15rem;
+
+            h1 {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
     }
-    .title {
+    .metadata {
         display: flex;
-        flex-grow: 1;
-        text-overflow: ellipsis;
+        flex-direction: column;
+        gap: 0.5rem;
         overflow: hidden;
-        flex-basis: 15rem;
-    }
-    .title a {
-        text-decoration: none;
-    }
-    .title a:hover {
-        opacity: 0.7;
-    }
-    .title * {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+
+        span {
+            font-weight: bold;
+        }
+        .source_url {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
     details {
         font-size: larger;
-    }
-    details > summary {
-        cursor: pointer;
-        display: inline list-item;
-    }
-    details > summary:hover {
-        opacity: 0.7;
-    }
-    details > summary::before {
-        content: "View ";
-    }
-    details[open] > summary::before {
-        content: "Hide ";
-    }
-    details > summary.hidden {
-        display: none;
-    }
-    details > summary:not(.hidden) + :global(*){
-        margin-top: 1rem;
+
+        & > summary {
+            cursor: pointer;
+            display: inline list-item;
+
+            &:hover {
+                opacity: 0.7;
+            }
+            &::before {
+                content: "View ";
+            }
+            &.hidden {
+                display: none;
+            }
+            &:not(.hidden) + :global(*){
+                margin-top: 1rem;
+            }
+        }
+
+        &[open] > summary::before {
+            content: "Hide ";
+        }
     }
 </style>
