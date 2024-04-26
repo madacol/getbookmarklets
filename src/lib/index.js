@@ -29,22 +29,34 @@ export function urlToName(url) {
 }
 
 /**
+ * Get the userscript-style metadata from a script source.
+ * 
  * @param {string} source
  * @param {string} url
- * @returns {{name: string, description: string}}
+ * @returns {{name: string, description: string, medias: {key: string, value: string}[]}}
  */
 export function getScriptMetadata(source, url) {
-    const nameMatch = source.match(/\/\/\s*@name:? +(.+)/);
-    const name = nameMatch
-        ? nameMatch[1].trim()
-        : urlToName(url)
+    // Get everything before the first non-comment line
+    const metadata = source.trim().split(/\n(?!\/\/)/)[0];
 
-    const descriptionMatch = source.match(/\/\/\s*@description:? +(.*)/);
-    const description = descriptionMatch
-        ? descriptionMatch[1].trim()
-        : '';
+    /**
+     * @param {string} key
+     * @returns {{key: string, value: string}[]}
+     */
+    const getAllKeyValues = (key) => {
+        // match userscript keys like `// @name[:en] My Script`
+        const matches = metadata.matchAll(new RegExp(`\/\/\\ *@(${key})(?::[a-zA-Z]{2}(?:-[a-zA-Z]{2})?)?\ +([^\n]+)`, 'g'));
+        return Array.from(matches).map( match => ({
+            key: match[1],
+            value: match[2].trim(),
+        }));
+    }
 
-    return {name, description};
+    return {
+        name: getAllKeyValues('name')[0]?.value || urlToName(url),
+        description: getAllKeyValues('description')[0]?.value || '',
+        medias: getAllKeyValues('video|image'),
+    };
 }
 
 /**
