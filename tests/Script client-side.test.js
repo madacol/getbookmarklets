@@ -26,6 +26,6 @@ test('paste url', async ({ page }) => {
     await source_url_locator.press('Control+v');
 
     // Validate Script loaded correctly
-    await expect(page.getByRole('link', { name: 'test name', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'test name', exact: true })).toBeVisible();
 
 });
