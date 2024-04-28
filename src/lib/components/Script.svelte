@@ -1,4 +1,6 @@
 <script>
+  import Carousel from './Carousel.svelte';
+
     import Install_Buttons from './Install_Buttons.svelte';
     import Source from './Source.svelte';
     import { getScriptMetadata } from "$lib";
@@ -55,15 +57,7 @@
 
     {#if medias.length > 0}
         {#if showMedia}
-            <div class="carousel">
-                {#each medias as {key, value}}
-                    {#if key === 'image'}
-                        <img src={value} alt={name} loading="lazy" />
-                    {:else if key === 'video'}
-                        <video src={value} controls preload="metadata"></video>
-                    {/if}
-                {/each}
-            </div>
+            <Carousel {medias} />
         {:else}
             <details bind:open={showMedia} >
                 <summary>Load Media</summary>
@@ -121,17 +115,6 @@
 
         span {
             font-weight: bold;
-        }
-    }
-    .carousel {
-        display: flex;
-        gap: 1rem;
-        max-width: 100%;
-        overflow: auto;
-        height: 15rem;
-
-        img, video {
-            height: 100%;
         }
     }
     details {
