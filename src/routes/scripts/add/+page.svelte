@@ -108,12 +108,9 @@
         visibility: visible;
     }
     .add-button {
-        position: sticky;
-        bottom: 0;
         background-color: white;
         padding: 1rem 0;
         margin: -1rem 0;
-        z-index: 10;
     }
     .tabs {
         display: flex;
