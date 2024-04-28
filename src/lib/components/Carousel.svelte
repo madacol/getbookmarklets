@@ -5,14 +5,29 @@
     let { medias } = $props();
 
     let expanded = $state(false);
+    /**
+     * @type {HTMLElement | null}
+     */
+    let expandedElement = $state(null);
+
+    $effect(() => {
+        if (expandedElement) {
+            expandedElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            expandedElement = null
+        }
+    })
 </script>
 
 <div class="carousel" class:expanded aria-expanded={expanded}
-    onclick={() => expanded = !expanded}
+    onclick={(e) => {
+        expanded = !expanded
+        if (expanded) expandedElement = e.target
+    }}
     onkeydown={(e) => {
         if (e.key === 'Escape') expanded = false
         else if (e.key === 'Enter') expanded = !expanded
     }}
+    role="button"
     tabindex="0"
 >
     {#each medias as {key, value}}
