@@ -12,7 +12,7 @@
 
     $effect(() => {
         if (expandedElement) {
-            expandedElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            expandedElement.scrollIntoView({inline: 'center', block: 'center'})
             expandedElement = null
         }
     })
@@ -43,6 +43,7 @@
     .carousel {
         display: flex;
         gap: 1rem;
+        padding: 1rem 0;
         max-width: 100%;
         overflow: auto;
         height: 15rem;
@@ -57,14 +58,16 @@
             height: 100vh;
             top: 0;
             left: 0;
-            padding: 5vh;
+            padding: 5vh 0;
+            gap: 5vh;
             box-sizing: border-box;
             background: rgba(0, 0, 0, 0.7);
         }
         img, video {
             height: 100%;
+            max-width: 100vw;
+            max-height: 100vh;
             object-fit: contain;
         }
     }
 </style>
-
