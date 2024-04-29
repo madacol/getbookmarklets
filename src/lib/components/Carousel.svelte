@@ -1,31 +1,40 @@
 <script>
+    import { pushState, replaceState } from "$app/navigation";
+    import { page } from "$app/stores";
+
     /**
      * @type {{ medias: { key: string, value: string }[] }}
      */
     let { medias } = $props();
 
-    let expanded = $state(false);
     /**
      * @type {HTMLElement | null}
      */
     let expandedElement = $state(null);
+    replaceState('', { expanded: false });
 
     $effect(() => {
-        if (expandedElement) {
-            expandedElement.scrollIntoView({inline: 'center', block: 'center'})
-            expandedElement = null
+        if ($page.state?.expanded) {
+            expandedElement?.scrollIntoView({inline: 'center', block: 'center'})
         }
     })
+
+    function toggleExpanded(e) {
+        if ($page.state?.expanded) {
+            expandedElement = null
+            history.back();
+        } else {
+            expandedElement = e.target;
+            pushState('', { expanded: true });
+        }
+    }
 </script>
 
-<div class="carousel" class:expanded aria-expanded={expanded}
-    onclick={(e) => {
-        expanded = !expanded
-        if (expanded) expandedElement = e.target
-    }}
+<div class="carousel" class:expanded={$page.state?.expanded} aria-expanded={$page.state?.expanded}
+    onclick={toggleExpanded}
     onkeydown={(e) => {
-        if (e.key === 'Escape') expanded = false
-        else if (e.key === 'Enter') expanded = !expanded
+        if (e.key === 'Escape' && $page.state?.expanded) toggleExpanded(e);
+        else if (e.key === 'Enter') toggleExpanded(e)
     }}
     role="button"
     tabindex="0"
