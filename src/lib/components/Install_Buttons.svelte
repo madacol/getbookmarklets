@@ -75,6 +75,23 @@
 <div class="install">
     <LinkButton
         href={bookmarklet}
+        onclick={e=>{
+            if (!confirm(
+`To Install:
+    Cancel this, and instead of clicking, do one of the following:
+        - Drag button to bookmark's bar
+        - Right-click and select "Bookmark link" (Firefox only)
+        - Right-click and select "Copy link address", now
+          create a new bookmark and paste in the URL field
+
+To Run:
+    Click "OK"
+    Note that not all scripts make sense to test in this way
+`
+        )) {
+                e.preventDefault();
+            }
+        }}
         disabled={!bookmarklet}
         ondragstart={startEvent => {
             const leaveHandler = event => {
