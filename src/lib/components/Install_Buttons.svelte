@@ -77,19 +77,19 @@
         href={bookmarklet}
         disabled={!bookmarklet}
         ondragstart={startEvent => {
-            const dropHandler = event => {
+            const leaveHandler = event => {
                 if (event.relatedTarget === null) {
                     fetch(`/logs/drag/${encodeURIComponent(source_url)}`, { method: 'POST' })
                 }
             }
-            window.addEventListener('dragleave', dropHandler)
+            window.addEventListener('dragleave', leaveHandler)
 
             // cleanup, remove event listener once drag ends
-            startEvent.currentTarget.addEventListener('dragend', () => window.removeEventListener('dragleave', dropHandler))
+            startEvent.currentTarget.addEventListener('dragend', () => window.removeEventListener('dragleave', leaveHandler))
         }}
         oncontextmenu={()=>fetch(`/logs/rightclick/${encodeURIComponent(source_url)}`, { method: 'POST' })}
     >
-        <span class="label"><!-- Drag to bookmarks --></span>
+        <span class="label"><!-- Install bookmarklet / Drag to bookmarks --></span>
         <span class="name">{name}</span>
     </LinkButton>
     <LinkButton href={source_url} onclick={handleUserscriptInstall}>

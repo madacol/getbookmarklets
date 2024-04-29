@@ -61,7 +61,7 @@ export function getScriptMetadata(source, url) {
 
 /**
  * Debounce a function. Returns a new function that will only call the original function after a delay.
- * It saves the timeout ID in the context of the returned function as `this.timeoutId`.
+ * It returns the debounced function and the timeout ID.
  * 
  * @param {Function} fn - The function to debounce.
  * @param {number} delay - The delay in milliseconds.
