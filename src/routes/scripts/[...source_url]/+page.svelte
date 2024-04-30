@@ -6,9 +6,7 @@
 
 <main>
     <div class="box">
-        <Script
-            {...data.script}
-        />
+        <Script source_url={data.source_url}/>
     </div>
 </main>
 

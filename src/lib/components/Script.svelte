@@ -7,9 +7,9 @@
     import { untrack } from "svelte";
 
     /**
-     * @type {{ uploader?: string, source_url?: string, collapseCode?: boolean, editMode?: boolean }}
+     * @type {{ source_url?: string, collapseCode?: boolean, editMode?: boolean }}
      */
-    let { uploader = '', source_url = $bindable(''), collapseCode = false, editMode = $bindable(false) } = $props();
+    let { source_url = $bindable(''), collapseCode = false, editMode = $bindable(false) } = $props();
 
     let source = $state('')
 
