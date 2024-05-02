@@ -46,7 +46,7 @@
 <article>
 
     <div class="title_row">
-        <div class="title"><h1 title={name}>{name}</h1></div>
+        <div class="title"><a href={`/scripts/${encodeURIComponent(source_url)}`} title={name} data-sveltekit-preload-data="tap"><h1>{name}</h1></a></div>
         <Install_Buttons {source} {source_url} />
     </div>
 
@@ -101,7 +101,15 @@
             overflow: hidden;
             flex-basis: 15rem;
 
-            h1 {
+            a {
+                text-decoration: none;
+
+                &:hover {
+                    opacity: 0.7;
+                }
+            }
+
+            * {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
