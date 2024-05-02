@@ -20,9 +20,9 @@
         <p>Drag the <strong>"Install bookmarklet"</strong> button to your browser's bookmarks toolbar.</p>
     </div>
 
-    {#each data.scripts as {uploader, source_url}}
+    {#each data.scripts as {source_url}}
         <div class="box">
-            <Script {uploader} {source_url} collapseCode={true} />
+            <Script {source_url} collapseCode={true} />
         </div>
     {/each}
 </main>
