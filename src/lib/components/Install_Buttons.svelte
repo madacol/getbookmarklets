@@ -2,7 +2,6 @@
     import { getScriptMetadata } from "$lib";
     import LinkButton from "$lib/components/LinkButton.svelte";
     import { untrack } from "svelte";
-    import { minify_sync } from "terser";
 
     /**
      * @type {{ source: string, source_url: string }}
@@ -15,8 +14,7 @@
 
     let bookmarklet = $derived.by(() => {
         try {
-            const minified = minify_sync(source)?.code || '';
-            return `javascript:(function(){${encodeURIComponent(minified)}})();`
+            return `javascript:{${encodeURIComponent(source)}}`
         } catch (error) {
             console.error(error);
             return ''
