@@ -6,7 +6,7 @@
 		"dev": "vite dev",
 		"build": "run-s 'migrate up' build:vite",
 		"build:vite": "vite build",
-		"migrate": "node-pg-migrate",
+		"migrate": "node-pg-migrate --template-file-name 'migrations/template/template.cjs'",
 		"create:permission": "node ./src/scripts/create_permission.js",
 		"create:crudPermissions": "node ./src/scripts/create_crudPermissions.js",
 		"preview": "vite preview",
