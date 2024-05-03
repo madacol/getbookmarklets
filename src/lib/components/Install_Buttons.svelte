@@ -70,13 +70,8 @@
         const headers_str = Object.entries(headers).map(([key, value]) => `// @${key}  ${value}`).join('\n')
         return `// ==UserScript==\n${headers_str}\n// ==/UserScript==\n\n${source}`;
     }
-</script>
 
-<div class="install">
-    <LinkButton
-        href={bookmarklet}
-        onclick={e=>{
-            if (!confirm(
+    const installMessage =
 `To Install:
     Cancel this, and instead of clicking, do one of the following:
         - Drag button to bookmark's bar
@@ -88,7 +83,13 @@ To Run:
     Click "OK"
     Note that not all scripts make sense to test in this way
 `
-        )) {
+</script>
+
+<div class="install">
+    <LinkButton
+        href={bookmarklet}
+        onclick={e=>{
+            if (!confirm(installMessage)) {
                 e.preventDefault();
             }
         }}
