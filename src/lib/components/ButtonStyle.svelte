@@ -1,9 +1,9 @@
 <script>
-    let { ...props } = $props();
+    let { children, ...props } = $props();
 </script>
 
 <div {...props}>
-    <slot />
+    {@render children()}
 </div>
 
 <style>

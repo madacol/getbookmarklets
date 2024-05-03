@@ -4,9 +4,9 @@
   import PrimaryButton from '$lib/components/PrimaryButton.svelte'
   import Logo from './Logo.svelte'
 
-  export let data;
+  let { children, data } = $props();
 
-  let menu_open = false;
+  let menu_open = $state(false);
 </script>
 
 <header>
@@ -51,7 +51,7 @@
 
 
 <div id="content">
-    <slot />
+    {@render children()}
 </div>
 
 

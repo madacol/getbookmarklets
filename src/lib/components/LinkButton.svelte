@@ -1,12 +1,12 @@
 <script>
     import PrimaryButtonStyle from "./PrimaryButtonStyle.svelte"
 
-    let { disabled = false, ...props } = $props();
+    let { disabled = false, children, ...props } = $props();
 </script>
 
 <a {...props}>
     <PrimaryButtonStyle {disabled}>
-        <slot />
+        {@render children()}
     </PrimaryButtonStyle>
 </a>
 

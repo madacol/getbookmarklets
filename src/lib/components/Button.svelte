@@ -3,11 +3,11 @@
     /**
      * @type {{type: "button" | "submit" | "reset", [x: string]: any}}
      */
-    let { type = "button", ...props } = $props();
+    let { type = "button", children, ...props } = $props();
 </script>
 
 <button {type} { ...props }>
-    <slot />
+    {@render children()}
 </button>
 
 <style>

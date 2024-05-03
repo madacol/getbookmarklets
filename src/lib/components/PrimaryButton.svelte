@@ -1,7 +1,7 @@
 <script>
     import Button from "./Button.svelte"
 
-    let { ...props } = $props();
+    let { children, ...props } = $props();
 </script>
 
 <Button
@@ -10,5 +10,5 @@
     --background-hover-color="var(--primary-hover-color)"
     --color="white"
 >
-    <slot />
+    {@render children()}
 </Button>
