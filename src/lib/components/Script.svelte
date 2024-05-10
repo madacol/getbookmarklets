@@ -60,7 +60,7 @@
             <Carousel {medias} />
         {:else}
             <details bind:open={showMedia} >
-                <summary>Load Media</summary>
+                <summary>Show Media</summary>
             </details>
         {/if}
     {/if}
