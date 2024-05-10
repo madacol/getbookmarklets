@@ -70,16 +70,23 @@
     }
 
     const installMessage =
-`To Install:
-    Cancel this, and instead of clicking, do one of the following:
-        - Drag button to bookmark's bar
+`Did you meant to install it?
+
+    Do one of the following:
+
+        - Drag button to the bookmark's bar
+            or
         - Right-click and select "Bookmark link" (Firefox only)
-        - Right-click and select "Copy link address", now
+            or
+        - Right-click and select "Copy link address", and now
           create a new bookmark and paste in the URL field
 
-To Run:
-    Click "OK"
-    Note that not all scripts make sense to test in this way
+WARNING:
+
+    If you continue, the bookmarklet will be executed.
+    Do you trust it?
+
+    (Not all bookmarklets make sense to execute in this page)
 `
 </script>
 
