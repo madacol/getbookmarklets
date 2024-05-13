@@ -28,6 +28,10 @@
         </thead>
         <tbody>
             {#each logs as {path, username, created_at, method, status, referer, city, timezone, country, ip, user_agent, headers, user_session, params, body, response_time}}
+                {@const json_headers = JSON.stringify(headers, null, 2)}
+                {@const json_user_session = JSON.stringify(user_session, null, 2)}
+                {@const json_params = JSON.stringify(params, null, 2)}
+                {@const json_body = JSON.stringify(body, null, 2)}
                 <tr>
                     <td title={response_time}>{response_time}</td>
                     <td title={path}>{path}</td>
@@ -41,10 +45,10 @@
                     <td title={country}>{country}</td>
                     <td title={ip}>{ip}</td>
                     <td title={user_agent}>{user_agent}</td>
-                    <td title={JSON.stringify(headers)}>{JSON.stringify(headers)}</td>
-                    <td title={JSON.stringify(user_session)}>{JSON.stringify(user_session)}</td>
-                    <td title={JSON.stringify(params)}>{JSON.stringify(params)}</td>
-                    <td title={JSON.stringify(body)}>{JSON.stringify(body)}</td>
+                    <td title={json_headers}>{json_headers}</td>
+                    <td title={json_user_session}>{json_user_session}</td>
+                    <td title={json_params}>{json_params}</td>
+                    <td title={json_body}>{json_body}</td>
                 </tr>
             {/each}
         </tbody>
