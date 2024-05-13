@@ -29,36 +29,38 @@
         </ul>
 
 
+        <details>
+            <summary><h2>Why, What and How to install</h2></summary>
 
-        <h2>Why? (or Rant)</h2>
-        <p>Honestly, bookmarklets and userscripts should not exist. The fact that they still do is a failure of the web extension ecosystem.</p>
-        <p>
-            Extensions are difficult to verify that they <i>don't do anything else</i> than what they claim.
-            <br>The permission system is too broad, and the time and knowledge you need to get to the source code is too high. Making it look like a joke how much harder it is to verify compared to an equivalent one-liner bookmarklet.
-        </p>
-        <p>Since the minimum effort needed to verify is really high, and average users cannot verify it anyway, browsers decided to focus on methods that end up putting friction/restrictions to what you can do with your browser.</p>
-        <p>Narrowing the permission system would help <i>a lot</i>, but it requires lots of efforts into coordination and implementation. So it only makes sense for the most popular restrictions users want. The long tail will still be neglected.</p>
-        <p>So I think extension platforms should make it easier to verify extension's code, and let social signaling do the rest (e.g. developers --influence-> power users --influence-> average users).</p>
-
-
-        <h2>What are Bookmarklets?</h2>
-        <p>They are small JavaScript programs stored as browser bookmarks.</p>
-        <p>When you click the bookmark, the code runs on the current web page, to do things like:</p>
-        <ul>
-            <li>modify the page</li>
-            <li>automate actions</li>
-            <li>extract information.</li>
-        </ul>
+            <h2>Why? (or Rant)</h2>
+            <p>Honestly, bookmarklets and userscripts should not exist. They should be extensions instead, but...</p>
+            <p>
+                Extensions are difficult to verify that they <strong>do not do anything else</strong> than what they claim.
+                <br>The permission system is too broad, and the time and knowledge you need to get to the source code is too high. It looks like a joke if you compare an extension that is equivalent to a one-liner bookmarklet.
+            </p>
+            <p>Since the minimum effort needed to verify is really high, and average users cannot verify it anyway, browsers decided to focus on methods that end up putting friction/restrictions to what you can do with your browser.</p>
+            <p>Narrowing the permission system would help <i>a lot</i>, but it requires lots of efforts into coordination and implementation. So it only makes sense for the most popular restrictions users want. The long tail will still be neglected.</p>
+            <p>So I think extension platforms should make it easier to verify extension's code, so more people verify, and improve the signalling quality of people when recommending extensions.</p>
 
 
-        <h2>How to install a bookmarklet</h2>
-        <p>There are multiple ways:</p>
+            <h2>What are Bookmarklets?</h2>
+            <p>They are small JavaScript programs stored as browser bookmarks.</p>
+            <p>When you click the bookmark, the code runs on the current web page, to do things like:</p>
+            <ul>
+                <li>modify the page</li>
+                <li>automate actions</li>
+                <li>extract information.</li>
+            </ul>
+
+
+            <h2>How to install a bookmarklet</h2>
+            <p>There are multiple ways:</p>
             <ul>
                 <li>Drag the <strong>Install</strong> button to your browser's bookmarks toolbar.</li>
                 <li>(Firefox only) Right-click the <strong>Install</strong> button and select <strong>"Bookmark link"</strong>.</li>
                 <li>Manually add a new bookmark. Right-click the <strong>Install</strong> button and select <strong>"Copy link address"</strong>, then create a new bookmark and paste the URL in the URL field.</li>
             </ul>
-        <p></p>
+        </details>
 
     </div>
 
@@ -83,7 +85,7 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        * {
+        & > * {
             margin: 0;
         }
     }
@@ -93,6 +95,18 @@
             background-color: #dddddd;
             padding: 0.1rem 0.3rem;
             border-radius: 0.3rem;
+        }
+    }
+    details > summary {
+        cursor: pointer;
+        width: fit-content;
+        
+        &:hover {
+            opacity: 0.7;
+        }
+        
+        & > h2 {
+            display: inline;
         }
     }
 </style>
