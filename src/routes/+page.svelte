@@ -32,18 +32,18 @@
         <details>
             <summary><h2>Why, What and How to install</h2></summary>
 
-            <h2>Why? (or Rant)</h2>
+            <h3>Why? (or Rant)</h3>
             <p>Honestly, bookmarklets and userscripts should not exist. They should be extensions instead, but...</p>
             <p>
                 Extensions are difficult to verify that they <strong>do not do anything else</strong> than what they claim.
-                <br>The permission system is too broad, and the time and knowledge you need to get to the source code is too high. It looks like a joke if you compare an extension that is equivalent to a one-liner bookmarklet.
+                <br>The permission system is too broad, and to verify the source code is too hard. It looks like a joke for a lot of extensions out there that could have been just a one-liner bookmarklet.
             </p>
             <p>Since the minimum effort needed to verify is really high, and average users cannot verify it anyway, browsers decided to focus on methods that end up putting friction/restrictions to what you can do with your browser.</p>
             <p>Narrowing the permission system would help <i>a lot</i>, but it requires lots of efforts into coordination and implementation. So it only makes sense for the most popular restrictions users want. The long tail will still be neglected.</p>
-            <p>So I think extension platforms should make it easier to verify extension's code, so more people verify, and improve the signalling quality of people when recommending extensions.</p>
+            <p>So I think extension platforms should make it easier to verify extension's code, so more people can verify, and improve the quality of word of mouth when sharing extensions.</p>
 
 
-            <h2>What are Bookmarklets?</h2>
+            <h3>What are Bookmarklets?</h3>
             <p>They are small JavaScript programs stored as browser bookmarks.</p>
             <p>When you click the bookmark, the code runs on the current web page, to do things like:</p>
             <ul>
@@ -53,7 +53,7 @@
             </ul>
 
 
-            <h2>How to install a bookmarklet</h2>
+            <h3>How to install a bookmarklet</h3>
             <p>There are multiple ways:</p>
             <ul>
                 <li>Drag the <strong>Install</strong> button to your browser's bookmarks toolbar.</li>
