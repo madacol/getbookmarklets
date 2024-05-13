@@ -70,23 +70,14 @@
     }
 
     const installMessage =
-`Did you meant to install it?
+`To install, do one of the following:
 
-    Do one of the following:
+    - Drag button to the bookmark's bar
 
-        - Drag button to the bookmark's bar
-            or
-        - Right-click and select "Bookmark link" (Firefox only)
-            or
-        - Right-click and select "Copy link address", and now
-          create a new bookmark and paste in the URL field
+    - Right-click and select "Bookmark link" (Firefox only)
 
-WARNING:
-
-    If you continue, the bookmarklet will be executed.
-    Do you trust it?
-
-    (Not all bookmarklets make sense to execute in this page)
+    - Right-click and select "Copy link address", and now
+        create a new bookmark and paste in the URL field
 `
 </script>
 
@@ -94,9 +85,8 @@ WARNING:
     <LinkButton
         href={bookmarklet}
         onclick={e=>{
-            if (!confirm(installMessage)) {
-                e.preventDefault();
-            }
+            alert(installMessage)
+            e.preventDefault()
         }}
         disabled={!bookmarklet}
         ondragstart={startEvent => {
