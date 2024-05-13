@@ -50,15 +50,15 @@
                 <li>Manually add a new bookmark. Right-click the <strong>Install</strong> button and select <strong>"Copy link address"</strong>, then create a new bookmark and paste the URL in the URL field.</li>
             </ul>
 
-            <h3>Why? (or Rant)</h3>
-            <p>Bookmarklets and Userscripts, in theory, should be implemented as Web Extensions. But they have some key problems:</p>
-            <p>
-                Extensions are difficult to verify that they <strong>do not do anything else</strong> than what they claim.
-                <br>The permission system is too broad, and to verify the source code is too hard. It looks like a joke for a lot of extensions out there that could have been just a one-liner bookmarklet.
-            </p>
-            <p>Since the minimum effort needed to verify is really high, and average users cannot verify it anyway, browsers decided to focus on methods that end up putting friction/restrictions to what you can do with your browser.</p>
-            <p>Narrowing the permission system would help <i>a lot</i>, but it requires lots of efforts into coordination and implementation. So it only makes sense for the most popular restrictions users want. Less common permissions and restrictions will still be overlooked.</p>
-            <p>So I think extension platforms should make it easier to verify extension's code, so more people can verify, and improve the quality of word of mouth when sharing extensions.</p>
+            <h3>Why bookmarklets? (or Rant)</h3>
+
+            <p>Bookmarklets and Userscripts should ideally be implemented as Web Extensions, but verifying that extensions <i>only do</i> what they claim is hard. Although permissions aim to address this issue, they are too broad. So often, a better option is to read and verify the code ourselves.</p>
+
+            <p>However, verifying extensions has two challenges: <strong>1.</strong> Learning how extensions work and its APIs <strong>2.</strong> Accessing the source code. Especially relevant for extensions that can be written as a one-line bookmarklet, it's harder to verify them than to write them as a bookmarklet.</p>
+
+            <p>Narrowing permissions would help, but it requires significant coordination and effort, making it feasible only for the most common use cases.</p>
+
+            <p>Extension platforms should make it easy to read the code, it's the best way to tell what an extension can do. But until then, bookmarklets and userscripts remain better options for many tasks.</p>
         </details>
 
     </div>
