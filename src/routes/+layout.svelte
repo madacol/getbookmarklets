@@ -129,6 +129,8 @@
     }
 
     #content {
+      background: #2c4657;
+      padding: 2rem;
       flex-grow: 1;
     }
 

@@ -75,6 +75,10 @@
 </div>
 
 <style>
+    :global(#content):has(.introduction) {
+        background: white;
+        padding: 0;
+    }
     .introduction {
         padding: 2rem;
         & > div {
