@@ -3,10 +3,18 @@
     import TextArea from '$lib/components/TextArea.svelte';
     import 'highlight.js/styles/stackoverflow-dark.min.css';
     import Script from '$lib/components/Script.svelte';
-    import { debounce } from '$lib';
+    import { debounce, isURLInvalid } from '$lib';
     import { onDestroy } from 'svelte';
 
     let { form } = $props();
+    $effect(() => {
+        const timeoutId = setTimeout(() => {
+            form = null;
+        }, 5000);
+        return () => clearTimeout(timeoutId);
+    });
+
+    let error_message = $state('');
 
     let source_url = $state('');
     let selected_tab = $state('url');
@@ -16,7 +24,14 @@
     /**
      * @param {string} value
      */
-    function sourceUrlInputChanged(value) {
+    async function sourceUrlInputChanged(value) {
+        const error = await isURLInvalid(value, fetch, false)
+        if (error) {
+            error_message = error
+            return;
+        } else {
+            error_message = '';
+        }
         source_url = value;
     }
 
@@ -27,9 +42,9 @@
 </script>
 
 <main>
-    <p class="error" class:show={form?.error}>{form?.error}</p>
-
     <div class="container">
+        <p class="server error" class:show={form?.error}>server: {form?.error}</p>
+        <p class="error" class:show={error_message}>{error_message}</p>
 
         <div class="tabs">
             <label>From Url<input type="radio" value="url" bind:group={selected_tab} name="tab"></label>
@@ -67,7 +82,6 @@
             </div>
         </form>
     </div>
-
 </main>
 
 <style>
@@ -96,16 +110,22 @@
     .error {
         color: rgb(201, 0, 0);
         background-color: rgb(255, 193, 193);
-        width: 100%;
         padding: 0.5rem;
         height: 2rem;
-        margin: 0;
         font-size: large;
         text-align: center;
         visibility: hidden;
-    }
-    .error.show {
-        visibility: visible;
+
+        &.show {
+            visibility: visible;
+        }
+
+        &.server {
+            display: none;
+            &.show {
+                display: block;
+            }
+        }
     }
     .add-button {
         background-color: white;

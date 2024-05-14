@@ -80,3 +80,60 @@ export function debounce(fn, delay = 1000) {
         timeoutId
     ]
 }
+
+/**
+ * @param {string} url
+ */
+export async function isURLInvalid(url, fetch, isServer = true) {
+
+    if (!url) return "You must provide a URL";
+
+    if (url.length > 10000) {
+        return "URL is too large";
+    }
+
+    // Validate URL is http or dataURL
+    if (url.startsWith("data:")) {
+        // Validate if it is javascript and parses correctly
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+            new Function(text);
+        } catch (e) {
+            return "DataURL is not valid JavaScript";
+        }
+
+    } else if (url.match(/^https?:\/\//)) {
+
+        if (isServer) {
+            // Validate if server response is valid
+            try {
+                const response = await fetch(url, {method: "HEAD"})
+                if (!response.ok) {
+                    return "URL's server did not respond with 200 OK";
+                }
+
+                // Validate allow origin header
+                const allowOrigin = response.headers.get("access-control-allow-origin");
+                if (allowOrigin !== "*") {
+                    return "URL's server does not allow cross-origin requests";
+                }
+            } catch (e) {
+                return "failed to fetch URL";
+            }
+        }
+
+        // validate if it parses correctly
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+            new Function(text);
+        } catch (e) {
+            return "URL is not valid JavaScript";
+        }
+    } else {
+        return "URL must be HTTP or DataURL";
+    }
+
+    return false;
+}
