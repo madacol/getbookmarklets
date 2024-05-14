@@ -37,12 +37,12 @@ export const actions = {
         // Insert session in DB and get session_id (uuid)
         const {rows: [session]} = await sql`
             INSERT INTO sessions (user_id, expires_at)
-                VALUES (${user.user_id}, NOW() + INTERVAL '1 day')
+                VALUES (${user.user_id}, NOW() + INTERVAL '30 days')
                 RETURNING session_id;
         `;
 
         cookies.set("session", session.session_id, cookies_options);
 
-        throw redirect(303, url.searchParams.get('redirectTo') ?? '/');
+        redirect(303, url.searchParams.get('redirectTo') ?? '/');
     },
 }

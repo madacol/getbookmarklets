@@ -46,7 +46,7 @@ export const actions = {
                 RETURNING user_id
             )
             INSERT INTO sessions (user_id, expires_at)
-            SELECT user_id, NOW() + INTERVAL '1 day'
+            SELECT user_id, NOW() + INTERVAL '30 days'
             FROM new_user
             RETURNING session_id
             ;
@@ -54,6 +54,6 @@ export const actions = {
 
         cookies.set("session", session.session_id, cookies_options);
 
-        throw redirect(303, url.searchParams.get('redirectTo') ?? '/');
+        redirect(303, url.searchParams.get('redirectTo') ?? '/');
     },
 }
