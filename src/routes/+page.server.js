@@ -6,7 +6,6 @@ export async function load() {
         SELECT
             source_url
         FROM scripts
-        JOIN users USING (user_id)
         ORDER BY random()
         LIMIT 100;
     `

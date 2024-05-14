@@ -5,7 +5,7 @@ import { isURLInvalid } from "$lib";
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-	default: async ({ request, locals, fetch, url }) => {
+	default: async ({ request, fetch, url }) => {
 
         let rateLimitPromise;
         {
@@ -24,9 +24,6 @@ export const actions = {
         /** @type {string} */
         // @ts-ignore
         const source_url = data.get("source_url");
-        const user_id = locals.user?.user_id;
-
-        if (!user_id) return fail(401, {error: "You must be logged in to add a script"});
 
         const error = await isURLInvalid(source_url, fetch);
         if (error) return fail(400, {error});
@@ -38,8 +35,8 @@ export const actions = {
 
         try {
             const {rows: [new_script]} = await sql`
-                INSERT INTO scripts (source_url, user_id)
-                VALUES (${source_url}, ${user_id})
+                INSERT INTO scripts (source_url)
+                VALUES (${source_url})
                 RETURNING source_url
                 ;
             `;

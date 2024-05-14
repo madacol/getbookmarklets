@@ -46,6 +46,6 @@ test('non-users cannot access logs', async ({ page }) => {
     // Try to access the `/logs` route directly
     await page.goto('/logs');
 
-    // Verify it was redirected to the login page
-    await expect(page).toHaveURL(/\/login\?redirectTo=%2Flogs$/);
+    // Verify it says 404 Not Found
+    await expect(page.locator('#content')).toHaveText('404 Not Found');
 });

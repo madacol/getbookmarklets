@@ -2,11 +2,12 @@ import { expect, test } from '@playwright/test';
 
 test('signup', async ({ page }) => {
     // Go to the signup page
-    await page.goto('/', {waitUntil: "networkidle"});
+    // await page.goto('/', {waitUntil: "networkidle"});
 
-    // Click the signin link
-    await page.getByRole('link', {name: 'Sign in'}).click();
-    await expect(page.locator('#profile')).not.toBeVisible();
+    // // Click the signin link
+    // await page.getByRole('link', {name: 'Sign in'}).click();
+    // await expect(page.locator('#profile')).not.toBeVisible();
+    await page.goto('/login', {waitUntil: "networkidle"});
 
     // Click the signup link
     await page.getByRole('link', {name: 'Sign up'}).click();
@@ -27,15 +28,20 @@ test('signup', async ({ page }) => {
 
     await expect(page.locator('.error')).toBeEmpty()
 
+    expect(await page.context().cookies()).toHaveLength(0);
+
     // Submit the form
     await page.click('[type=submit]');
 
     // wait for navigation
     await page.waitForURL('/')
 
-    // check it is logged in
-    await expect(page.locator('#profile')).toBeVisible();
-    await expect(page.getByRole('link', {name: 'Sign in'})).not.toBeVisible();
+    // check cookie has been set
+    expect(await page.context().cookies()).toHaveLength(1);
 
-    await page.context().storageState({ path: 'tests/.auth/user.json' });
+    // check it is logged in
+    // await expect(page.locator('#profile')).toBeVisible();
+    // await expect(page.getByRole('link', {name: 'Sign in'})).not.toBeVisible();
+
+    // await page.context().storageState({ path: 'tests/.auth/user.json' });
 });
