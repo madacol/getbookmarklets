@@ -1,0 +1,25 @@
+{
+    "playwright.workspaceSettings": {
+        "configs": [
+            {
+                "relativeConfigFile": "playwright.config.js",
+                "selected": true,
+                "enabled": true,
+                "projects": [
+                    {
+                        "name": "login",
+                        "enabled": true
+                    },
+                    {
+                        "name": "logged in",
+                        "enabled": true
+                    },
+                    {
+                        "name": "logged off",
+                        "enabled": true
+                    }
+                ]
+            }
+        ]
+    }
+}
