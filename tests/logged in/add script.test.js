@@ -70,7 +70,7 @@ test.describe('add dataURL', () => {
         await page.getByRole('button', { name: 'Add Script' }).click();
 
         // Verify error message is shown that URL already exists
-        await expect(page.locator('.error')).toHaveText('URL already exists in database');
+        await expect(page.locator('.server.error')).toContainText('URL already exists in database');
     });
 });
 
@@ -83,7 +83,7 @@ test('invalid URL', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the error message is displayed
-    await expect(page.locator('.error')).toHaveText('URL must be HTTP or DataURL');
+    await expect(page.locator('.server.error')).toContainText('URL must be HTTP or DataURL');
 
 });
 
@@ -98,7 +98,7 @@ test('invalid URL response', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the error message is displayed
-    await expect(page.locator('.error')).toHaveText("URL's server did not respond with 200 OK");
+    await expect(page.locator('.server.error')).toContainText("URL's server did not respond with 200 OK");
 
 });
 
@@ -111,7 +111,7 @@ test('invalid domain', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the error message is displayed
-    await expect(page.locator('.error')).toHaveText("failed to fetch URL");
+    await expect(page.locator('.server.error')).toContainText("failed to fetch URL");
 
 });
 
@@ -124,7 +124,7 @@ test('invalid URL cross-origin', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the error message is displayed
-    await expect(page.locator('.error')).toContainText("URL's server does not allow cross-origin requests");
+    await expect(page.locator('.server.error')).toContainText("URL's server does not allow cross-origin requests");
 
 });
 
@@ -137,7 +137,7 @@ test('invalid URL size', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the error message is displayed
-    await expect(page.locator('.error')).toHaveText("URL is too large");
+    await expect(page.locator('.server.error')).toContainText("URL is too large");
 
 });
 
@@ -150,7 +150,7 @@ test('invalid URL type', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the error message is displayed
-    await expect(page.locator('.error')).toHaveText("URL must be HTTP or DataURL");
+    await expect(page.locator('.server.error')).toContainText("URL must be HTTP or DataURL");
 
 });
 
@@ -163,7 +163,7 @@ test('invalid JavaScript', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the error message is displayed
-    await expect(page.locator('.error')).toHaveText('DataURL is not valid JavaScript');
+    await expect(page.locator('.server.error')).toContainText('DataURL is not valid JavaScript');
 
 });
 
