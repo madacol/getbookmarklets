@@ -16,7 +16,7 @@
         <p>Scripts are shared as URLs.</p>
         <p>To add a script</p>
         <ol>
-            <li>Navigate to <a href="/scripts/add">Add script</a>.</li>
+            <li>Go to <a href="/scripts/add">Add script</a>.</li>
             <li>Paste the URL of a RAW JavaScript file.</li>
         </ol>
         <p>
@@ -56,7 +56,7 @@
 
             <p>However, verifying extensions has two challenges: <strong>1.</strong> Learning how extensions work and its APIs <strong>2.</strong> Accessing the source code. Especially relevant for extensions that can be written as a one-line bookmarklet, it's harder to verify them than to write them as a bookmarklet.</p>
 
-            <p>Narrowing permissions would help, but it requires significant coordination and effort, making it feasible only for the most common use cases.</p>
+            <p>Narrowing permissions' scope would help, but it requires significant coordination and effort, making it feasible only for the most common requested permissions.</p>
 
             <p>Extension platforms should make it easy to read the code, it's the best way to tell what an extension can do. But until then, bookmarklets and userscripts remain better options for many tasks.</p>
         </details>
