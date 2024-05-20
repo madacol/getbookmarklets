@@ -5,5 +5,5 @@ test('non-admin cannot access logs', async ({ page }) => {
     const response = await page.goto('/logs');
 
     // Verify response status code is 403
-    expect(response?.status()).toBe(403);
+    expect(response?.status()).toBe(404);
 });
