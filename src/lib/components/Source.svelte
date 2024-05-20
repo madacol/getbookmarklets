@@ -6,9 +6,9 @@
     import 'highlight.js/styles/stackoverflow-dark.min.css';
 
     /**
-    * @type {{ source: string, handleSourceChanged: (newSource: string) => void, editMode?: boolean, logCopy?: () => void }}
+    * @type {{ source: string, handleSourceChanged: (newSource: string) => void, editMode?: boolean, oncopy?: () => void }}
      */
-    let { source, handleSourceChanged, editMode = $bindable(false), logCopy = ()=>{} } = $props();
+    let { source, handleSourceChanged, editMode = $bindable(false), oncopy = ()=>{} } = $props();
 
     /**
      * @type {HTMLElement}
@@ -37,7 +37,7 @@
                     })
                     .catch(() => button.textContent = 'Failed to copy!');
 
-                logCopy();
+                oncopy();
             }}
             >Copy code</button>
         {/if}

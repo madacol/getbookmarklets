@@ -71,7 +71,7 @@
             {source}
             {handleSourceChanged}
             {editMode}
-            logCopy={()=>fetch(`/logs/copy/${encodeURIComponent(source_url)}`, { method: 'POST' })}
+            oncopy={()=>fetch(`/logs/copy/${encodeURIComponent(source_url)}`, { method: 'POST' })}
         />
     </details>
 </article>
