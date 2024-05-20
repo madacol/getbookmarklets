@@ -1,12 +1,10 @@
 <script>
-  import { page } from '$app/stores';
   import LinkButton from '$lib/components/LinkButton.svelte'
-  import PrimaryButton from '$lib/components/PrimaryButton.svelte'
   import Logo from './Logo.svelte'
 
   let { children, data } = $props();
 
-  let menu_open = $state(false);
+  // let menu_open = $state(false);
 </script>
 
 <header>
@@ -20,7 +18,7 @@
   </div>
   <div id="right-menu">
     <LinkButton href="/scripts/add">Add Script</LinkButton>
-    {#if data.user}
+    <!-- {#if data.user}
       <div id="profile">
         <PrimaryButton
             onclick={e => {
@@ -45,7 +43,7 @@
       <div id="login-button">
         <LinkButton href="/login">Sign In</LinkButton>
       </div>
-    {/if}
+    {/if} -->
   </div>
 </header>
 
@@ -78,6 +76,18 @@
       overflow: auto;
     }
 
+    .logo {
+      padding: 1em;
+    }
+
+    .logo > a {
+      text-decoration: none;
+    }
+
+    .logo > a:hover {
+      opacity: 0.8;
+    }
+/* 
     #right-menu {
       position: relative;
       display: flex;
@@ -90,18 +100,6 @@
       padding: 1em 0;
       display: flex;
       align-items: center;
-    }
-
-    .logo {
-      padding: 1em;
-    }
-
-    .logo > a {
-      text-decoration: none;
-    }
-
-    .logo > a:hover {
-      opacity: 0.8;
     }
 
     #profile {
@@ -128,6 +126,14 @@
       margin-right: 10px;
     }
 
+    .profile-menu-item a {
+      text-decoration: none;
+    }
+
+    a.logout {
+      color: #9d0000;
+    } */
+
     #content {
       background: #2c4657;
       padding: 2rem;
@@ -136,14 +142,6 @@
 
     a {
       color: #333;
-    }
-
-    .profile-menu-item a {
-      text-decoration: none;
-    }
-
-    a.logout {
-      color: #9d0000;
     }
     footer {
       display: flex;
