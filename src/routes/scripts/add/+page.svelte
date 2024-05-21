@@ -1,7 +1,6 @@
 <script>
     import PrimaryButton from '$lib/components/PrimaryButton.svelte';
     import TextArea from '$lib/components/TextArea.svelte';
-    import 'highlight.js/styles/stackoverflow-dark.min.css';
     import Script from '$lib/components/Script.svelte';
     import { debounce, isURLInvalid } from '$lib';
     import { onDestroy } from 'svelte';
@@ -57,6 +56,16 @@
                 {:else}
                     <p>Code must be less than 10,000 characters.</p>
                 {/if}
+                    <p>
+                        Use userscript-like comments in the first lines of the script.
+                        <br>Supported tags:
+                    </p>
+                    <ul>
+                        <li><code>// @name</code> – if not present, defaults to the URL's filename.</li>
+                        <li><code>// @description</code></li>
+                        <li><code>// @image</code> – URL to an image that will be displayed on this site. You can add multiple images.</li>
+                        <li><code>// @video</code> – URL to a video. You can add many.</li>
+                    </ul>
             </div>
             <div class="textarea" class:hidden={!isTabUrl}>
                 <TextArea
@@ -162,6 +171,22 @@
         display: contents;
         &.hidden {
             display: none;
+        }
+    }
+    .instructions {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        ul, h4, p {
+            margin: 0;
+        }
+        li {
+            line-height: 1.5;
+            code {
+                background-color: #c7c7c7;
+                padding: 0.2rem 0.5rem;
+                border-radius: 0.2rem;
+            }
         }
     }
 </style>
