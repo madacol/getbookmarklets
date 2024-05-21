@@ -1,6 +1,6 @@
 <script>
     /**
-     * @type {{children: () => any, open?: boolean}}
+     * @type {{children: () => any, open?: boolean, [x: string]: any}}
      */
     let {children, open = $bindable(false), ...props} = $props();
 </script>
