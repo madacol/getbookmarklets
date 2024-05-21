@@ -106,11 +106,10 @@
         }
     }
     li:has(code) {
-        padding: 0.2rem 0;
+        line-height: 1.5;
         code {
-            background-color: #dddddd;
-            padding: 0.1rem 0.3rem;
-            border-radius: 0.3rem;
+            background-color: #c7c7c7;
+            padding: 0.2rem 0.5rem;
         }
     }
     summary {

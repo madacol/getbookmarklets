@@ -55,8 +55,7 @@
 
 <footer>
   <div class="social">
-    <a href="https://github.com/madacol/getbookmarklets">
-      Github
+    <a href="https://github.com/madacol/getbookmarklets">Github</a>
   </div>
 </footer>
 

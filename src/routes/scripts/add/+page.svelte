@@ -53,7 +53,7 @@
         <form class="box" method="post">
             <div class="instructions">
                 {#if isTabUrl}
-                    <p>URL must link to a RAW file.</p>
+                    <p>URL must link to a RAW Javascript file.</p>
                 {:else}
                     <p>Code must be less than 10,000 characters.</p>
                 {/if}
@@ -183,7 +183,6 @@
             code {
                 background-color: #c7c7c7;
                 padding: 0.2rem 0.5rem;
-                border-radius: 0.2rem;
             }
         }
     }
