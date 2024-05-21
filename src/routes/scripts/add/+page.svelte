@@ -25,17 +25,30 @@
      * @param {string} value
      */
     async function sourceUrlInputChanged(value) {
-        const error = await isURLInvalid(value, fetch, false)
-        if (error) {
-            error_message = error
-            return;
-        } else {
-            error_message = '';
+        if (
+            await validate_url(value)
+            || value === ''
+        ) {
+            source_url = value;
         }
-        source_url = value;
     }
 
-    const [debuncedOnInputHandler, timeoutId] = debounce(event => sourceUrlInputChanged(event.target.value), 500);
+    /**
+     * @param {string} url
+     */
+    async function validate_url(url) {
+        const error = await isURLInvalid(url, fetch, false)
+        if (error) {
+            error_message = error
+            return false;
+        } else {
+            error_message = '';
+            return true;
+        }
+    }
+
+    const [debuncedOnInputHandler, timeoutId] = debounce(event => sourceUrlInputChanged(event.target.value), 1000);
+    $effect(()=>{ if (source_url) validate_url(source_url); })
 
     onDestroy(() => clearTimeout(timeoutId.value));
 
