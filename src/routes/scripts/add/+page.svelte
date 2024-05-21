@@ -83,16 +83,14 @@
                 />
             </div>
 
+            <PrimaryButton type="submit">Add Script</PrimaryButton>
+
             {#if source_url || !isTabUrl}
                 <Script
                     bind:source_url
                     editMode={!isTabUrl}
                 />
             {/if}
-
-            <div class="add-button">
-                <PrimaryButton type="submit">Add Script</PrimaryButton>
-            </div>
         </form>
     </div>
 </main>
@@ -139,11 +137,6 @@
                 display: block;
             }
         }
-    }
-    .add-button {
-        background-color: white;
-        padding: 1rem 0;
-        margin: -1rem 0;
     }
     .tabs {
         display: flex;
