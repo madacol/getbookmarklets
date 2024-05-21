@@ -1,4 +1,5 @@
 <script>
+    import Details from "$lib/components/Details.svelte";
     import Script from "$lib/components/Script.svelte";
 
     const { data } = $props();
@@ -30,7 +31,7 @@
             <li><code>// @video</code> – URL to a video. You can add many.</li>
         </ul>
 
-        <details>
+        <Details>
             <summary><h2>What, How, Why?</h2></summary>
 
             <h3>What are Bookmarklets?</h3>
@@ -59,7 +60,7 @@
             <p>Narrowing permissions' scope would help, but it requires significant coordination and effort, making it feasible only for the most common requested permissions.</p>
 
             <p>Extension platforms should make it easy to read the code, it's the best way to tell what an extension can do. But until then, bookmarklets and userscripts remain better options for many tasks.</p>
-        </details>
+        </Details>
 
     </div>
 </div>
@@ -112,17 +113,7 @@
             border-radius: 0.3rem;
         }
     }
-    details > summary {
-        cursor: pointer;
-        width: fit-content;
+    summary {
         text-decoration: underline;
-        
-        &:hover {
-            opacity: 0.7;
-        }
-        
-        & > h2 {
-            display: inline;
-        }
     }
 </style>

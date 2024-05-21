@@ -5,6 +5,7 @@
     import Source from './Source.svelte';
     import { getScriptMetadata } from "$lib";
     import { untrack } from "svelte";
+    import Details from './Details.svelte';
 
     /**
      * @type {{ source_url?: string, collapseCode?: boolean, editMode?: boolean }}
@@ -59,13 +60,13 @@
         {#if showMedia}
             <Carousel {medias} />
         {:else}
-            <details bind:open={showMedia} >
+            <Details class="script-details" bind:open={showMedia}>
                 <summary>Show Media</summary>
-            </details>
+            </Details>
         {/if}
     {/if}
 
-    <details bind:open={showCode} >
+    <Details class="script-details" bind:open={showCode}>
         <summary class="source" class:hidden={!collapseCode}>Source code</summary>
         <Source
             {source}
@@ -73,7 +74,7 @@
             {editMode}
             oncopy={()=>fetch(`/logs/copy/${encodeURIComponent(source_url)}`, { method: 'POST' })}
         />
-    </details>
+    </Details>
 </article>
 
 <style>
@@ -125,29 +126,25 @@
             font-weight: bold;
         }
     }
-    details {
-        font-size: larger;
+    :global {
+        .script-details {
+            font-size: larger;
 
-        & > summary {
-            cursor: pointer;
-            display: inline list-item;
+            & > summary {
+                &.source::before {
+                    content: "View ";
+                }
+                &.hidden {
+                    display: none;
+                }
+                &:not(.hidden) + * {
+                    margin-top: 1rem;
+                }
+            }
 
-            &:hover {
-                opacity: 0.7;
+            &[open] > summary.source::before {
+                content: "Hide ";
             }
-            &.source::before {
-                content: "View ";
-            }
-            &.hidden {
-                display: none;
-            }
-            &:not(.hidden) + :global(*){
-                margin-top: 1rem;
-            }
-        }
-
-        &[open] > summary.source::before {
-            content: "Hide ";
         }
     }
 </style>

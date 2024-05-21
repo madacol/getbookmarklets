@@ -4,6 +4,7 @@
     import Script from '$lib/components/Script.svelte';
     import { debounce, isURLInvalid } from '$lib';
     import { onDestroy } from 'svelte';
+    import Details from '$lib/components/Details.svelte';
 
     let { form } = $props();
     $effect(() => {
@@ -56,6 +57,8 @@
                 {:else}
                     <p>Code must be less than 10,000 characters.</p>
                 {/if}
+                <Details>
+                    <summary><h4>How to add metadata</h4></summary>
                     <p>
                         Use userscript-like comments in the first lines of the script.
                         <br>Supported tags:
@@ -66,6 +69,7 @@
                         <li><code>// @image</code> – URL to an image that will be displayed on this site. You can add multiple images.</li>
                         <li><code>// @video</code> – URL to a video. You can add many.</li>
                     </ul>
+                </Details>
             </div>
             <div class="textarea" class:hidden={!isTabUrl}>
                 <TextArea
@@ -174,12 +178,6 @@
         }
     }
     .instructions {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        ul, h4, p {
-            margin: 0;
-        }
         li {
             line-height: 1.5;
             code {
