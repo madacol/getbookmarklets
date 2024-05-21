@@ -40,8 +40,6 @@ export const actions = {
                 RETURNING source_url
                 ;
             `;
-
-            redirect(303, `/scripts/${encodeURIComponent(new_script.source_url)}`);
         } catch (error) {
             if (error?.code === "23505") {
                 return fail(400, {error: "URL already exists in database"});
@@ -49,8 +47,8 @@ export const actions = {
             throw error;
         }
 
+        redirect(303, `/scripts#${encodeURIComponent(source_url)}`);
     },
 }
-
 
 

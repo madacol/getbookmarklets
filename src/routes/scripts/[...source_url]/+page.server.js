@@ -1,6 +1,7 @@
-export async function load({ params }) {
+import { redirect } from '@sveltejs/kit';
 
-    const { source_url } = params;
+export function load({ url }) {
+    const new_script_url = url.pathname.replace('/scripts/', '/scripts#');
 
-    return { source_url }
+    redirect(301 ,new_script_url);
 }

@@ -33,7 +33,7 @@ test('add an HTTP script', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the url is correct
-    await page.waitForURL('/scripts/' + encodeURIComponent(test_url));
+    await page.waitForURL('/scripts#' + encodeURIComponent(test_url));
 
     // verify source code is correct
     await expect(page.locator('pre')).toHaveText(fileBuffer.toString());
@@ -57,7 +57,7 @@ test.describe('add dataURL', () => {
         await page.locator('[type=submit]').click();
 
         // Verify the url is correct
-        await page.waitForURL('/scripts/' + encodeURIComponent(testDataURL));
+        await page.waitForURL('/scripts#' + encodeURIComponent(testDataURL));
 
     });
 
@@ -183,7 +183,7 @@ test('URL encoding/decoding', async ({ page }) => {
     const regexEscapedUrl = encodeURIComponent(specialCharsUrl).replace(/[()]/g,'\\$&')
 
     // Verify the URL is encoded in the path
-    await expect(page).toHaveURL(new RegExp('/scripts/' + regexEscapedUrl));
+    await expect(page).toHaveURL(new RegExp('/scripts#' + regexEscapedUrl));
 
     // Check the exact same URL is reconstructed in the href
     await expect(page.locator('.source_url > a')).toHaveAttribute('href', specialCharsUrl)

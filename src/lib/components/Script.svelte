@@ -47,7 +47,7 @@
 <article>
 
     <div class="title_row">
-        <div class="title"><a href={`/scripts/${source_url}`} title={name} data-sveltekit-preload-data="tap"><h1>{name}</h1></a></div>
+        <div class="title"><a href={`/scripts#${source_url}`} title={name} data-sveltekit-preload-data="tap"><h1>{name}</h1></a></div>
         <Install_Buttons {source} {source_url} />
     </div>
 

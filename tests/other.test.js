@@ -25,7 +25,7 @@ test('edit script with Monaco editor', async ({ page }) => {
 
 test('install as userscript', async ({ page }) => {
     // Navigate to a script page
-    await page.goto('/scripts/data:text/javascript,alert(1)', {waitUntil: "networkidle"});
+    await page.goto('/scripts#data:text/javascript,alert(1)', {waitUntil: "networkidle"});
 
     // Click the "Install as Userscript" button
     await page.locator('text=Install as Userscript').click();
