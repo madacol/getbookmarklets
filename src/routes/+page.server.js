@@ -1,6 +1,6 @@
 import { sql } from "$lib/server/db";
 
-export async function load() {
+export async function load({setHeaders}) {
 
     const {rows: scripts} = await sql`
         SELECT
@@ -9,6 +9,9 @@ export async function load() {
         ORDER BY random()
         LIMIT 100;
     `
+
+    setHeaders({ "Cache-Control": "public, max-age=10" })
+
     return {
         scripts
     }
