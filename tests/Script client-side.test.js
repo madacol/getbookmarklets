@@ -22,6 +22,9 @@ test('paste url', async ({ page }) => {
     // Validate the input field is focused
     await expect(source_url_locator).toBeFocused();
 
+    // validate input field is empty
+    await expect(source_url_locator).toHaveText('');
+
     // Paste the URL from the clipboard
     await source_url_locator.press('Control+v');
 

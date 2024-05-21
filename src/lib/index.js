@@ -83,6 +83,8 @@ export function debounce(fn, delay = 1000) {
 
 /**
  * @param {string} url
+ * @param {Function} fetch
+ * @param {boolean} isServer - when true, it will validate the URL and that it accepts cross-origin requests
  */
 export async function isURLInvalid(url, fetch, isServer = true) {
 
