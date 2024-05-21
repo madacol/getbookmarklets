@@ -19,8 +19,8 @@
     let showCode = $state(!collapseCode);
     let showMedia = $state(!collapseCode)
 
-    $effect(() => { showCode && fetch(`/logs/code/${encodeURIComponent(untrack(()=>source_url))}`, { method: 'POST' }) });
-    $effect(() => { showMedia && fetch(`/logs/media/${encodeURIComponent(untrack(()=>source_url))}`, { method: 'POST' }) });
+    $effect(() => { showCode && fetch(`/logs/code/${untrack(()=>source_url)}`, { method: 'POST' }) });
+    $effect(() => { showMedia && fetch(`/logs/media/${untrack(()=>source_url)}`, { method: 'POST' }) });
 
     $effect(() => {
         if (!source_url || (isDataURL && source)) return;
@@ -47,7 +47,7 @@
 <article>
 
     <div class="title_row">
-        <div class="title"><a href={`/scripts/${encodeURIComponent(source_url)}`} title={name} data-sveltekit-preload-data="tap"><h1>{name}</h1></a></div>
+        <div class="title"><a href={`/scripts/${source_url}`} title={name} data-sveltekit-preload-data="tap"><h1>{name}</h1></a></div>
         <Install_Buttons {source} {source_url} />
     </div>
 
@@ -72,7 +72,7 @@
             {source}
             {handleSourceChanged}
             {editMode}
-            oncopy={()=>fetch(`/logs/copy/${encodeURIComponent(source_url)}`, { method: 'POST' })}
+            oncopy={()=>fetch(`/logs/copy/${source_url}`, { method: 'POST' })}
         />
     </Details>
 </article>
