@@ -5,7 +5,7 @@
     let source_url = $state('');
 
     onMount(() => {
-        source_url = decodeURIComponent(document.location.hash.slice(1));
+        source_url = document.location.hash.slice(1);
     });
 </script>
 
