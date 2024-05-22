@@ -2,7 +2,7 @@
   import LinkButton from '$lib/components/LinkButton.svelte'
   import Logo from './Logo.svelte'
 
-  let { children, data } = $props();
+  let { children } = $props();
 
   // let menu_open = $state(false);
 </script>
