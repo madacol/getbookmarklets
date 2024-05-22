@@ -2,6 +2,14 @@ import { sql } from './lib/server/db';
 
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
+    switch (event.url.pathname) {
+        // This routes will be prerendered, so we shouldn't log them, also, it fails if trying to access event.url.searchParams
+        case '/scripts':
+            return resolve(event);
+    }
+
+    /*********************/
+
     const request_start_time = Date.now();
 
     const method = event.request.method;
