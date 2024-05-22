@@ -47,8 +47,7 @@ export const actions = {
             throw error;
         }
 
-        redirect(303, `/scripts#${encodeURIComponent(source_url)}`);
+        redirect(303, `/scripts#${source_url}`);
     },
 }
-
 

@@ -33,7 +33,7 @@ test('add an HTTP script', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Verify the url is correct
-    await page.waitForURL('/scripts#' + encodeURIComponent(test_url));
+    await page.waitForURL('/scripts#' + test_url);
 
     // verify source code is correct
     await expect(page.locator('pre')).toHaveText(fileBuffer.toString());
@@ -46,7 +46,7 @@ test('add an HTTP script', async ({ page }) => {
 test.describe('add dataURL', () => {
 
     test.describe.configure({ mode: 'serial' });
-    const testDataURL = 'data:text/javascript,alert("hello"); alert("world");';
+    const testDataURL = 'data:text/javascript,alert(%22hello%22)%3B%20alert(%22world%22)%3B';
 
     test('add', async ({ page }) => {
         await sql`DELETE FROM scripts WHERE source_url = ${testDataURL}`
@@ -57,7 +57,10 @@ test.describe('add dataURL', () => {
         await page.locator('[type=submit]').click();
 
         // Verify the url is correct
-        await page.waitForURL('/scripts#' + encodeURIComponent(testDataURL));
+        await page.waitForURL('/scripts#' + testDataURL);
+
+        // verify source code is correct
+        await expect(page.locator('pre')).toHaveText('alert("hello"); alert("world");');
 
     });
 
@@ -72,6 +75,57 @@ test.describe('add dataURL', () => {
         // Verify error message is shown that URL already exists
         await expect(page.locator('.server.error')).toContainText('URL already exists in database');
     });
+});
+
+test('Add from source', async ({ page }) => {
+    const source =
+`// ==UserScript==
+// @name         edit code blocks
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  make code blocks editable by adding the attribute "contenteditable"
+// @author       madacol
+// @match        *://*.stackoverflow.com/*
+// @match        *://*.askubuntu.com/*
+// @match        *://*.stackexchange.com/*
+// @match        *://*.github.com/*
+// @grant        none
+// ==/UserScript==
+
+document.querySelectorAll('pre').forEach((code_block) => {
+    code_block.contentEditable = true;
+    code_block.spellcheck = false;
+})
+alert("Hello World!?/=+$^\// \ \ /"); // testing special characters
+alert("asd");
+`
+    // Put source into clipboard
+    const textarea = await page.locator('textarea[name="source_url"]');
+    await textarea.fill(source);
+    await textarea.press('Control+a');
+    await textarea.press('Control+c');
+
+    // Insert the source code in the Monaco editor
+    await page.getByText('From Code').click();
+    await page.getByText('// @name Unnamed// @').click();
+    await page.keyboard.press('Control+a');
+    await page.keyboard.press('Control+v');
+    const specialCharsUrl = await page.getByRole('link', { name: 'data:text/javascript,// ==UserScript==' }).getAttribute('href');
+
+    // Delete the script if it already exists
+    await sql`DELETE FROM scripts WHERE source_url = ${specialCharsUrl}`
+
+    // Submit the form by clicking the submission button
+    await page.getByRole('button', { name: 'Add Script' }).click();
+
+    // Verify the source code is correct
+    await expect(page.locator('pre')).toHaveText(source);
+
+    // Verify the url is correct
+    await page.waitForURL('/scripts#' + specialCharsUrl);
+
+    // verify source code is correct
+    await expect(page.locator('pre')).toHaveText(source);
 });
 
 test('invalid URL', async ({ page }) => {
@@ -169,7 +223,7 @@ test('invalid JavaScript', async ({ page }) => {
 
 test('URL encoding/decoding', async ({ page }) => {
     // Add a new script with URL containing special characters
-    const specialCharsUrl = 'data:text/javascript,alert("Hello World!?/=+");'
+    const specialCharsUrl = 'data:text/javascript,alert(%22Hello%20World!%3F%2F%3D%2B%22)%3B'
     await sql`DELETE FROM scripts WHERE source_url = ${specialCharsUrl}`
     await page.locator('textarea[name="source_url"]').fill(specialCharsUrl);
 
@@ -180,7 +234,7 @@ test('URL encoding/decoding', async ({ page }) => {
     await page.locator('[type=submit]').click();
 
     // Replace `(` with `\(` and `)` with `\)` to escape them in regex
-    const regexEscapedUrl = encodeURIComponent(specialCharsUrl).replace(/[()]/g,'\\$&')
+    const regexEscapedUrl = specialCharsUrl.replace(/[()]/g,'\\$&')
 
     // Verify the URL is encoded in the path
     await expect(page).toHaveURL(new RegExp('/scripts#' + regexEscapedUrl));
