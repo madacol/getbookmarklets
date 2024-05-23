@@ -28,7 +28,7 @@
      */
     async function handleUserscriptInstall(event) {
 
-        fetch(`/logs/userscript/${source_url}`, { method: 'POST' });
+        fetch(`/signal/userscript/${source_url}`, { method: 'POST' });
 
         let userscript_source;
         if (isUserscript) {
@@ -94,7 +94,7 @@
         ondragstart={startEvent => {
             const leaveHandler = event => {
                 if (event.relatedTarget === null) {
-                    fetch(`/logs/drag/${encodeURIComponent(source_url)}`, { method: 'POST' })
+                    fetch(`/signal/drag/${encodeURIComponent(source_url)}`, { method: 'POST' })
                 }
             }
             window.addEventListener('dragleave', leaveHandler)
@@ -102,7 +102,7 @@
             // cleanup, remove event listener once drag ends
             startEvent.currentTarget.addEventListener('dragend', () => window.removeEventListener('dragleave', leaveHandler))
         }}
-        oncontextmenu={()=>fetch(`/logs/rightclick/${encodeURIComponent(source_url)}`, { method: 'POST' })}
+        oncontextmenu={()=>fetch(`/signal/rightclick/${encodeURIComponent(source_url)}`, { method: 'POST' })}
     >
         <span class="label"><!-- Install bookmarklet / Drag to bookmarks --></span>
         <span class="name">{name}</span>
