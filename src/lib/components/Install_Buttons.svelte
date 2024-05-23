@@ -28,7 +28,7 @@
      */
     async function handleUserscriptInstall(event) {
 
-        fetch(`/signal/userscript/${source_url}`, { method: 'POST' });
+        fetch(`/signal/userscript/${encodeURIComponent(source_url)}`, { method: 'POST' });
 
         let userscript_source;
         if (isUserscript) {
