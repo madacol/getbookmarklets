@@ -7,6 +7,7 @@ export async function GET({ params }) {
     // Set the Content-Type header to indicate a JavaScript file
     const headers = {
         'Content-Type': 'application/javascript',
+        'Cache-Control': 'public, max-age=300',
     };
 
     // Return the userscript source in the response body with the appropriate header
