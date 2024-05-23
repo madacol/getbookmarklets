@@ -8,6 +8,8 @@
      */
     let { source, source_url } = $props();
 
+    let isUserscript = $derived(source.startsWith('// ==UserScript=='));
+
     let isDataURL = $derived(source_url.startsWith('data:'));
 
     let { name, description } = $derived(getScriptMetadata(source, untrack(()=>source_url)))
@@ -29,7 +31,7 @@
         fetch(`/logs/userscript/${source_url}`, { method: 'POST' });
 
         let userscript_source;
-        if (source.match(/==UserScript==/)) {
+        if (isUserscript) {
             if (!isDataURL) {
                 if (!source_url.endsWith('.user.js')) {
                     event.currentTarget.href += '#.user.js';
@@ -105,7 +107,7 @@
         <span class="label"><!-- Install bookmarklet / Drag to bookmarks --></span>
         <span class="name">{name}</span>
     </LinkButton>
-    <LinkButton href={source_url} onclick={handleUserscriptInstall}>
+    <LinkButton disabled={!isUserscript} href={source_url} onclick={handleUserscriptInstall}>
         Install as Userscript
     </LinkButton>
 </div>
