@@ -14,7 +14,7 @@
 
         <h2>How this site works</h2>
 
-        <p>Scripts are shared as URLs.</p>
+        <p>Scripts are saved as URLs.</p>
         <p>To add a script</p>
         <ol>
             <li>Go to <a href="/scripts/add">Add script</a>.</li>
@@ -51,7 +51,7 @@
                 <li>Manually add a new bookmark. Right-click the <strong>Install</strong> button and select <strong>"Copy link address"</strong>, then create a new bookmark and paste the URL in the URL field.</li>
             </ul>
 
-            <h3>Why bookmarklets? (or Rant)</h3>
+            <h3>Why bookmarklets?</h3>
 
             <p>Bookmarklets and Userscripts should ideally be implemented as Web Extensions, but verifying that extensions <i>only do</i> what they claim is hard. Although permissions aim to address this issue, they are too broad. So often, a better option is to read and verify the code ourselves.</p>
 
@@ -106,7 +106,7 @@
         }
     }
     li:has(code) {
-        line-height: 1.5;
+        line-height: 2;
         code {
             background-color: #c7c7c7;
             padding: 0.2rem 0.5rem;

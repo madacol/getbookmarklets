@@ -155,7 +155,7 @@
         display: flex;
 
         label {
-            padding: 1.5rem;
+            padding: 1rem;
             font-size: large;
             cursor: pointer;
             border: 1px solid #e5e5e5;
@@ -185,7 +185,7 @@
     }
     .instructions {
         li {
-            line-height: 1.5;
+            line-height: 2;
             code {
                 background-color: #c7c7c7;
                 padding: 0.2rem 0.5rem;
