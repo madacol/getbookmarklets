@@ -16,7 +16,7 @@
     let isDataURL = $derived(source_url.startsWith('data:'));
 
     let showCode = $state(!collapseCode);
-    let showMedia = $state(!collapseCode)
+    let showMedia = $state(!collapseCode);
 
     if (collapseCode) {
         $effect(() => { showCode && fetch(`/signal/code/${encodeURIComponent(untrack(()=>source_url))}`, { method: 'POST' }) });
