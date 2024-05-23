@@ -18,8 +18,12 @@
     let showCode = $state(!collapseCode);
     let showMedia = $state(!collapseCode)
 
-    $effect(() => { showCode && fetch(`/signal/code/${encodeURIComponent(untrack(()=>source_url))}`, { method: 'POST' }) });
-    $effect(() => { showMedia && fetch(`/signal/media/${encodeURIComponent(untrack(()=>source_url))}`, { method: 'POST' }) });
+    if (collapseCode) {
+        $effect(() => { showCode && fetch(`/signal/code/${encodeURIComponent(untrack(()=>source_url))}`, { method: 'POST' }) });
+        $effect(() => { showMedia && fetch(`/signal/media/${encodeURIComponent(untrack(()=>source_url))}`, { method: 'POST' }) });
+    } else {
+        fetch(`/signal/open/${encodeURIComponent(source_url)}`, { method: 'POST' });
+    }
 
     $effect(() => {
         if (!source_url || (isDataURL && source)) return;
