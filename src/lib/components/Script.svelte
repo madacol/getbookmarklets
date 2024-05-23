@@ -1,6 +1,5 @@
 <script>
-  import Carousel from './Carousel.svelte';
-
+    import Carousel from './Carousel.svelte';
     import Install_Buttons from './Install_Buttons.svelte';
     import Source from './Source.svelte';
     import { getScriptMetadata } from "$lib";

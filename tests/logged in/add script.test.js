@@ -107,7 +107,7 @@ alert("asd");
 
     // Insert the source code in the Monaco editor
     await page.getByText('From Code').click();
-    await page.getByText('// @name Unnamed// @').click();
+    await page.locator('.monaco-editor').click();
     await page.keyboard.press('Control+a');
     await page.keyboard.press('Control+v');
     const specialCharsUrl = await page.getByRole('link', { name: 'data:text/javascript,// ==UserScript==' }).getAttribute('href');

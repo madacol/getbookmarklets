@@ -30,10 +30,10 @@
 
         let userscript_source;
         if (source.match(/==UserScript==/)) {
-            if (!source_url.endsWith('.user.js')) {
-                event.currentTarget.href += '#.user.js';
-            }
             if (!isDataURL) {
+                if (!source_url.endsWith('.user.js')) {
+                    event.currentTarget.href += '#.user.js';
+                }
                 return
             }
             userscript_source = source;
