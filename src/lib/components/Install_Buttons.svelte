@@ -26,7 +26,7 @@
      */
     async function handleUserscriptInstall(event) {
 
-        fetch(`/logs/userscript/${encodeURIComponent(source_url)}`, { method: 'POST' });
+        fetch(`/logs/userscript/${source_url}`, { method: 'POST' });
 
         let userscript_source;
         if (source.match(/==UserScript==/)) {

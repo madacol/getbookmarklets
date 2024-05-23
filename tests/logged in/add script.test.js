@@ -96,7 +96,7 @@ document.querySelectorAll('pre').forEach((code_block) => {
     code_block.contentEditable = true;
     code_block.spellcheck = false;
 })
-alert("Hello World!?/=+$^\// \ \ /"); // testing special characters
+alert("Hello World!?/=+$%20%%%0A^\// \ \ /"); // testing special characters
 alert("asd");
 `
     // Put source into clipboard
