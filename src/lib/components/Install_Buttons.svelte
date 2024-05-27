@@ -16,7 +16,7 @@
 
     let bookmarklet = $derived.by(() => {
         try {
-            return `javascript:{${encodeURIComponent(source)}}`
+            return `javascript:(()=>{${encodeURIComponent(source)}})()`
         } catch (error) {
             console.error(error);
             return ''
