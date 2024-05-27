@@ -78,7 +78,7 @@
 
     - Right-click and select "Bookmark link" (Firefox only)
 
-    - Right-click and select "Copy link address", and now
+    - Right-click and select "Copy link address", now
         create a new bookmark and paste in the URL field
 `
 </script>
