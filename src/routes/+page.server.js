@@ -10,7 +10,7 @@ export async function load({setHeaders}) {
         LIMIT 100;
     `
 
-    setHeaders({ "Cache-Control": "public, max-age=10" })
+    setHeaders({ "Cache-Control": "public, max-age=10, stale-while-revalidate=5" });
 
     return {
         scripts
