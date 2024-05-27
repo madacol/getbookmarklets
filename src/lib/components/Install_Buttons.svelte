@@ -16,7 +16,8 @@
 
     let bookmarklet = $derived.by(() => {
         try {
-            return `javascript:(()=>{${encodeURIComponent(source)}})()`
+            const source_no_comments = source.trim().replaceAll(/(^|\n)\s*(\/\/.*?)?(?=\n)/g,'');
+            return `javascript:(()=>{${encodeURIComponent(source_no_comments)}})()`
         } catch (error) {
             console.error(error);
             return ''
