@@ -1,4 +1,2 @@
 User-agent: *
 Disallow: /scripts/add
-Disallow: /login
-Disallow: /signup
