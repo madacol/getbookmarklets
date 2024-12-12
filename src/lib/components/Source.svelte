@@ -4,17 +4,15 @@
     import PrimaryButton from "./PrimaryButton.svelte";
     import javascript from "highlight.js/lib/languages/javascript";
     import 'highlight.js/styles/stackoverflow-dark.min.css';
-
+    import beautify from 'js-beautify';
     /**
     * @type {{ source: string, handleSourceChanged: (newSource: string) => void, editMode?: boolean, oncopy?: () => void }}
      */
     let { source, handleSourceChanged, editMode = $bindable(false), oncopy = ()=>{} } = $props();
 
-    /**
-     * @type {HTMLElement}
-     */
-     hljs.registerLanguage('javascript', javascript);
-    let sourceHighlighted = $derived(hljs.highlight(source, { language: 'javascript' }).value);
+    hljs.registerLanguage('javascript', javascript);
+    // @ts-ignore
+    let sourceHighlighted = $derived(hljs.highlight(beautify.js_beautify(source), { language: 'javascript' }).value);
 </script>
 
 <div class="source_editor">
