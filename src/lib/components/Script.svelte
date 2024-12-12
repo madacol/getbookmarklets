@@ -57,7 +57,7 @@
 
     {#if description}<p>{description}</p>{/if}
 
-    {#if source_url}<div class="source_url"><span>Source URL:</span> <a href={source_url}>{decodeURIComponent(source_url)}</a></div>{/if}
+    {#if source_url}<div class="source_url"><span>Source URL:</span> <a href={source_url} rel="nofollow">{decodeURIComponent(source_url)}</a></div>{/if}
 
     {#if medias.length > 0}
         {#if showMedia}
