@@ -41,7 +41,7 @@
         {/if}
     </div>
     <PrimaryButton onclick={() => editMode = !editMode}>
-        {#if editMode}Close editor{:else}Edit with Monaco{/if}
+        {#if editMode}Close editor{:else}🖉 Edit{/if}
     </PrimaryButton>
 </div>
 
