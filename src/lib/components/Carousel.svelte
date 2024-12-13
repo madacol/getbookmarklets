@@ -67,7 +67,7 @@
             gap: 5vh;
             background: rgba(0, 0, 0, 0.7);
             width: 100vw;
-            justify-content: center;
+            justify-content: safe center;
         }
 
         img, video {
