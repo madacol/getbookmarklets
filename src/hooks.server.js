@@ -22,7 +22,7 @@ export async function handle({ event, resolve }) {
     }
 
     let body = null;
-    if (response.status >= 500) {
+    if (response.status >= 300) {
         body = await request_clone.text();
     }
 
