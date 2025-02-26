@@ -111,12 +111,53 @@
     <LinkButton disabled={!isUserscript} href={source_url} onclick={handleUserscriptInstall}>
         Install as Userscript
     </LinkButton>
+    <LinkButton
+        onclick={e => {
+            e.preventDefault();
+            // Create the shareable URL - this is the URL that appears in the header
+            const shareUrl = `/scripts#${source_url}`;
+            const shareableUrl = new URL(shareUrl, window.location.origin).href;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: name || 'Bookmarklet',
+                    text: description,
+                    url: shareableUrl
+                })
+                .then(() => {
+                    fetch(`/signal/share/${encodeURIComponent(source_url)}`, { method: 'POST' });
+                })
+                .catch(err => console.error('Share failed:', err));
+            } else {
+                navigator.clipboard.writeText(shareableUrl)
+                .then(() => {
+                    // Use a more subtle notification instead of alert
+                    const button = e.target;
+                    const originalText = button.textContent;
+                    button.textContent = '✓ Copied!';
+
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                    }, 2000);
+
+                    fetch(`/signal/share_copy/${encodeURIComponent(source_url)}`, { method: 'POST' });
+                })
+                .catch(err => {
+                    console.error('Copy failed:', err);
+                    alert('Failed to copy link. Please copy the URL manually.');
+                });
+            }
+        }}
+    >
+        <span class="share-icon">🔗</span> Share
+    </LinkButton>
 </div>
 
 <style>
     .install {
         display: flex;
         gap: 1rem;
+        flex-wrap: wrap;
     }
     span.label::after {
         content: "Install bookmarklet";
@@ -130,5 +171,9 @@
         position: absolute;
         opacity: 0;
         pointer-events: none;
+    }
+    .share-icon {
+        display: inline-block;
+        margin-right: 0.3rem;
     }
 </style>
