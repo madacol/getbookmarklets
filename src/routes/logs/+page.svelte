@@ -24,14 +24,16 @@
                 <th>User Session</th>
                 <th>Params</th>
                 <th>Body</th>
+                <th>Response Body</th>
             </tr>
         </thead>
         <tbody>
-            {#each logs as {path, username, created_at, method, status, referer, city, timezone, country, ip, user_agent, headers, user_session, params, body, response_time}}
+            {#each logs as {path, username, created_at, method, status, referer, city, timezone, country, ip, user_agent, headers, user_session, params, body, response_body, response_time}}
                 {@const json_headers = JSON.stringify(headers, null, 2)}
                 {@const json_user_session = JSON.stringify(user_session, null, 2)}
                 {@const json_params = JSON.stringify(params, null, 2)}
                 {@const json_body = JSON.stringify(body, null, 2)}
+                {@const json_response_body = JSON.stringify(response_body, null, 2)}
                 <tr>
                     <td title={response_time}>{response_time}</td>
                     <td title={path}>{path}</td>
@@ -49,6 +51,7 @@
                     <td title={json_user_session}>{json_user_session}</td>
                     <td title={json_params}>{json_params}</td>
                     <td title={json_body}>{json_body}</td>
+                    <td title={json_response_body}>{json_response_body}</td>
                 </tr>
             {/each}
         </tbody>

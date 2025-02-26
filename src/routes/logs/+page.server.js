@@ -22,7 +22,8 @@ export const load = checkPermissions_MW(
                 user_session,
                 params,
                 response_time,
-                body
+                body,
+                response_body
             FROM logs
             ORDER BY created_at DESC
             LIMIT 500;

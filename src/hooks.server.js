@@ -22,8 +22,13 @@ export async function handle({ event, resolve }) {
     }
 
     let body = null;
-    if (response.status >= 300) {
+    if (response.status >= 500) {
         body = await request_clone.text();
+    }
+
+    let response_body = null;
+    if (response.status >= 300) {
+        response_body = await response.clone().text();
     }
 
     // get response time in milliseconds
@@ -37,6 +42,7 @@ export async function handle({ event, resolve }) {
             headers,
             user_session,
             body,
+            response_body,
             response_time,
             response_status
         ) VALUES (
@@ -46,6 +52,7 @@ export async function handle({ event, resolve }) {
             ${headers},
             ${event.locals.user},
             ${body},
+            ${response_body},
             ${response_time},
             ${response.status}
         ) RETURNING log_id
