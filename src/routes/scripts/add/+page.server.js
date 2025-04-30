@@ -7,30 +7,24 @@ import { isURLInvalid } from "$lib";
 export const actions = {
 	default: async ({ request, fetch, url }) => {
 
-        let rateLimitPromise;
-        {
-            const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for');
-
-            if (ip) {
-                const key = ip + url.pathname;
-                rateLimitPromise = rateLimit(key, 2);
-            } else {
-                console.error('IP address not found in request headers');
-                rateLimitPromise = Promise.resolve(false);
-            }
-        }
-
         const data = await request.formData();
-        /** @type {string} */
-        // @ts-ignore
         const source_url = data.get("source_url");
 
         const error = await isURLInvalid(source_url, fetch);
         if (error) return fail(400, {error});
 
-        const isRateLimited = await rateLimitPromise;
-        if (isRateLimited) {
-            return fail(429, {error: "Daily limit reached. Try again tomorrow"});
+        {
+            const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for');
+
+            if (ip) {
+                const key = ip + url.pathname;
+                const isRateLimited = await rateLimit(key, 2);
+                if (isRateLimited) {
+                    return fail(429, {error: "Daily limit reached. Try again tomorrow"});
+                }
+            } else {
+                console.error('IP address not found in request headers');
+            }
         }
 
         try {

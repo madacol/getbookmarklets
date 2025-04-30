@@ -82,13 +82,17 @@ export function debounce(fn, delay = 1000) {
 }
 
 /**
- * @param {string} url
+ * @param {FormDataEntryValue | null} url
  * @param {Function} fetch
  * @param {boolean} isServer - when true, it will validate the URL and that it accepts cross-origin requests
  */
 export async function isURLInvalid(url, fetch, isServer = true) {
 
     if (!url) return "You must provide a URL";
+
+    if (typeof url !== "string") {
+        return "URL must be a string";
+    }
 
     if (url.length > 10000) {
         return "URL is too large";
