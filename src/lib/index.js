@@ -114,7 +114,7 @@ export async function isURLInvalid(url, fetch, isServer = true) {
         if (isServer) {
             // Validate if server response is valid
             try {
-                const response = await fetch(url, {method: "HEAD"})
+                const response = await fetch(url, {method: "HEAD", redirect: "manual"});
                 if (!response.ok) {
                     return "URL's server did not respond with 200 OK";
                 }
@@ -131,7 +131,13 @@ export async function isURLInvalid(url, fetch, isServer = true) {
 
         // validate if it parses correctly
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {redirect: "manual"});
+            if (!response.ok) {
+                return "URL's server did not respond with 200 OK";
+            }
+            if (!response.body) {
+                return "Script'Url's response body is empty";
+            }
             const text = await response.text();
             new Function(text);
         } catch (e) {
