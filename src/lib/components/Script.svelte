@@ -19,10 +19,10 @@
     let showMedia = $state(!collapseCode);
 
     if (collapseCode) {
-        $effect(() => { showCode && fetch(`/signal/code/${encodeURIComponent(untrack(()=>source_url))}`, { method: 'POST' }) });
-        $effect(() => { showMedia && fetch(`/signal/media/${encodeURIComponent(untrack(()=>source_url))}`, { method: 'POST' }) });
+        $effect(() => { showCode && navigator.sendBeacon(`/signal/code/${encodeURIComponent(untrack(()=>source_url))}`) });
+        $effect(() => { showMedia && navigator.sendBeacon(`/signal/media/${encodeURIComponent(untrack(()=>source_url))}`) });
     } else {
-        fetch(`/signal/open/${encodeURIComponent(source_url)}`, { method: 'POST' });
+        navigator.sendBeacon(`/signal/open/${encodeURIComponent(source_url)}`);
     }
 
     $effect(() => {
@@ -75,7 +75,7 @@
             {source}
             {handleSourceChanged}
             {editMode}
-            oncopy={()=>fetch(`/signal/copy/${encodeURIComponent(source_url)}`, { method: 'POST' })}
+            oncopy={()=>navigator.sendBeacon(`/signal/copy/${encodeURIComponent(source_url)}`)}
         />
     </Details>
 </article>

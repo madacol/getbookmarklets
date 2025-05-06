@@ -29,7 +29,7 @@
      */
     async function handleUserscriptInstall(event) {
 
-        fetch(`/signal/userscript/${encodeURIComponent(source_url)}`, { method: 'POST' });
+        navigator.sendBeacon(`/signal/userscript/${encodeURIComponent(source_url)}`);
 
         let userscript_source;
         if (isUserscript) {
@@ -95,7 +95,7 @@
         ondragstart={startEvent => {
             const leaveHandler = event => {
                 if (event.relatedTarget === null) {
-                    fetch(`/signal/drag/${encodeURIComponent(source_url)}`, { method: 'POST' })
+                    navigator.sendBeacon(`/signal/drag/${encodeURIComponent(source_url)}`)
                 }
             }
             window.addEventListener('dragleave', leaveHandler)
@@ -103,7 +103,7 @@
             // cleanup, remove event listener once drag ends
             startEvent.currentTarget.addEventListener('dragend', () => window.removeEventListener('dragleave', leaveHandler))
         }}
-        oncontextmenu={()=>fetch(`/signal/rightclick/${encodeURIComponent(source_url)}`, { method: 'POST' })}
+        oncontextmenu={()=>navigator.sendBeacon(`/signal/rightclick/${encodeURIComponent(source_url)}`)}
     >
         <span class="label"><!-- Install bookmarklet / Drag to bookmarks --></span>
         <span class="name">{name}</span>
@@ -125,7 +125,7 @@
                     url: shareableUrl
                 })
                 .then(() => {
-                    fetch(`/signal/share/${encodeURIComponent(source_url)}`, { method: 'POST' });
+                    navigator.sendBeacon(`/signal/share/${encodeURIComponent(source_url)}`);
                 })
                 .catch(err => console.error('Share failed:', err));
             } else {
@@ -140,7 +140,7 @@
                         button.textContent = originalText;
                     }, 2000);
 
-                    fetch(`/signal/share_copy/${encodeURIComponent(source_url)}`, { method: 'POST' });
+                    navigator.sendBeacon(`/signal/share_copy/${encodeURIComponent(source_url)}`);
                 })
                 .catch(err => {
                     console.error('Copy failed:', err);
