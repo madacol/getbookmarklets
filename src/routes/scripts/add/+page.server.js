@@ -28,7 +28,7 @@ export const actions = {
         }
 
         try {
-            const {rows: [new_script]} = await sql`
+            await sql`
                 INSERT INTO scripts (source_url)
                 VALUES (${source_url})
                 RETURNING source_url
