@@ -3,6 +3,10 @@ import { rateLimit } from "$lib/server";
 import { fail, redirect } from "@sveltejs/kit";
 import { isURLInvalid } from "$lib";
 
+/** @type {Map<any, number>} */
+const debounceCache = new Map();
+const debounceTime = 5000; // 5 seconds
+
 /** @type {import('./$types').Actions} */
 export const actions = {
 	default: async ({ request, fetch, url }) => {
@@ -10,12 +14,24 @@ export const actions = {
         const data = await request.formData();
         const source_url = data.get("source_url");
 
+        const cachedUrlAttempt = debounceCache.get(source_url);
+        if (cachedUrlAttempt && ((Date.now() - cachedUrlAttempt) < debounceTime)) {
+            return fail(429, {error: "Too many requests for this URL. Please wait."});
+        }
+
+        const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for');
+        const cachedIpAttempt = debounceCache.get(ip);
+        if (cachedIpAttempt && ((Date.now() - cachedIpAttempt) < debounceTime)) {
+            return fail(429, {error: "Too many requests from this IP. Please wait."});
+        }
+
+        debounceCache.set(source_url, Date.now());
+        debounceCache.set(ip, Date.now());
+
         const error = await isURLInvalid(source_url, fetch);
         if (error) return fail(400, {error});
 
         {
-            const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for');
-
             if (ip) {
                 const key = ip + url.pathname;
                 const isRateLimited = await rateLimit(key, 2);
