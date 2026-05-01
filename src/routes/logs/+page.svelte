@@ -108,46 +108,12 @@
     return 'rt-slow';
   }
 
-  import jsBeautify from 'js-beautify';
-
   /** @param {unknown} obj */
   function formatJson(obj) {
     if (obj == null) return null;
     try {
       return typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2);
     } catch { return String(obj); }
-  }
-
-  /**
-   * Extract source_url from either query params or a URL-encoded form body.
-   * @param {LogEntry} log
-   * @returns {string | null}
-   */
-  function getSourceUrl(log) {
-    if (log.params?.source_url) return log.params.source_url;
-    if (log.body) {
-      try {
-        const val = new URLSearchParams(log.body).get('source_url');
-        if (val) return val;
-      } catch { /* not form-encoded */ }
-    }
-    return null;
-  }
-
-  /** @param {string} raw - already decoded source_url value */
-  function formatSourceUrl(raw) {
-    if (!raw) return '';
-    // Beautify the JS portion of a javascript: URL, or the whole string if it looks like code
-    const code = raw.startsWith('javascript:') ? raw.slice('javascript:'.length) : raw;
-    try { return jsBeautify.js(code, { indent_size: 2, wrap_line_length: 120, end_with_newline: true }); } catch { /* fallback */ }
-    return raw;
-  }
-
-  /** @param {Record<string, string> | null} params */
-  function paramsWithoutSourceUrl(params) {
-    if (!params) return null;
-    const rest = Object.fromEntries(Object.entries(params).filter(([k]) => k !== 'source_url'));
-    return Object.keys(rest).length ? rest : null;
   }
 
   /** @param {number} index */
@@ -252,7 +218,6 @@
       <tbody>
         {#each filteredLogs as log, i}
           {@const expanded = expandedRow === i}
-          {@const sourceUrl = getSourceUrl(log)}
           <tr
             class="log-row"
             class:expanded
@@ -265,12 +230,7 @@
             <td class="col-method">
               <span class="method-badge {methodClass(log.method)}">{log.method}</span>
             </td>
-            <td class="col-path">
-              <span class="path-main" title={log.path}>{log.path}</span>
-              {#if sourceUrl}
-                <span class="path-source-url" title={sourceUrl}>{sourceUrl}</span>
-              {/if}
-            </td>
+            <td class="col-path" title={log.path}>{log.path}</td>
             <td class="col-status">
               <span class="status-badge {statusClass(log.status)}">{log.status}</span>
             </td>
@@ -292,10 +252,8 @@
             </td>
           </tr>
           {#if expanded}
-            {@const restParams = paramsWithoutSourceUrl(log.params)}
             <tr class="detail-row">
               <td colspan="8">
-                <div class="detail-scroll">
                 <div class="detail-grid">
                   {#if log.ip}
                     <div class="detail-item">
@@ -327,16 +285,10 @@
                       <pre class="detail-json">{formatJson(log.user_session)}</pre>
                     </div>
                   {/if}
-                  {#if sourceUrl}
-                    <div class="detail-item full-width">
-                      <span class="detail-label">Source URL</span>
-                      <pre class="detail-json detail-source-url">{formatSourceUrl(sourceUrl)}</pre>
-                    </div>
-                  {/if}
-                  {#if restParams}
+                  {#if log.params && Object.keys(log.params).length}
                     <div class="detail-item full-width">
                       <span class="detail-label">Params</span>
-                      <pre class="detail-json">{formatJson(restParams)}</pre>
+                      <pre class="detail-json">{formatJson(log.params)}</pre>
                     </div>
                   {/if}
                   {#if log.body}
@@ -359,7 +311,6 @@
                       </details>
                     </div>
                   {/if}
-                </div>
                 </div>
               </td>
             </tr>
@@ -477,7 +428,6 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.92rem;
-    table-layout: fixed;
   }
   thead th {
     position: sticky;
@@ -506,39 +456,27 @@
   .log-row.expanded { background: var(--secondary-color); }
 
   /* Columns */
-  .col-time   { width: 6rem;  white-space: nowrap; color: #64748b; font-size: 0.85rem; }
-  .col-method { width: 5.5rem; }
-  .col-status { width: 5rem; }
-  .col-rt     { width: 6rem; }
-  .col-user   { width: 8rem; }
-  .col-location { width: 10rem; white-space: nowrap; font-size: 0.85rem; color: #64748b; }
-  .col-expand { width: 2rem; text-align: center; }
-  /* path gets the remaining space */
+  .col-time { white-space: nowrap; color: #64748b; font-size: 0.85rem; }
   .col-path {
+    max-width: 22rem;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-family: 'DM Mono', 'Fira Code', monospace;
     font-size: 0.88rem;
   }
-  .path-main {
-    display: block;
+  .col-user {
+    max-width: 8rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .path-source-url {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .col-location {
     white-space: nowrap;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: #64748b;
-    margin-top: 0.1rem;
   }
-  /* prevent cell text from overflowing fixed-layout cells */
-  tbody td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  .col-expand { width: 2rem; text-align: center; }
 
   /* ---- Badges ---- */
   .method-badge {
@@ -595,11 +533,6 @@
     padding: 0;
     background: #f8fafc;
     border-bottom: 2px solid var(--primary-color);
-    overflow: hidden;
-  }
-  .detail-scroll {
-    overflow-x: auto;
-    width: 100%;
   }
   .detail-grid {
     display: grid;
@@ -640,13 +573,6 @@
     max-height: 20rem;
     margin: 0.3rem 0 0;
     line-height: 1.5;
-  }
-  .detail-source-url {
-    max-height: none;
-    font-size: 0.85rem;
-    white-space: pre;
-    overflow-x: auto;
-    min-width: 0;
   }
 
   /* ---- Empty State ---- */
