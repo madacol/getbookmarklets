@@ -270,6 +270,7 @@
             </td>
           </tr>
           {#if expanded}
+            {@const restParams = paramsWithoutSourceUrl(log.params)}
             <tr class="detail-row">
               <td colspan="8">
                 <div class="detail-scroll">
@@ -310,7 +311,6 @@
                       <pre class="detail-json detail-source-url">{formatSourceUrl(log.params.source_url)}</pre>
                     </div>
                   {/if}
-                  {@const restParams = paramsWithoutSourceUrl(log.params)}
                   {#if restParams}
                     <div class="detail-item full-width">
                       <span class="detail-label">Params</span>
