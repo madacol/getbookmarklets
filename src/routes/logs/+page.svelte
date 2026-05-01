@@ -108,12 +108,30 @@
     return 'rt-slow';
   }
 
+  import jsBeautify from 'js-beautify';
+
   /** @param {unknown} obj */
   function formatJson(obj) {
     if (obj == null) return null;
     try {
       return typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2);
     } catch { return String(obj); }
+  }
+
+  /** @param {string} rawUrl */
+  function formatSourceUrl(rawUrl) {
+    if (!rawUrl) return '';
+    let decoded = rawUrl;
+    try { decoded = decodeURIComponent(rawUrl); } catch { /* keep raw */ }
+    try { return jsBeautify.js(decoded, { indent_size: 2, wrap_line_length: 120, end_with_newline: true }); } catch { /* keep decoded */ }
+    return decoded;
+  }
+
+  /** @param {Record<string, string> | null} params */
+  function paramsWithoutSourceUrl(params) {
+    if (!params) return null;
+    const rest = Object.fromEntries(Object.entries(params).filter(([k]) => k !== 'source_url'));
+    return Object.keys(rest).length ? rest : null;
   }
 
   /** @param {number} index */
@@ -285,10 +303,17 @@
                       <pre class="detail-json">{formatJson(log.user_session)}</pre>
                     </div>
                   {/if}
-                  {#if log.params && Object.keys(log.params).length}
+                  {#if log.params?.source_url}
+                    <div class="detail-item full-width">
+                      <span class="detail-label">Source URL</span>
+                      <pre class="detail-json detail-source-url">{formatSourceUrl(log.params.source_url)}</pre>
+                    </div>
+                  {/if}
+                  {@const restParams = paramsWithoutSourceUrl(log.params)}
+                  {#if restParams}
                     <div class="detail-item full-width">
                       <span class="detail-label">Params</span>
-                      <pre class="detail-json">{formatJson(log.params)}</pre>
+                      <pre class="detail-json">{formatJson(restParams)}</pre>
                     </div>
                   {/if}
                   {#if log.body}
@@ -573,6 +598,13 @@
     max-height: 20rem;
     margin: 0.3rem 0 0;
     line-height: 1.5;
+  }
+  .detail-source-url {
+    max-height: none;
+    font-size: 0.85rem;
+    white-space: pre;
+    overflow-x: auto;
+    min-width: 0;
   }
 
   /* ---- Empty State ---- */
