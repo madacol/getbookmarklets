@@ -43,5 +43,10 @@
 		"argon2": "^0.31.2",
 		"js-beautify": "^1.15.1",
 		"pg": "^8.11.5"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"argon2"
+		]
 	}
 }

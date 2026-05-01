@@ -1,6 +1,7 @@
-import { DATABASE_URL, NODE_ENV, DOMAIN } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 
 const PERSISTENT_COOKIE_MAX_AGE = 2147483647; // ~68 years, effectively non-expiring
+const DATABASE_URL = env.DATABASE_URL ?? "";
 
 export const database = {
   common: {
@@ -20,8 +21,8 @@ export const cookies_options = {
   maxAge: PERSISTENT_COOKIE_MAX_AGE,
   httpOnly: true,
   sameSite: true,
-  secure: NODE_ENV === 'production',
-  domain: DOMAIN,
+  secure: env.NODE_ENV === 'production',
+  domain: env.DOMAIN,
   path: '/',
 }
 

@@ -23,10 +23,12 @@ describe('session persistence', () => {
 	});
 
 	it('uses a persistent cookie max age', async () => {
-		vi.doMock('$env/static/private', () => ({
-			DATABASE_URL: 'postgres://example.test/db',
-			NODE_ENV: 'test',
-			DOMAIN: 'example.test'
+		vi.doMock('$env/dynamic/private', () => ({
+			env: {
+				DATABASE_URL: 'postgres://example.test/db',
+				NODE_ENV: 'test',
+				DOMAIN: 'example.test'
+			}
 		}));
 
 		const { cookies_options } = await import('../lib/server/config.js');
