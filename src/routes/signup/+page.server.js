@@ -46,7 +46,7 @@ export const actions = {
                 RETURNING user_id
             )
             INSERT INTO sessions (user_id, expires_at)
-            SELECT user_id, NOW() + INTERVAL '30 days'
+            SELECT user_id, TIMESTAMP 'infinity'
             FROM new_user
             RETURNING session_id
             ;

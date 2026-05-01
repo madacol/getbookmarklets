@@ -1,5 +1,7 @@
 import { DATABASE_URL, NODE_ENV, DOMAIN } from "$env/static/private";
 
+const PERSISTENT_COOKIE_MAX_AGE = 2147483647; // ~68 years, effectively non-expiring
+
 export const database = {
   common: {
     connectionString: DATABASE_URL,
@@ -15,7 +17,7 @@ export const database = {
 }
 
 export const cookies_options = {
-  maxAge: 2592000, // 30 days
+  maxAge: PERSISTENT_COOKIE_MAX_AGE,
   httpOnly: true,
   sameSite: true,
   secure: NODE_ENV === 'production',

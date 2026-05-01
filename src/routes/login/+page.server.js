@@ -37,7 +37,7 @@ export const actions = {
         // Insert session in DB and get session_id (uuid)
         const {rows: [session]} = await sql`
             INSERT INTO sessions (user_id, expires_at)
-                VALUES (${user.user_id}, NOW() + INTERVAL '30 days')
+                VALUES (${user.user_id}, TIMESTAMP 'infinity')
                 RETURNING session_id;
         `;
 
