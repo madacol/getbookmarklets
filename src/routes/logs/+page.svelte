@@ -592,17 +592,26 @@
   }
 
   /* ---- Responsive ---- */
-  @media (max-width: 768px) {
+
+  /* Tablet / landscape phone: drop Location */
+  @media (max-width: 900px) {
     .stats-bar { gap: 0.5rem; }
-    .stat-card {
-      min-width: 5.5rem;
-      padding: 0.7rem 0.8rem;
-    }
+    .stat-card { min-width: 5.5rem; padding: 0.7rem 0.8rem; }
     .stat-value { font-size: 1.2rem; }
     .filters { gap: 0.5rem; }
     .filter-input { min-width: 8rem; }
     .detail-grid { grid-template-columns: 1fr; }
-    .col-location { display: none; }
-    thead .col-location { display: none; }
+    .col-location, thead .col-location { display: none; }
+  }
+
+  /* Portrait phone: also drop User and Response time */
+  @media (max-width: 600px) {
+    .col-user, thead .col-user { display: none; }
+    .col-rt,   thead .col-rt   { display: none; }
+  }
+
+  /* Very small: also drop Time, keep only Method + Path + Status + expand */
+  @media (max-width: 400px) {
+    .col-time, thead .col-time { display: none; }
   }
 </style>
