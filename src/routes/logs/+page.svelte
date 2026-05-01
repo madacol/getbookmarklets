@@ -248,7 +248,14 @@
             <td class="col-method">
               <span class="method-badge {methodClass(log.method)}">{log.method}</span>
             </td>
-            <td class="col-path" title={log.path}>{log.path}</td>
+            <td class="col-path">
+              <span class="path-main" title={log.path}>{log.path}</span>
+              {#if log.params?.source_url}
+                <span class="path-source-url" title={log.params.source_url}>
+                  {decodeURIComponent(log.params.source_url)}
+                </span>
+              {/if}
+            </td>
             <td class="col-status">
               <span class="status-badge {statusClass(log.status)}">{log.status}</span>
             </td>
@@ -494,10 +501,23 @@
   /* path gets the remaining space */
   .col-path {
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     font-family: 'DM Mono', 'Fira Code', monospace;
     font-size: 0.88rem;
+  }
+  .path-main {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .path-source-url {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.1rem;
   }
   /* prevent cell text from overflowing fixed-layout cells */
   tbody td {
