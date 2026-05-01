@@ -35,6 +35,20 @@ export function extractJs(decoded) {
 }
 
 /**
+ * Repeatedly decode until stable — handles single and double encoding.
+ * @param {string} s
+ * @returns {string}
+ */
+function fullyDecode(s) {
+  let prev;
+  do {
+    prev = s;
+    try { s = decodeURIComponent(s); } catch { break; }
+  } while (s !== prev);
+  return s;
+}
+
+/**
  * URL-decode a log path, extract + beautify + syntax-highlight any JS.
  * Returns an HTML string safe for Svelte's {@html ...}.
  * @param {string} path
@@ -43,8 +57,7 @@ export function extractJs(decoded) {
 export function renderPath(path) {
   if (!path) return '';
 
-  let decoded = path;
-  try { decoded = decodeURIComponent(path); } catch { /* keep raw */ }
+  const decoded = fullyDecode(path);
 
   const extracted = extractJs(decoded);
   if (extracted) {
