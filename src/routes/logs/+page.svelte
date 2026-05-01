@@ -108,34 +108,7 @@
     return 'rt-slow';
   }
 
-  import jsBeautify from 'js-beautify';
-  import hljs from 'highlight.js/lib/core';
-  import javascript from 'highlight.js/lib/languages/javascript';
-  hljs.registerLanguage('javascript', javascript);
-
-  /**
-   * URL-decode a path, extract + beautify + highlight any embedded JS.
-   * Returns an HTML string safe for {@html ...}.
-   * @param {string} path
-   */
-  function renderPath(path) {
-    if (!path) return '';
-    let decoded = path;
-    try { decoded = decodeURIComponent(path); } catch { /* keep raw */ }
-
-    const jsIdx = decoded.indexOf('javascript:');
-    if (jsIdx !== -1) {
-      const prefix = decoded.slice(0, jsIdx + 'javascript:'.length);
-      let code = decoded.slice(jsIdx + 'javascript:'.length);
-      try { code = jsBeautify.js(code, { indent_size: 2, wrap_line_length: 0, end_with_newline: true }); } catch { /* keep as-is */ }
-      const highlighted = hljs.highlight(code, { language: 'javascript' }).value;
-      const safePrefix = prefix.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      return `<span class="path-prefix">${safePrefix}</span>${highlighted}`;
-    }
-
-    // No JS — just return the decoded path as escaped text
-    return decoded.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
+  import { renderPath } from '$lib/renderPath.js';
 
   /** @param {unknown} obj */
   function formatJson(obj) {
