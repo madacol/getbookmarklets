@@ -272,6 +272,7 @@
           {#if expanded}
             <tr class="detail-row">
               <td colspan="8">
+                <div class="detail-scroll">
                 <div class="detail-grid">
                   {#if log.ip}
                     <div class="detail-item">
@@ -336,6 +337,7 @@
                       </details>
                     </div>
                   {/if}
+                </div>
                 </div>
               </td>
             </tr>
@@ -453,6 +455,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.92rem;
+    table-layout: fixed;
   }
   thead th {
     position: sticky;
@@ -481,27 +484,26 @@
   .log-row.expanded { background: var(--secondary-color); }
 
   /* Columns */
-  .col-time { white-space: nowrap; color: #64748b; font-size: 0.85rem; }
+  .col-time   { width: 6rem;  white-space: nowrap; color: #64748b; font-size: 0.85rem; }
+  .col-method { width: 5.5rem; }
+  .col-status { width: 5rem; }
+  .col-rt     { width: 6rem; }
+  .col-user   { width: 8rem; }
+  .col-location { width: 10rem; white-space: nowrap; font-size: 0.85rem; color: #64748b; }
+  .col-expand { width: 2rem; text-align: center; }
+  /* path gets the remaining space */
   .col-path {
-    max-width: 22rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-family: 'DM Mono', 'Fira Code', monospace;
     font-size: 0.88rem;
   }
-  .col-user {
-    max-width: 8rem;
+  /* prevent cell text from overflowing fixed-layout cells */
+  tbody td {
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
   }
-  .col-location {
-    white-space: nowrap;
-    font-size: 0.85rem;
-    color: #64748b;
-  }
-  .col-expand { width: 2rem; text-align: center; }
 
   /* ---- Badges ---- */
   .method-badge {
@@ -558,6 +560,11 @@
     padding: 0;
     background: #f8fafc;
     border-bottom: 2px solid var(--primary-color);
+    overflow: hidden;
+  }
+  .detail-scroll {
+    overflow-x: auto;
+    width: 100%;
   }
   .detail-grid {
     display: grid;
