@@ -118,13 +118,29 @@
     } catch { return String(obj); }
   }
 
-  /** @param {string} rawUrl */
-  function formatSourceUrl(rawUrl) {
-    if (!rawUrl) return '';
-    let decoded = rawUrl;
-    try { decoded = decodeURIComponent(rawUrl); } catch { /* keep raw */ }
-    try { return jsBeautify.js(decoded, { indent_size: 2, wrap_line_length: 120, end_with_newline: true }); } catch { /* keep decoded */ }
-    return decoded;
+  /**
+   * Extract source_url from either query params or a URL-encoded form body.
+   * @param {LogEntry} log
+   * @returns {string | null}
+   */
+  function getSourceUrl(log) {
+    if (log.params?.source_url) return log.params.source_url;
+    if (log.body) {
+      try {
+        const val = new URLSearchParams(log.body).get('source_url');
+        if (val) return val;
+      } catch { /* not form-encoded */ }
+    }
+    return null;
+  }
+
+  /** @param {string} raw - already decoded source_url value */
+  function formatSourceUrl(raw) {
+    if (!raw) return '';
+    // Beautify the JS portion of a javascript: URL, or the whole string if it looks like code
+    const code = raw.startsWith('javascript:') ? raw.slice('javascript:'.length) : raw;
+    try { return jsBeautify.js(code, { indent_size: 2, wrap_line_length: 120, end_with_newline: true }); } catch { /* fallback */ }
+    return raw;
   }
 
   /** @param {Record<string, string> | null} params */
@@ -236,6 +252,7 @@
       <tbody>
         {#each filteredLogs as log, i}
           {@const expanded = expandedRow === i}
+          {@const sourceUrl = getSourceUrl(log)}
           <tr
             class="log-row"
             class:expanded
@@ -250,10 +267,8 @@
             </td>
             <td class="col-path">
               <span class="path-main" title={log.path}>{log.path}</span>
-              {#if log.params?.source_url}
-                <span class="path-source-url" title={log.params.source_url}>
-                  {decodeURIComponent(log.params.source_url)}
-                </span>
+              {#if sourceUrl}
+                <span class="path-source-url" title={sourceUrl}>{sourceUrl}</span>
               {/if}
             </td>
             <td class="col-status">
@@ -312,10 +327,10 @@
                       <pre class="detail-json">{formatJson(log.user_session)}</pre>
                     </div>
                   {/if}
-                  {#if log.params?.source_url}
+                  {#if sourceUrl}
                     <div class="detail-item full-width">
                       <span class="detail-label">Source URL</span>
-                      <pre class="detail-json detail-source-url">{formatSourceUrl(log.params.source_url)}</pre>
+                      <pre class="detail-json detail-source-url">{formatSourceUrl(sourceUrl)}</pre>
                     </div>
                   {/if}
                   {#if restParams}
