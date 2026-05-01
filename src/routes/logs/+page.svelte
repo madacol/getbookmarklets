@@ -108,6 +108,35 @@
     return 'rt-slow';
   }
 
+  import jsBeautify from 'js-beautify';
+  import hljs from 'highlight.js/lib/core';
+  import javascript from 'highlight.js/lib/languages/javascript';
+  hljs.registerLanguage('javascript', javascript);
+
+  /**
+   * URL-decode a path, extract + beautify + highlight any embedded JS.
+   * Returns an HTML string safe for {@html ...}.
+   * @param {string} path
+   */
+  function renderPath(path) {
+    if (!path) return '';
+    let decoded = path;
+    try { decoded = decodeURIComponent(path); } catch { /* keep raw */ }
+
+    const jsIdx = decoded.indexOf('javascript:');
+    if (jsIdx !== -1) {
+      const prefix = decoded.slice(0, jsIdx + 'javascript:'.length);
+      let code = decoded.slice(jsIdx + 'javascript:'.length);
+      try { code = jsBeautify.js(code, { indent_size: 2, wrap_line_length: 0, end_with_newline: true }); } catch { /* keep as-is */ }
+      const highlighted = hljs.highlight(code, { language: 'javascript' }).value;
+      const safePrefix = prefix.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return `<span class="path-prefix">${safePrefix}</span>${highlighted}`;
+    }
+
+    // No JS — just return the decoded path as escaped text
+    return decoded.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   /** @param {unknown} obj */
   function formatJson(obj) {
     if (obj == null) return null;
@@ -123,7 +152,7 @@
 
   /** @param {LogEntry} log */
   function hasDetail(log) {
-    return log.headers || log.user_session || log.params || log.body || log.response_body;
+    return true; // path is always shown decoded in expanded view
   }
 
   /** @param {LogEntry} log */
@@ -255,6 +284,10 @@
             <tr class="detail-row">
               <td colspan="8">
                 <div class="detail-grid">
+                  <div class="detail-item full-width">
+                    <span class="detail-label">Path</span>
+                    <pre class="detail-json detail-path hljs">{@html renderPath(log.path)}</pre>
+                  </div>
                   {#if log.ip}
                     <div class="detail-item">
                       <span class="detail-label">IP</span>
@@ -582,6 +615,29 @@
     color: #94a3b8;
     font-size: 1.1rem;
   }
+
+  /* ---- Path code block ---- */
+  .detail-path {
+    max-height: none;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .path-prefix { color: #94a3b8; }
+
+  /* highlight.js atom-one-dark theme (subset) */
+  .hljs { background: #1e293b; color: #abb2bf; }
+  :global(.hljs-keyword)  { color: #c678dd; }
+  :global(.hljs-string)   { color: #98c379; }
+  :global(.hljs-number)   { color: #d19a66; }
+  :global(.hljs-comment)  { color: #5c6370; font-style: italic; }
+  :global(.hljs-function) { color: #61afef; }
+  :global(.hljs-title)    { color: #61afef; }
+  :global(.hljs-params)   { color: #e06c75; }
+  :global(.hljs-built_in) { color: #e6c07b; }
+  :global(.hljs-literal)  { color: #56b6c2; }
+  :global(.hljs-variable) { color: #e06c75; }
+  :global(.hljs-attr)     { color: #e06c75; }
+  :global(.hljs-punctuation) { color: #abb2bf; }
 
   /* ---- Footer Count ---- */
   .log-count {
