@@ -256,6 +256,7 @@
           {#if expanded}
             <tr class="detail-row">
               <td colspan="8">
+                <div class="detail-scroll">
                 <div class="detail-grid">
                   <div class="detail-item full-width">
                     <span class="detail-label">Path</span>
@@ -317,6 +318,7 @@
                       </details>
                     </div>
                   {/if}
+                </div>
                 </div>
               </td>
             </tr>
@@ -539,6 +541,12 @@
     padding: 0;
     background: #f8fafc;
     border-bottom: 2px solid var(--primary-color);
+    /* max-width:0 prevents this td from contributing to table width expansion */
+    max-width: 0;
+  }
+  .detail-scroll {
+    overflow-x: auto;
+    width: 100%;
   }
   .detail-grid {
     display: grid;
