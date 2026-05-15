@@ -3,6 +3,9 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	plugins: [sveltekit()],
+	preview: {
+		allowedHosts: ['getbookmarklets.babyjarvis.com']
+	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}
