@@ -59,6 +59,7 @@
 			"argon2"
 		],
 		"overrides": {
+			"cookie": "0.7.2",
 			"editorconfig>minimatch": "9.0.9"
 		}
 	}
