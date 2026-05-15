@@ -1,6 +1,6 @@
 <script>
-    import hljs from "highlight.js";
-    import MonacoEditor from "./MonacoEditor.svelte";
+    import hljs from "highlight.js/lib/core";
+    import CodeEditor from "./CodeEditor.svelte";
     import PrimaryButton from "./PrimaryButton.svelte";
     import javascript from "highlight.js/lib/languages/javascript";
     import 'highlight.js/styles/stackoverflow-dark.min.css';
@@ -18,7 +18,7 @@
 <div class="source_editor">
     <div class="source">
         {#if editMode}
-            <MonacoEditor
+            <CodeEditor
                 onchange={handleSourceChanged}
                 value={source}
                 placeholder={"// @name Unnamed\n// @description \n\n// your code here\n"}

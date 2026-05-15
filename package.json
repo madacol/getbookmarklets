@@ -4,9 +4,9 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "run-s 'migrate up' build:vite",
+		"build": "pnpm migrate up && pnpm build:vite",
 		"build:vite": "vite build",
-		"migrate": "node-pg-migrate --template-file-name 'migrations/template/template.cjs'",
+		"migrate": "node ./scripts/migrate.js",
 		"create:permission": "node ./src/scripts/create_permission.js",
 		"create:crudPermissions": "node ./src/scripts/create_crudPermissions.js",
 		"preview": "vite preview",
@@ -14,46 +14,52 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"with:pglite": "node ./scripts/with-pglite.js",
 		"test": "pnpm test:unit",
-		"test:full": "run-s test:build test:integration test:unit",
-		"test:build": "run-s 'migrate redo 9999 --envPath ./.env.test' 'build:vite --mode test'",
-		"test:build:pglite": "run-s 'migrate up --envPath ./.env.test' 'build:vite --mode test'",
+		"test:full": "pnpm test:build && pnpm test:integration && pnpm test:unit",
+		"test:build": "pnpm migrate redo 9999 --envPath ./.env.test && pnpm build:vite --mode test",
+		"test:build:pglite": "pnpm migrate up --envPath ./.env.test && pnpm build:vite --mode test",
 		"test:integration": "playwright test -c ./playwright.config.full.js",
-		"test:integration:pglite": "pnpm with:pglite -- pnpm run-s test:build:pglite test:integration",
-		"test:review:pglite": "pnpm with:pglite -- pnpm run-s test:build:pglite 'test:integration -- tests/review scripts.test.js'",
+		"test:integration:pglite": "pnpm with:pglite -- sh -c 'pnpm test:build:pglite && pnpm test:integration'",
+		"test:review:pglite": "pnpm with:pglite -- sh -c 'pnpm test:build:pglite && pnpm test:integration -- \"tests/review scripts.test.js\"'",
 		"test:unit": "vitest run",
 		"test:unit:watch": "vitest"
 	},
 	"devDependencies": {
+		"@codemirror/lang-javascript": "6.2.5",
+		"@codemirror/state": "6.6.0",
+		"@codemirror/theme-one-dark": "6.1.3",
+		"@codemirror/view": "6.39.4",
 		"@electric-sql/pglite": "0.4.5",
 		"@electric-sql/pglite-socket": "0.1.5",
-		"@playwright/test": "^1.43.1",
-		"@sveltejs/adapter-auto": "^3.2.0",
-		"@sveltejs/adapter-vercel": "^5.10.3",
-		"@sveltejs/kit": "^2.5.7",
-		"@sveltejs/vite-plugin-svelte": "^3.1.0",
+		"@playwright/test": "^1.60.0",
+		"@sveltejs/adapter-auto": "^7.0.1",
+		"@sveltejs/adapter-vercel": "^6.3.3",
+		"@sveltejs/kit": "^2.60.1",
+		"@sveltejs/vite-plugin-svelte": "^7.1.2",
+		"codemirror": "6.0.2",
 		"dotenv": "^16.4.5",
 		"highlight.js": "^11.9.0",
-		"monaco-editor": "^0.46.0",
-		"node-pg-migrate": "^6.2.2",
-		"npm-run-all": "^4.1.5",
+		"rollup": "4.60.4",
 		"svelte": "5.55.7",
-		"svelte-check": "^3.7.0",
+		"svelte-check": "^4.4.8",
 		"typescript": "^5.4.5",
-		"vite": "^5.2.11",
-		"vitest": "^1.5.3"
+		"vite": "^8.0.13",
+		"vitest": "^4.1.6"
 	},
 	"type": "module",
 	"engines": {
 		"node": ">=24.x"
 	},
 	"dependencies": {
-		"argon2": "^0.31.2",
-		"js-beautify": "^1.15.1",
+		"argon2": "^0.44.0",
+		"js-beautify": "1.15.4",
 		"pg": "^8.11.5"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"argon2"
-		]
+		],
+		"overrides": {
+			"editorconfig>minimatch": "9.0.9"
+		}
 	}
 }

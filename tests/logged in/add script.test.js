@@ -122,9 +122,9 @@ alert("asd");
     await textarea.press('Control+a');
     await textarea.press('Control+c');
 
-    // Insert the source code in the Monaco editor
+    // Insert the source code in the CodeMirror editor
     await page.getByText('From Code').click();
-    await page.locator('.monaco-editor').click();
+    await page.locator('.cm-content').click();
     await page.keyboard.press('Control+a');
     await page.keyboard.press('Control+v');
     const specialCharsUrl = await page.getByRole('link', { name: 'data:text/javascript,// ==UserScript==' }).getAttribute('href');

@@ -1,7 +1,6 @@
 <script>
     import Carousel from './Carousel.svelte';
     import Install_Buttons from './Install_Buttons.svelte';
-    import Source from './Source.svelte';
     import { getScriptMetadata } from "$lib";
     import { loadScriptSource } from "$lib/scriptLoader.js";
     import { safeDecodeURIComponent } from "$lib/scriptSearch.js";
@@ -16,6 +15,8 @@
 
     let source = $state('')
     let contentChanged = $state(false);
+    /** @type {import('svelte').Component<any> | null} */
+    let SourceComponent = $state(null);
 
     let isDataURL = $derived(source_url.startsWith('data:'));
 
@@ -32,6 +33,13 @@
 
     $effect(() => {
         browser && !collapseCode && navigator.sendBeacon(`/signal/open/${encodeURIComponent(source_url)}`);
+    });
+
+    $effect(() => {
+        if (!showCode || SourceComponent) return;
+        import('./Source.svelte').then((module) => {
+            SourceComponent = module.default;
+        });
     });
 
     $effect(() => {
@@ -92,12 +100,14 @@
 
     <Details class="script-details" bind:open={showCode}>
         <summary class="source" class:hidden={!collapseCode}>Source code</summary>
-        <Source
-            {source}
-            {handleSourceChanged}
-            {editMode}
-            oncopy={()=>navigator.sendBeacon(`/signal/copy/${encodeURIComponent(source_url)}`)}
-        />
+        {#if showCode && SourceComponent}
+            <SourceComponent
+                {source}
+                {handleSourceChanged}
+                {editMode}
+                oncopy={()=>navigator.sendBeacon(`/signal/copy/${encodeURIComponent(source_url)}`)}
+            />
+        {/if}
     </Details>
 </article>
 {/if}
