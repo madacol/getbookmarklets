@@ -7,6 +7,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 import { createServer } from 'http';
+import { createHash } from 'node:crypto';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
@@ -38,6 +39,14 @@ test('add an HTTP script', async ({ page }) => {
     // verify source code is correct
     await expect(page.locator('pre')).toHaveText(fileBuffer.toString());
 
+    const {rows: [script]} = await sql`
+        SELECT status, content_hash
+        FROM scripts
+        WHERE source_url = ${test_url}
+    `;
+    expect(script.status).toBe('needs_review');
+    expect(script.content_hash).toBe(createHash('sha256').update(fileBuffer.toString().trim()).digest('hex'));
+
     // Close the server
     server.close();
 
@@ -61,6 +70,14 @@ test.describe('add dataURL', () => {
 
         // verify source code is correct
         await expect(page.locator('pre')).toHaveText('alert("hello"); alert("world");');
+
+        const {rows: [script]} = await sql`
+            SELECT status, content_hash
+            FROM scripts
+            WHERE source_url = ${testDataURL}
+        `;
+        expect(script.status).toBe('needs_review');
+        expect(script.content_hash).toBe(createHash('sha256').update('alert("hello"); alert("world");').digest('hex'));
 
     });
 
@@ -241,4 +258,25 @@ test('URL encoding/decoding', async ({ page }) => {
 
     // Check the exact same URL is reconstructed in the href
     await expect(page.locator('.source_url > a')).toHaveAttribute('href', specialCharsUrl)
+});
+
+test('content changed signal marks accepted script as needs_review', async ({ page }) => {
+    const source_url = 'data:text/javascript,alert(%22reviewed%22)';
+    await sql`DELETE FROM scripts WHERE source_url = ${source_url}`;
+    await sql`
+        INSERT INTO scripts (source_url, status, content_hash)
+        VALUES (${source_url}, ${'accepted'}, ${'0'.repeat(64)})
+    `;
+
+    const response = await page.request.post(`/signal/content-changed/${encodeURIComponent(source_url)}`);
+    expect(response.status()).toBe(200);
+
+    const {rows: [script]} = await sql`
+        SELECT status
+        FROM scripts
+        WHERE source_url = ${source_url}
+    `;
+    expect(script.status).toBe('needs_review');
+
+    await sql`DELETE FROM scripts WHERE source_url = ${source_url}`;
 });

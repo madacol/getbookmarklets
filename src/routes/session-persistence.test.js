@@ -1,15 +1,27 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+/**
+ * @param {Record<string, string>} entries
+ */
 const createRequest = (entries) => ({
 	formData: async () => ({
+		/** @param {string} key */
 		get: (key) => entries[key]
 	})
 });
 
 const mockKitModule = () => ({
+	/**
+	 * @param {number} status
+	 * @param {Record<string, unknown>} data
+	 */
 	fail: (status, data) => ({ status, ...data }),
+	/**
+	 * @param {number} status
+	 * @param {string} location
+	 */
 	redirect: (status, location) => {
-		const error = new Error('redirect');
+		const error = /** @type {Error & { status: number, location: string }} */ (new Error('redirect'));
 		error.status = status;
 		error.location = location;
 		throw error;
@@ -62,11 +74,11 @@ describe('session persistence', () => {
 		const cookies = { set: vi.fn() };
 
 		await expect(
-			actions.default({
+			actions.default(/** @type {any} */ ({
 				cookies,
 				request: createRequest({ username: 'marco', password: 'secret' }),
 				url: new URL('https://example.test/login')
-			})
+			}))
 		).rejects.toMatchObject({ status: 303, location: '/' });
 
 		expect(sql).toHaveBeenCalledTimes(2);
@@ -99,11 +111,11 @@ describe('session persistence', () => {
 		const cookies = { set: vi.fn() };
 
 		await expect(
-			actions.default({
+			actions.default(/** @type {any} */ ({
 				cookies,
 				request: createRequest({ username: 'marco', password: 'secret' }),
 				url: new URL('https://example.test/signup')
-			})
+			}))
 		).rejects.toMatchObject({ status: 303, location: '/' });
 
 		expect(sql).toHaveBeenCalledTimes(2);

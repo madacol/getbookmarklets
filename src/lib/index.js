@@ -1,4 +1,6 @@
 
+import { safeDecodeURIComponent } from './scriptSearch.js';
+
 /**
  * Upper case the first letter of each word in a string.
  * @param {string} str 
@@ -19,7 +21,7 @@ function toTitleCase(str) {
  * @returns {string}
  */
 export function urlToName(url) {
-    const [filename, foldername] = decodeURIComponent(url).split('/').reverse();
+    const [filename, foldername] = safeDecodeURIComponent(url).split('/').reverse();
 
     const filename_no_extensions = filename.split('.')[0];
 
@@ -57,6 +59,15 @@ export function getScriptMetadata(source, url) {
         description: getAllKeyValues('description')[0]?.value || '',
         medias: getAllKeyValues('video|image'),
     };
+}
+
+/**
+ * Normalize fetched script source before displaying or hashing it.
+ * @param {string} source
+ * @returns {string}
+ */
+export function normalizeScriptSource(source) {
+    return source.trim().replace(/^javascript:/, '');
 }
 
 /**
@@ -102,8 +113,7 @@ export async function isURLInvalid(url, fetch, isServer = true) {
     if (url.startsWith("data:")) {
         // Validate if it is javascript and parses correctly
         try {
-            const response = await fetch(url);
-            const text = await response.text();
+            const text = await getScriptSource(url, fetch);
             new Function(text);
         } catch (e) {
             return "DataURL is not valid JavaScript";
@@ -131,14 +141,7 @@ export async function isURLInvalid(url, fetch, isServer = true) {
 
         // validate if it parses correctly
         try {
-            const response = await fetch(url, {redirect: "manual"});
-            if (!response.ok) {
-                return "URL's server did not respond with 200 OK";
-            }
-            if (!response.body) {
-                return "Script'Url's response body is empty";
-            }
-            const text = await response.text();
+            const text = await getScriptSource(url, fetch);
             new Function(text);
         } catch (e) {
             return "URL is not valid JavaScript";
@@ -148,4 +151,21 @@ export async function isURLInvalid(url, fetch, isServer = true) {
     }
 
     return false;
+}
+
+/**
+ * @param {string} url
+ * @param {Function} fetch
+ * @returns {Promise<string>}
+ */
+export async function getScriptSource(url, fetch) {
+    const response = await fetch(url, url.startsWith("data:") ? undefined : {redirect: "manual"});
+    if (!response.ok) {
+        throw new Error("URL's server did not respond with 200 OK");
+    }
+    if (!response.body) {
+        throw new Error("Script URL's response body is empty");
+    }
+    const text = await response.text();
+    return normalizeScriptSource(text);
 }

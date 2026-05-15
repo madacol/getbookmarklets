@@ -1,6 +1,7 @@
 <script>
     import ButtonStyle from "./ButtonStyle.svelte";
 
+    /** @type {{ children: import('svelte').Snippet, [x: string]: any }} */
     let { children, ...props } = $props();
 </script>
 

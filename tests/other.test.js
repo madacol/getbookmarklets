@@ -6,8 +6,8 @@ test('edit script with Monaco editor', async ({ page }) => {
     // Navigate to a script page
     await page.goto('/scripts/data:text/javascript,alert(1)', {waitUntil: "networkidle"});
 
-    // Click the "Edit with Monaco" button
-    await page.locator('text=Edit with Monaco').click();
+    // Click the edit button
+    await page.getByRole('button', { name: /Edit/ }).click();
 
     // Modify the script code in the editor by pasting or typing
     await page.locator('.monaco-editor').click();

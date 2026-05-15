@@ -2,15 +2,15 @@ import pg from 'pg';
 const { Pool, Client } = pg;
 
 /**
- * @param {{ pool: pg.PoolConfig, client: string | pg.ClientConfig }} config
+ * @param {{ pool: { max?: number, [key: string]: any }, client: string | { [key: string]: any } }} config
  */
 export default function dbBuilder(config) {
 
     const pool = new Pool(config.pool);
     pool.on('connect', client => {
-        client.on('notice', msg => console.warn('\nnotice:', msg.message))
+        client.on('notice', (/** @type {{ message?: string }} */ msg) => console.warn('\nnotice:', msg.message))
     })
-    pool.on('error', (err) => {
+    pool.on('error', (/** @type {Error} */ err) => {
         console.error('\npool error:', err)
     })
 
@@ -28,8 +28,8 @@ export default function dbBuilder(config) {
         }
         // Otherwise create a disposable client
         const client = new Client(config.client);
-        client.on('notice', msg => console.warn('\nnotice:', msg.message))
-        client.on('error', (err) => {
+        client.on('notice', (/** @type {{ message?: string }} */ msg) => console.warn('\nnotice:', msg.message))
+        client.on('error', (/** @type {Error} */ err) => {
             console.error('\nclient error:', err)
         })
         await client.connect();
@@ -90,7 +90,7 @@ export default function dbBuilder(config) {
         try {
             return await query(queryString, params);
         } catch (error) {
-            console.log(queryString, params, error?.message);
+            console.log(queryString, params, error instanceof Error ? error.message : error);
             throw error;
         }
     }

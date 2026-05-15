@@ -47,7 +47,23 @@
         }
     }
 
-    const [debuncedOnInputHandler, timeoutId] = debounce(event => sourceUrlInputChanged(event.target.value), 1000);
+    /**
+     * @param {InputEvent} event
+     */
+    function handleSourceUrlInput(event) {
+        if (event.target instanceof HTMLTextAreaElement) {
+            sourceUrlInputChanged(event.target.value);
+        }
+    }
+
+    /**
+     * @param {ClipboardEvent} event
+     */
+    function handleSourceUrlPaste(event) {
+        sourceUrlInputChanged(event.clipboardData?.getData('text/plain').trim() ?? '');
+    }
+
+    const [debuncedOnInputHandler, timeoutId] = debounce(handleSourceUrlInput, 1000);
     $effect(()=>{ if (source_url) validate_url(source_url); })
 
     onDestroy(() => clearTimeout(timeoutId.value));
@@ -64,6 +80,9 @@
             <label>From Code<input type="radio" value="code" bind:group={selected_tab} name="tab"></label>
         </div>
         <form class="box" method="post">
+            <p class="review-notice">
+                Submitted scripts require manual review before they are accepted. You can still use the generated URL right away; it works without needing to save it here.
+            </p>
             <div class="instructions">
                 {#if isTabUrl}
                     <p>URL must link to a RAW Javascript file.</p>
@@ -86,7 +105,7 @@
             </div>
             <div class="textarea" class:hidden={!isTabUrl}>
                 <TextArea
-                    onpaste={event => sourceUrlInputChanged(event.clipboardData.getData('text/plain').trim())}
+                    onpaste={handleSourceUrlPaste}
                     oninput={debuncedOnInputHandler}
                     value={source_url}
                     name="source_url"
@@ -191,5 +210,14 @@
                 padding: 0.2rem 0.5rem;
             }
         }
+    }
+    .review-notice {
+        margin: 0;
+        padding: 1rem;
+        background-color: #eef6ff;
+        border: 1px solid #b9d8f2;
+        border-radius: 0.5rem;
+        color: #173c5a;
+        font-size: large;
     }
 </style>

@@ -4,7 +4,7 @@ import dev_config from './playwright.config.js';
 const config = {
 	...dev_config,
 	webServer: {
-		command: 'npm run preview',
+		command: 'pnpm preview',
 		port: 4173,
 	},
 	timeout: 10000,

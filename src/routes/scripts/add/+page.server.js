@@ -1,11 +1,8 @@
 import { sql } from "$lib/server/db";
 import { rateLimit } from "$lib/server";
 import { fail, redirect } from "@sveltejs/kit";
-import { isURLInvalid } from "$lib";
-
-/** @type {Map<any, number>} */
-const debounceCache = new Map();
-const debounceTime = 5000; // 5 seconds
+import { getScriptSource, isURLInvalid } from "$lib";
+import { createScriptContentHash } from "$lib/server/scriptHash";
 
 /** @type {import('./$types').Actions} */
 export const actions = {
@@ -14,22 +11,16 @@ export const actions = {
         const data = await request.formData();
         const source_url = data.get("source_url");
 
-        const cachedUrlAttempt = debounceCache.get(source_url);
-        if (cachedUrlAttempt && ((Date.now() - cachedUrlAttempt) < debounceTime)) {
-            return fail(429, {error: "Too many requests for this URL. Please wait."});
+        if (typeof source_url !== "string") {
+            return fail(422, {error: "URL must be a string"});
         }
 
         const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for');
-        const cachedIpAttempt = debounceCache.get(ip);
-        if (cachedIpAttempt && ((Date.now() - cachedIpAttempt) < debounceTime)) {
-            return fail(429, {error: "Too many requests from this IP. Please wait."});
-        }
-
-        debounceCache.set(source_url, Date.now());
-        debounceCache.set(ip, Date.now());
 
         const error = await isURLInvalid(source_url, fetch);
         if (error) return fail(400, {error});
+        const source = await getScriptSource(source_url, fetch);
+        const content_hash = createScriptContentHash(source);
 
         {
             if (ip) {
@@ -45,13 +36,13 @@ export const actions = {
 
         try {
             await sql`
-                INSERT INTO scripts (source_url)
-                VALUES (${source_url})
-                RETURNING source_url
+                INSERT INTO scripts (source_url, status, content_hash)
+                VALUES (${source_url}, ${'needs_review'}, ${content_hash})
+                RETURNING source_url, status, content_hash
                 ;
             `;
         } catch (error) {
-            if (error?.code === "23505") {
+            if (typeof error === 'object' && error !== null && 'code' in error && error.code === "23505") {
                 return fail(400, {error: "URL already exists in database"});
             }
             throw error;
@@ -60,4 +51,3 @@ export const actions = {
         redirect(303, `/scripts#${source_url}`);
     },
 }
-

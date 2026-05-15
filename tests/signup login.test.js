@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { mkdir } from 'node:fs/promises';
 
 test('signup', async ({ page }) => {
     // Go to the signup page
@@ -43,5 +44,6 @@ test('signup', async ({ page }) => {
     // await expect(page.locator('#profile')).toBeVisible();
     // await expect(page.getByRole('link', {name: 'Sign in'})).not.toBeVisible();
 
-    // await page.context().storageState({ path: 'tests/.auth/user.json' });
+    await mkdir('tests/.auth', { recursive: true });
+    await page.context().storageState({ path: 'tests/.auth/user.json' });
 });

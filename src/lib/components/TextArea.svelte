@@ -35,7 +35,7 @@
 <textarea
     bind:value
     {...props}
-/>
+></textarea>
 
 <style>
     textarea {

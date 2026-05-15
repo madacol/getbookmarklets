@@ -3,6 +3,8 @@ import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 hljs.registerLanguage('javascript', javascript);
 
+const beautifier = /** @type {{ js: (code: string, options: Record<string, unknown>) => string }} */ (jsBeautify);
+
 /** @param {string} s */
 function escapeHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -62,7 +64,7 @@ export function renderPath(path) {
   const extracted = extractJs(decoded);
   if (extracted) {
     let { prefix, code } = extracted;
-    try { code = jsBeautify.js(code, { indent_size: 2, wrap_line_length: 0, end_with_newline: true }); } catch { /* keep as-is */ }
+    try { code = beautifier.js(code, { indent_size: 2, wrap_line_length: 0, end_with_newline: true }); } catch { /* keep as-is */ }
     const highlighted = hljs.highlight(code, { language: 'javascript' }).value;
     return `<span class="path-prefix">${escapeHtml(prefix)}</span>${highlighted}`;
   }

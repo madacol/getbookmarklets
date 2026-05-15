@@ -79,30 +79,83 @@
 
     - Right-click and select "Bookmark link" (Firefox only)
 
-    - Right-click and select "Copy link address", now
+        - Right-click and select "Copy link address", now
         create a new bookmark and paste in the URL field
 `
+
+    /**
+     * @param {MouseEvent} event
+     */
+    function handleBookmarkletClick(event) {
+        alert(installMessage);
+        event.preventDefault();
+    }
+
+    /**
+     * @param {DragEvent} startEvent
+     */
+    function handleBookmarkletDragStart(startEvent) {
+        /**
+         * @param {DragEvent} event
+         */
+        const leaveHandler = event => {
+            if (event.relatedTarget === null) {
+                navigator.sendBeacon(`/signal/drag/${encodeURIComponent(source_url)}`);
+            }
+        };
+        window.addEventListener('dragleave', leaveHandler);
+
+        if (startEvent.currentTarget instanceof HTMLElement) {
+            startEvent.currentTarget.addEventListener('dragend', () => window.removeEventListener('dragleave', leaveHandler));
+        }
+    }
+
+    /**
+     * @param {MouseEvent} event
+     */
+    function handleShareClick(event) {
+        event.preventDefault();
+        const shareUrl = `/scripts#${source_url}`;
+        const shareableUrl = new URL(shareUrl, window.location.origin).href;
+
+        if (navigator.share) {
+            navigator.share({
+                title: name || 'Bookmarklet',
+                text: description,
+                url: shareableUrl
+            })
+            .then(() => {
+                navigator.sendBeacon(`/signal/share/${encodeURIComponent(source_url)}`);
+            })
+            .catch(err => console.error('Share failed:', err));
+        } else {
+            navigator.clipboard.writeText(shareableUrl)
+            .then(() => {
+                if (!(event.target instanceof HTMLElement)) return;
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+
+                navigator.sendBeacon(`/signal/share_copy/${encodeURIComponent(source_url)}`);
+            })
+            .catch(err => {
+                console.error('Copy failed:', err);
+                alert('Failed to copy link. Please copy the URL manually.');
+            });
+        }
+    }
 </script>
 
 <div class="install">
     <LinkButton
         href={bookmarklet}
-        onclick={e=>{
-            alert(installMessage)
-            e.preventDefault()
-        }}
+        onclick={handleBookmarkletClick}
         disabled={!bookmarklet}
-        ondragstart={startEvent => {
-            const leaveHandler = event => {
-                if (event.relatedTarget === null) {
-                    navigator.sendBeacon(`/signal/drag/${encodeURIComponent(source_url)}`)
-                }
-            }
-            window.addEventListener('dragleave', leaveHandler)
-
-            // cleanup, remove event listener once drag ends
-            startEvent.currentTarget.addEventListener('dragend', () => window.removeEventListener('dragleave', leaveHandler))
-        }}
+        ondragstart={handleBookmarkletDragStart}
         oncontextmenu={()=>navigator.sendBeacon(`/signal/rightclick/${encodeURIComponent(source_url)}`)}
     >
         <span class="label"><!-- Install bookmarklet / Drag to bookmarks --></span>
@@ -112,42 +165,7 @@
         Install as Userscript
     </LinkButton>
     <LinkButton
-        onclick={e => {
-            e.preventDefault();
-            // Create the shareable URL - this is the URL that appears in the header
-            const shareUrl = `/scripts#${source_url}`;
-            const shareableUrl = new URL(shareUrl, window.location.origin).href;
-
-            if (navigator.share) {
-                navigator.share({
-                    title: name || 'Bookmarklet',
-                    text: description,
-                    url: shareableUrl
-                })
-                .then(() => {
-                    navigator.sendBeacon(`/signal/share/${encodeURIComponent(source_url)}`);
-                })
-                .catch(err => console.error('Share failed:', err));
-            } else {
-                navigator.clipboard.writeText(shareableUrl)
-                .then(() => {
-                    // Use a more subtle notification instead of alert
-                    const button = e.target;
-                    const originalText = button.textContent;
-                    button.textContent = '✓ Copied!';
-
-                    setTimeout(() => {
-                        button.textContent = originalText;
-                    }, 2000);
-
-                    navigator.sendBeacon(`/signal/share_copy/${encodeURIComponent(source_url)}`);
-                })
-                .catch(err => {
-                    console.error('Copy failed:', err);
-                    alert('Failed to copy link. Please copy the URL manually.');
-                });
-            }
-        }}
+        onclick={handleShareClick}
     >
         <span class="share-icon">🔗</span> Share
     </LinkButton>

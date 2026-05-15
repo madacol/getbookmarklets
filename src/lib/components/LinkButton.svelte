@@ -1,6 +1,7 @@
 <script>
     import PrimaryButtonStyle from "./PrimaryButtonStyle.svelte"
 
+    /** @type {{ disabled?: boolean, children: import('svelte').Snippet, [x: string]: any }} */
     let { disabled = false, children, ...props } = $props();
 </script>
 

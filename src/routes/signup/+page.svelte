@@ -60,7 +60,7 @@
 
         <PrimaryButton
             type="submit"
-            onclick={(e) => validate() || e.preventDefault()}
+            onclick={(/** @type {MouseEvent} */ e) => validate() || e.preventDefault()}
         >Sign up</PrimaryButton
         >
     </form>

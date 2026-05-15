@@ -23,7 +23,7 @@
 
   const { data } = $props();
   /** @type {LogEntry[]} */
-  const logs = data.logs;
+  const logs = $derived(data.logs);
 
   // --- Filters ---
   let searchPath = $state('');

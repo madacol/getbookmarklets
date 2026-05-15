@@ -4,8 +4,10 @@ export async function load({setHeaders}) {
 
     const {rows: scripts} = await sql`
         SELECT
-            source_url
+            source_url,
+            content_hash
         FROM scripts
+        WHERE status = 'accepted'
         ORDER BY random()
         LIMIT 100;
     `

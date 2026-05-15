@@ -1,7 +1,7 @@
 <script>
 
     /**
-     * @type {{type: "button" | "submit" | "reset", [x: string]: any}}
+     * @type {{type?: "button" | "submit" | "reset", children: import('svelte').Snippet, [x: string]: any}}
      */
     let { type = "button", children, ...props } = $props();
 </script>

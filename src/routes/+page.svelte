@@ -1,14 +1,61 @@
 <script>
     import Details from "$lib/components/Details.svelte";
     import Script from "$lib/components/Script.svelte";
+    import { createScriptSearchText, normalizeSearchText } from "$lib/scriptSearch.js";
 
     const { data } = $props();
+
+    let searchQuery = $state('');
+    /** @type {Record<string, string>} */
+    let scriptSearchTextByUrl = $state({});
+
+    let normalizedSearchQuery = $derived(normalizeSearchText(searchQuery));
+    let searchWords = $derived(normalizedSearchQuery.split(/\s+/).filter(Boolean));
+
+    let searchResults = $derived.by(() => {
+        /** @type {Record<string, boolean>} */
+        const nextVisibleScriptsByUrl = {};
+        let nextMatchingScriptCount = 0;
+        const query = normalizedSearchQuery;
+        const words = searchWords;
+        const searchTextByUrl = scriptSearchTextByUrl;
+
+        for (const script of data.scripts) {
+            const text = searchTextByUrl[script.source_url] || createScriptSearchText({
+                source_url: script.source_url,
+            });
+            const visible = !query || words.every((word) => text.includes(word));
+            nextVisibleScriptsByUrl[script.source_url] = visible;
+            if (visible) nextMatchingScriptCount += 1;
+        }
+
+        return {
+            visibleScriptsByUrl: nextVisibleScriptsByUrl,
+            matchingScriptCount: nextMatchingScriptCount,
+        };
+    });
+
+    /**
+     * @param {{ source_url: string, source: string, name: string, description: string }} metadata
+     */
+    function handleScriptMetadata(metadata) {
+        const searchText = createScriptSearchText(metadata);
+
+        if (scriptSearchTextByUrl[metadata.source_url] === searchText) return;
+
+        scriptSearchTextByUrl = {
+            ...scriptSearchTextByUrl,
+            [metadata.source_url]: searchText,
+        };
+    }
+
 </script>
 
 <div class="introduction">
     <div>
         <h1>Welcome!</h1>
         <p>This is a place to share bookmarklets.</p>
+        <p>Submitted scripts appear here after manual review.</p>
 
         <hr>
 
@@ -67,9 +114,27 @@
 
 <div class="scripts">
     <div>
-        {#each data.scripts as {source_url}}
-            <div class="box">
-                <Script {source_url} collapseCode={true} />
+        <div class="search">
+            <label for="script-search">Search scripts</label>
+            <input
+                id="script-search"
+                type="search"
+                bind:value={searchQuery}
+                placeholder="Search by title, URL, description, or source"
+                autocomplete="off"
+            >
+            {#if searchQuery}
+                <p>{searchResults.matchingScriptCount} of {data.scripts.length} scripts</p>
+            {/if}
+        </div>
+
+        {#if searchResults.matchingScriptCount === 0}
+            <p class="empty">No scripts match your search.</p>
+        {/if}
+
+        {#each data.scripts as {source_url, content_hash}}
+            <div class="box" data-testid="script-card" hidden={searchResults.visibleScriptsByUrl[source_url] === false}>
+                <Script {source_url} {content_hash} collapseCode={true} onmetadata={handleScriptMetadata} />
             </div>
         {/each}
     </div>
@@ -103,6 +168,39 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
+
+            &[hidden] {
+                display: none;
+            }
+        }
+
+        .search {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            color: white;
+
+            label {
+                font-weight: bold;
+            }
+
+            input {
+                box-sizing: border-box;
+                width: 100%;
+                padding: 0.75rem 1rem;
+                border: 2px solid #d8e3e8;
+                border-radius: 0.5rem;
+                font: inherit;
+            }
+
+            p {
+                margin: 0;
+            }
+        }
+
+        .empty {
+            color: white;
+            margin: 0;
         }
     }
     li:has(code) {

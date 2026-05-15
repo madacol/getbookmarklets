@@ -18,7 +18,7 @@
         }
     })
 
-    /** @param {MouseEvent} event */
+    /** @param {Event} event */
     function toggleExpanded(event) {
         isExpanded = !isExpanded;
         expandedElement = event.target instanceof HTMLElement ? event.target : null;
@@ -37,8 +37,9 @@
     <div class="carousel-popover" aria-expanded={isExpanded} popover={isExpanded ? "manual" : null}>
         {#each medias as {key, value}}
             {#if key === 'image'}
-                <img src={value} loading="lazy" />
+                <img src={value} loading="lazy" alt="" />
             {:else if key === 'video'}
+                <!-- svelte-ignore a11y_media_has_caption -->
                 <video src={value} controls preload="metadata"></video>
             {/if}
         {/each}
