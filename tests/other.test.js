@@ -2,6 +2,14 @@ import { expect, test } from '@playwright/test';
 
 test.describe.configure({ mode: 'parallel' });
 
+test('CodeMirror highlights JavaScript after mounting', async ({ page }) => {
+    await page.goto('/scripts/data:text/javascript,alert(1)', {waitUntil: "networkidle"});
+
+    await page.getByRole('button', { name: /Edit/ }).click();
+
+    await expect.poll(async () => page.locator('.cm-content span').count()).toBeGreaterThan(0);
+});
+
 test('edit script with CodeMirror editor', async ({ page }) => {
     // Navigate to a script page
     await page.goto('/scripts/data:text/javascript,alert(1)', {waitUntil: "networkidle"});

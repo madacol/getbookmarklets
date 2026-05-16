@@ -83,6 +83,8 @@
             ],
         });
 
+        void loadJavaScriptSupport();
+
         return () => {
             editor?.destroy();
             editor = null;
