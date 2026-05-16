@@ -3,35 +3,63 @@
     <head>
         <meta charset="utf-8" />
         <title>Get Bookmarklets</title>
+        <meta name="description" content="A collection of bookmarklets and userscripts you can install with a single drag. Browse, share, and submit your own scripts." />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Roboto:wght@700&display=swap" rel="stylesheet" />
 
         <style>
+            *, *::before, *::after {
+                box-sizing: border-box;
+            }
+
             html {
                 font-size: 14px;
+                scroll-behavior: smooth;
             }
             body {
                 margin: 0;
                 padding: 0;
-                font-family: DM Sans , sans-serif;
+                font-family: 'DM Sans', sans-serif;
                 display: flex;
                 flex-direction: column;
                 min-height: 100vh;
                 align-items: stretch;
+                color: #1a2533;
+                line-height: 1.6;
+
                 --primary-color: #1761a7;
                 --primary-hover-color: #004f99;
                 --secondary-color: #EBF7FF;
                 --secondary-hover-color: #e1f4ff;
+                --surface-color: #ffffff;
+                --border-color: #e2e8f0;
+                --text-muted: #64748b;
+                --dark-bg: #2c4657;
+                --dark-bg-lighter: #3a5a70;
+                --success-color: #059669;
+                --error-color: #dc2626;
+                --error-bg: #fff1f1;
+                --radius-sm: 0.5rem;
+                --radius-md: 0.75rem;
+                --radius-lg: 1rem;
+                --radius-xl: 2rem;
+                --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+                --shadow-md: 0 0.3rem 0.9rem rgba(6, 81, 126, 0.18);
+                --shadow-lg: 0 0.5rem 1.5rem rgba(6, 81, 126, 0.18);
             }
 
             .box {
-                background-color: white;
-                border-radius: 2rem;
-                box-shadow: 0 0.5rem 1.5rem 0 rgba(6, 81, 126, 0.18);
+                background-color: var(--surface-color);
+                border-radius: var(--radius-xl);
+                box-shadow: var(--shadow-lg);
                 padding: 2rem;
             }
         </style>
 
         <link rel="icon" href="%sveltekit.assets%/favicon.png" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         %sveltekit.head%
     </head>
     <body data-sveltekit-preload-data="hover">

@@ -53,29 +53,50 @@
 
 <div class="introduction">
     <div>
-        <h1>Welcome!</h1>
-        <p>This is a place to share bookmarklets.</p>
-        <p>Submitted scripts appear here after manual review.</p>
+        <div class="hero">
+            <div class="hero-text">
+                <h1>Browser scripts you can trust</h1>
+                <p class="hero-sub">Browse, share, and install bookmarklets &amp; userscripts — all open source, all reviewable.</p>
+                <div class="hero-actions">
+                    <a href="/scripts/add" class="btn-primary">+ Submit a Script</a>
+                    <a href="#scripts" class="btn-secondary">Browse Scripts ↓</a>
+                </div>
+            </div>
+        </div>
 
         <hr>
 
-        <h2>How this site works</h2>
+        <h2>How it works</h2>
 
-        <p>Scripts are saved as URLs.</p>
-        <p>To add a script</p>
-        <ol>
-            <li>Go to <a href="/scripts/add">Add script</a>.</li>
-            <li>Paste the URL of a RAW JavaScript file.</li>
+        <ol class="how-list">
+            <li>
+                <span class="step-num">1</span>
+                <div>
+                    <strong>Find a script</strong> you want below, or <a href="/scripts/add">submit your own</a> by pasting a URL to a raw JS file.
+                </div>
+            </li>
+            <li>
+                <span class="step-num">2</span>
+                <div>
+                    <strong>Install it</strong> by dragging the <em>Install bookmarklet</em> button to your bookmarks toolbar.
+                </div>
+            </li>
+            <li>
+                <span class="step-num">3</span>
+                <div>
+                    <strong>Run it</strong> by clicking the bookmark on any page.
+                </div>
+            </li>
         </ol>
-        <p>
-            You can add optional metadata using userscript-like comments.
-            <br>Supported tags:
+
+        <p class="metadata-intro">
+            You can add optional metadata to your script using userscript-like comments:
         </p>
-        <ul>
-            <li><code>// @name</code> – if not present, defaults to the URL's filename.</li>
-            <li><code>// @description</code></li>
-            <li><code>// @image</code> – URL to an image that will be displayed on this site. You can add multiple images.</li>
-            <li><code>// @video</code> – URL to a video. You can add many.</li>
+        <ul class="metadata-tags">
+            <li><code>// @name</code> – display name (defaults to the filename)</li>
+            <li><code>// @description</code> – short description</li>
+            <li><code>// @image</code> – URL to a screenshot or preview image (repeatable)</li>
+            <li><code>// @video</code> – URL to a demo video (repeatable)</li>
         </ul>
 
         <Details>
@@ -112,24 +133,32 @@
     </div>
 </div>
 
-<div class="scripts">
+<div class="scripts" id="scripts">
     <div>
         <div class="search">
-            <label for="script-search">Search scripts</label>
-            <input
-                id="script-search"
-                type="search"
-                bind:value={searchQuery}
-                placeholder="Search by title, URL, description, or source"
-                autocomplete="off"
-            >
+            <div class="search-input-wrap">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input
+                    id="script-search"
+                    type="search"
+                    bind:value={searchQuery}
+                    placeholder="Search by title, URL, description, or source…"
+                    autocomplete="off"
+                    aria-label="Search scripts"
+                >
+            </div>
             {#if searchQuery}
-                <p>{searchResults.matchingScriptCount} of {data.scripts.length} scripts</p>
+                <p class="search-count">{searchResults.matchingScriptCount} of {data.scripts.length} scripts match</p>
+            {:else}
+                <p class="search-count">{data.scripts.length} scripts</p>
             {/if}
         </div>
 
         {#if searchResults.matchingScriptCount === 0}
-            <p class="empty">No scripts match your search.</p>
+            <div class="empty-state">
+                <p>No scripts match <strong>"{searchQuery}"</strong></p>
+                <button class="clear-search" onclick={() => searchQuery = ''}>Clear search</button>
+            </div>
         {/if}
 
         {#each data.scripts as {source_url, content_hash}}
@@ -145,15 +174,152 @@
         background: white;
         padding: 0;
     }
+
+    /* ---- Introduction / Hero ---- */
     .introduction {
-        padding: 2rem;
+        padding: 2rem 2rem 2.5rem;
         & > div {
             max-width: 1000px;
             margin: auto;
         }
     }
+
+    .hero {
+        padding: 2rem 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .hero-text h1 {
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        font-weight: 700;
+        color: #0d1f30;
+        margin: 0 0 0.5rem;
+        line-height: 1.2;
+    }
+
+    .hero-sub {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        margin: 0 0 1.25rem;
+        max-width: 46rem;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        background: var(--primary-color);
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        padding: 0.65rem 1.4rem;
+        border-radius: var(--radius-md);
+        font-size: 0.95rem;
+        transition: background 0.15s, transform 0.1s;
+    }
+    .btn-primary:hover {
+        background: var(--primary-hover-color);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        display: inline-block;
+        background: var(--secondary-color);
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none;
+        padding: 0.65rem 1.4rem;
+        border-radius: var(--radius-md);
+        font-size: 0.95rem;
+        transition: background 0.15s;
+    }
+    .btn-secondary:hover {
+        background: var(--secondary-hover-color);
+    }
+
+    /* ---- How it works ---- */
+    .how-list {
+        list-style: none;
+        padding: 0;
+        margin: 0.5rem 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .how-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+    }
+
+    .step-num {
+        flex-shrink: 0;
+        width: 1.8rem;
+        height: 1.8rem;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0.1rem;
+    }
+
+    .metadata-intro {
+        margin-bottom: 0.25rem;
+    }
+
+    .metadata-tags {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .metadata-tags li {
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+    }
+
+    .metadata-tags code {
+        background: #eef2f7;
+        color: #1a3a5c;
+        padding: 0.15rem 0.5rem;
+        border-radius: 0.3rem;
+        font-size: 0.9em;
+        white-space: nowrap;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--border-color);
+        margin: 1.5rem 0;
+    }
+
+    h2 {
+        margin: 1.25rem 0 0.75rem;
+        color: #0d1f30;
+    }
+
+    summary {
+        text-decoration: underline;
+    }
+
+    /* ---- Scripts section ---- */
     .scripts {
-        background: #2c4657;
+        background: var(--dark-bg);
         padding: 2rem;
 
         & > div {
@@ -173,44 +339,88 @@
                 display: none;
             }
         }
-
-        .search {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            color: white;
-
-            label {
-                font-weight: bold;
-            }
-
-            input {
-                box-sizing: border-box;
-                width: 100%;
-                padding: 0.75rem 1rem;
-                border: 2px solid #d8e3e8;
-                border-radius: 0.5rem;
-                font: inherit;
-            }
-
-            p {
-                margin: 0;
-            }
-        }
-
-        .empty {
-            color: white;
-            margin: 0;
-        }
     }
-    li:has(code) {
-        line-height: 2;
-        code {
-            background-color: #c7c7c7;
-            padding: 0.2rem 0.5rem;
-        }
+
+    /* ---- Search ---- */
+    .search {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
     }
-    summary {
-        text-decoration: underline;
+
+    .search-input-wrap {
+        position: relative;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1.1rem;
+        height: 1.1rem;
+        color: #94a3b8;
+        pointer-events: none;
+    }
+
+    .search-input-wrap input {
+        width: 100%;
+        padding: 0.8rem 1rem 0.8rem 2.75rem;
+        border: 2px solid transparent;
+        border-radius: var(--radius-md);
+        font: inherit;
+        font-size: 1rem;
+        background: rgba(255,255,255,0.96);
+        color: #1a2533;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .search-input-wrap input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(23,97,167,0.15);
+    }
+
+    .search-count {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.85rem;
+        margin: 0;
+        padding-left: 0.25rem;
+    }
+
+    /* ---- Empty state ---- */
+    .empty-state {
+        background: rgba(255,255,255,0.08);
+        border: 1px dashed rgba(255,255,255,0.25);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        text-align: center;
+        color: rgba(255,255,255,0.85);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .clear-search {
+        background: var(--secondary-color);
+        color: var(--primary-color);
+        border: none;
+        border-radius: var(--radius-sm);
+        padding: 0.45rem 1rem;
+        font: inherit;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    .clear-search:hover {
+        background: var(--secondary-hover-color);
     }
 </style>
