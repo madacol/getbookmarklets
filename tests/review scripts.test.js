@@ -67,7 +67,7 @@ test('reviewer can accept a script needing review', async ({ page, context }) =>
         VALUES (${source_url}, ${'needs_review'}, ${'0'.repeat(64)})
     `;
 
-    await page.goto('/scripts/review', {waitUntil: 'networkidle'});
+    await page.goto('/admin', {waitUntil: 'networkidle'});
     await expect(page.getByRole('heading', {name: 'Review Scripts'})).toBeVisible();
     const reviewItem = page.locator('main > section.queue > article').filter({
         has: page.getByRole('heading', {name})
@@ -97,7 +97,7 @@ test('reviewer can reject a script needing review', async ({ page, context }) =>
         VALUES (${source_url}, ${'needs_review'}, ${'0'.repeat(64)})
     `;
 
-    await page.goto('/scripts/review', {waitUntil: 'networkidle'});
+    await page.goto('/admin', {waitUntil: 'networkidle'});
     const reviewItem = page.locator('main > section.queue > article').filter({
         has: page.getByRole('heading', {name})
     });
