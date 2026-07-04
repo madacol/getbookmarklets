@@ -151,6 +151,63 @@ test('homepage only shows accepted scripts', async ({ page }) => {
     await expect(page.getByRole('heading', {name: reviewName})).toHaveCount(0);
 });
 
+test('admin lists other scripts newest first and can edit or delete them', async ({ page, context }) => {
+    await loginAsMaster(context);
+    const id = randomUUID();
+    const oldName = `Managed Old ${id}`;
+    const newName = `Managed New ${id}`;
+    const editedName = `Managed Edited ${id}`;
+    const oldSource = `// @name ${oldName}\nalert("old");`;
+    const newSource = `// @name ${newName}\nalert("new");`;
+    const editedSource = `// @name ${editedName}\nalert("edited");`;
+    const oldUrl = dataUrlFromSource(oldSource);
+    const newUrl = dataUrlFromSource(newSource);
+    const editedUrl = dataUrlFromSource(editedSource);
+
+    await sql`
+        INSERT INTO scripts (source_url, status, content_hash, created_at)
+        VALUES
+            (${oldUrl}, ${'accepted'}, ${createHash('sha256').update(oldSource).digest('hex')}, NOW() - INTERVAL '1 day'),
+            (${newUrl}, ${'rejected'}, ${createHash('sha256').update(newSource).digest('hex')}, NOW())
+    `;
+
+    await page.goto('/admin', {waitUntil: 'networkidle'});
+
+    const managed = page.locator('section.managed');
+    const matchingItems = managed.locator('article.managed-script').filter({hasText: id});
+
+    await expect(matchingItems).toHaveCount(2);
+    await expect(matchingItems.nth(0).getByRole('heading', {name: newName})).toBeVisible();
+    await expect(matchingItems.nth(1).getByRole('heading', {name: oldName})).toBeVisible();
+
+    await matchingItems.nth(1).locator('textarea[name="source_url"]').fill(editedUrl);
+    await matchingItems.nth(1).locator('select[name="status"]').selectOption('accepted');
+    await matchingItems.nth(1).getByRole('button', {name: 'Save'}).click();
+
+    await expect(managed.getByRole('heading', {name: editedName})).toBeVisible();
+    const {rows: [updatedScript]} = await sql`
+        SELECT status, content_hash
+        FROM scripts
+        WHERE source_url = ${editedUrl}
+    `;
+    expect(updatedScript.status).toBe('accepted');
+    expect(updatedScript.content_hash).toBe(createHash('sha256').update(editedSource).digest('hex'));
+
+    page.once('dialog', dialog => dialog.accept());
+    await managed.locator('article.managed-script')
+        .filter({has: page.getByRole('heading', {name: editedName})})
+        .getByRole('button', {name: 'Delete'})
+        .click();
+
+    await expect(managed.getByRole('heading', {name: editedName})).toHaveCount(0);
+    const {rows: [deletedScript]} = await sql`
+        SELECT COUNT(*)::int AS count
+        FROM scripts
+        WHERE source_url = ${editedUrl}
+    `;
+    expect(deletedScript.count).toBe(0);
+});
+
 test('homepage hides scripts whose fetched content no longer matches the reviewed hash', async ({ page }) => {
     const id = randomUUID();
     const reviewedSource = `// @name Reviewed ${id}\nalert("reviewed");`;

@@ -32,7 +32,16 @@ describe('review scripts route', () => {
             status: 'needs_review',
             created_at: '2026-05-15T00:00:00.000Z'
         }];
-        const sql = vi.fn().mockResolvedValue({ rows: scripts });
+        const otherScripts = [{
+            script_id: 'script-2',
+            source_url: 'data:text/javascript,alert(2)',
+            content_hash: '1'.repeat(64),
+            status: 'accepted',
+            created_at: '2026-05-14T00:00:00.000Z'
+        }];
+        const sql = vi.fn()
+            .mockResolvedValueOnce({ rows: scripts })
+            .mockResolvedValueOnce({ rows: otherScripts });
 
         vi.doMock('@sveltejs/kit', mockKitModule);
         vi.doMock('$lib/server/checkPermissions_MW', () => ({
@@ -46,8 +55,8 @@ describe('review scripts route', () => {
 
         const { load } = await import('./+page.server.js');
 
-        await expect(load(/** @type {any} */ ({}))).resolves.toEqual({ scripts });
-        expect(sql).toHaveBeenCalledTimes(1);
+        await expect(load(/** @type {any} */ ({}))).resolves.toEqual({ scripts, otherScripts });
+        expect(sql).toHaveBeenCalledTimes(2);
     });
 
     it('accepts a script by storing a fresh hash for reviewed content', async () => {
@@ -110,6 +119,71 @@ describe('review scripts route', () => {
         expect(sql.mock.calls[0]).toEqual([
             expect.any(Array),
             'script-1'
+        ]);
+    });
+
+    it('updates a script source URL, status, and content hash', async () => {
+        const sql = vi.fn().mockResolvedValue({ rows: [] });
+        const source_url = 'data:text/javascript,alert(2)';
+        const getScriptSource = vi.fn().mockResolvedValue('alert(2);');
+        const createScriptContentHash = vi.fn().mockReturnValue('b'.repeat(64));
+
+        vi.doMock('@sveltejs/kit', mockKitModule);
+        vi.doMock('$lib/server/checkPermissions_MW', () => ({
+            /**
+             * @param {string} _permission
+             * @param {Function} handler
+             */
+            checkPermissions_MW: (_permission, handler) => handler
+        }));
+        vi.doMock('$lib/server/db', () => ({ sql }));
+        vi.doMock('$lib', () => ({ getScriptSource }));
+        vi.doMock('$lib/server/scriptHash', () => ({ createScriptContentHash }));
+
+        const { actions } = await import('./+page.server.js');
+        const result = await actions.update(/** @type {any} */ ({
+            request: createRequest({
+                script_id: 'script-2',
+                source_url,
+                status: 'accepted'
+            }),
+            fetch: vi.fn()
+        }));
+
+        expect(result).toEqual({ updated: 'script-2' });
+        expect(getScriptSource).toHaveBeenCalledWith(source_url, expect.any(Function));
+        expect(createScriptContentHash).toHaveBeenCalledWith('alert(2);');
+        expect(sql.mock.calls[0]).toEqual([
+            expect.any(Array),
+            source_url,
+            'accepted',
+            'b'.repeat(64),
+            'script-2'
+        ]);
+    });
+
+    it('deletes a script', async () => {
+        const sql = vi.fn().mockResolvedValue({ rows: [] });
+
+        vi.doMock('@sveltejs/kit', mockKitModule);
+        vi.doMock('$lib/server/checkPermissions_MW', () => ({
+            /**
+             * @param {string} _permission
+             * @param {Function} handler
+             */
+            checkPermissions_MW: (_permission, handler) => handler
+        }));
+        vi.doMock('$lib/server/db', () => ({ sql }));
+
+        const { actions } = await import('./+page.server.js');
+        const result = await actions.delete(/** @type {any} */ ({
+            request: createRequest({ script_id: 'script-2' })
+        }));
+
+        expect(result).toEqual({ deleted: 'script-2' });
+        expect(sql.mock.calls[0]).toEqual([
+            expect.any(Array),
+            'script-2'
         ]);
     });
 });
