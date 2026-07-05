@@ -4,7 +4,9 @@ import dev_config, { usePgliteForPlaywright } from './playwright.config.js';
 const config = {
 	...dev_config,
 	webServer: {
-		command: usePgliteForPlaywright ? 'node ./scripts/serve-local-production.js' : 'pnpm preview',
+		command: usePgliteForPlaywright
+			? 'SVELTE_KIT_OUT_DIR=.svelte-kit-test node ./scripts/serve-local-production.js'
+			: 'SVELTE_KIT_OUT_DIR=.svelte-kit-test pnpm preview',
 		port: 4173,
 		reuseExistingServer: !process.env.CI && !usePgliteForPlaywright,
 	},
