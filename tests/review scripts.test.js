@@ -302,6 +302,8 @@ test('admin mobile install controls do not overlap', async ({ page, context }) =
     expect(overlapArea(installButton, installMenu)).toBe(0);
     expect(overlapArea(installButton, shareButton)).toBe(0);
     expect(overlapArea(installMenu, shareButton)).toBe(0);
+    expect(Math.abs(installButton.y - shareButton.y)).toBeLessThan(1);
+    expect(shareButton.x).toBeGreaterThan(installMenu.x + installMenu.width);
 });
 
 test('homepage hides scripts whose fetched content no longer matches the reviewed hash', async ({ page }) => {

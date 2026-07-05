@@ -196,17 +196,22 @@
 
 <style>
     .install {
+        --install-combo-width: 10.75rem;
+        --install-share-size: 3.25rem;
+        --install-gap: 0.65rem;
         display: flex;
-        gap: 0.65rem;
-        flex-wrap: wrap;
+        gap: var(--install-gap);
+        flex-wrap: nowrap;
         align-items: stretch;
+        width: calc(var(--install-combo-width) + var(--install-gap) + var(--install-share-size));
         max-width: 100%;
+        flex: 0 1 calc(var(--install-combo-width) + var(--install-gap) + var(--install-share-size));
     }
     .install-combo {
         display: flex;
         position: relative;
-        flex: 0 1 10.75rem;
-        min-width: min(100%, 10.75rem);
+        flex: 0 0 var(--install-combo-width);
+        min-width: min(100%, var(--install-combo-width));
         max-width: 100%;
     }
     :global(.bookmarklet-install) {
@@ -224,8 +229,8 @@
         padding: 0.95rem 1rem;
     }
     .install-menu {
-        flex: 0 0 3.25rem;
-        min-width: 3.25rem;
+        flex: 0 0 var(--install-share-size);
+        min-width: var(--install-share-size);
     }
     .install-menu summary {
         height: 100%;
@@ -289,12 +294,12 @@
         pointer-events: none;
     }
     :global(.share-button) {
-        flex: 0 0 3.25rem;
+        flex: 0 0 var(--install-share-size);
     }
     :global(.share-button > div) {
-        width: 3.25rem;
+        width: var(--install-share-size);
         height: 100%;
-        min-height: 3.25rem;
+        min-height: var(--install-share-size);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -304,5 +309,11 @@
     :global(.share-button svg) {
         width: 1.35rem;
         height: 1.35rem;
+    }
+    @media (max-width: 280px) {
+        .install {
+            flex-wrap: wrap;
+            width: 100%;
+        }
     }
 </style>
