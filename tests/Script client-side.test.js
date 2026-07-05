@@ -7,7 +7,7 @@ test('paste url', async ({ page }) => {
     const scriptURL = "data:text/javascript,%2F%2F%20%40name%20test%20name%0A%2F%2F%20%40description%20asdadsad";
 
     // Fill the input field with a URL
-    const source_url_locator = await page.getByPlaceholder('Source url')
+    const source_url_locator = page.locator('textarea[name="source_url"]');
     await source_url_locator.click();
 
     // This is just a hack to put the URL in the clipboard
@@ -23,7 +23,7 @@ test('paste url', async ({ page }) => {
     await expect(source_url_locator).toBeFocused();
 
     // validate input field is empty
-    await expect(source_url_locator).toHaveText('');
+    await expect(source_url_locator).toHaveValue('');
 
     // Paste the URL from the clipboard
     await source_url_locator.press('Control+v');
