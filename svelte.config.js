@@ -5,7 +5,13 @@ const config = {
 	kit: {
 		adapter: adapter({
 			runtime: 'nodejs20.x',
-		})
+		}),
+		csrf: {
+			trustedOrigins: [
+				'https://getbookmarklets.babyjarvis.com',
+				'https://getbookmarklets.ts.babyjarvis.com',
+			],
+		},
 	}
 };
 
