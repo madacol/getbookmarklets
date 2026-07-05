@@ -13,6 +13,32 @@ import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { sql } from "../db";
+
+/**
+ * @param {import('http').Server} server
+ * @returns {Promise<number>}
+ */
+function listenOnRandomPort(server) {
+    return new Promise((resolve, reject) => {
+        server.once('error', reject);
+        server.listen(0, '127.0.0.1', () => {
+            const address = server.address();
+            if (address && typeof address === 'object') {
+                resolve(address.port);
+                return;
+            }
+            reject(new Error('HTTP fixture server did not expose a port'));
+        });
+    });
+}
+
+/** @param {import('http').Server} server */
+function closeServer(server) {
+    return new Promise((resolve, reject) => {
+        server.close((error) => error ? reject(error) : resolve(undefined));
+    });
+}
+
 test('add an HTTP script', async ({ page }) => {
 
     // Serve the testing script located in `./.assets/Highlight text bookmarklet.js`
@@ -22,33 +48,35 @@ test('add an HTTP script', async ({ page }) => {
         res.setHeader('Content-Type', 'application/javascript');
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.end(fileBuffer, 'utf-8');
-    }).listen(3000);
+    });
 
+    const port = await listenOnRandomPort(server);
+    const test_url = `http://127.0.0.1:${port}/Highlight%20text%20bookmarklet.js`
 
-    const test_url = `http://localhost:3000/Highlight%20text%20bookmarklet.js`
-    await sql`DELETE FROM scripts WHERE source_url = ${test_url}`
-    // Fill the input field with a URL
-    await page.locator('[name=source_url]').fill(test_url);
+    try {
+        await sql`DELETE FROM scripts WHERE source_url = ${test_url}`
+        // Fill the input field with a URL
+        await page.locator('[name=source_url]').fill(test_url);
 
-    // Submit the form by clicking the submission button
-    await page.locator('[type=submit]').click();
+        // Submit the form by clicking the submission button
+        await page.locator('[type=submit]').click();
 
-    // Verify the url is correct
-    await page.waitForURL('/scripts#' + test_url);
+        // Verify the url is correct
+        await page.waitForURL('/scripts#' + test_url);
 
-    // verify source code is correct
-    await expect(page.locator('pre')).toHaveText(fileBuffer.toString());
+        // verify source code is correct
+        await expect(page.locator('pre')).toHaveText(fileBuffer.toString());
 
-    const {rows: [script]} = await sql`
-        SELECT status, content_hash
-        FROM scripts
-        WHERE source_url = ${test_url}
-    `;
-    expect(script.status).toBe('needs_review');
-    expect(script.content_hash).toBe(createHash('sha256').update(fileBuffer.toString().trim()).digest('hex'));
-
-    // Close the server
-    server.close();
+        const {rows: [script]} = await sql`
+            SELECT status, content_hash
+            FROM scripts
+            WHERE source_url = ${test_url}
+        `;
+        expect(script.status).toBe('needs_review');
+        expect(script.content_hash).toBe(createHash('sha256').update(fileBuffer.toString().trim()).digest('hex'));
+    } finally {
+        await closeServer(server);
+    }
 
 });
 
