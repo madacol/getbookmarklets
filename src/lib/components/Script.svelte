@@ -43,6 +43,7 @@
     });
 
     $effect(() => {
+        if (editMode) return;
         if (!source_url || (isDataURL && source)) return;
 
         (async () => {
@@ -104,7 +105,7 @@
             <SourceComponent
                 {source}
                 {handleSourceChanged}
-                {editMode}
+                bind:editMode
                 oncopy={()=>navigator.sendBeacon(`/signal/copy/${encodeURIComponent(source_url)}`)}
             />
         {/if}
