@@ -27,7 +27,7 @@ test('signup', async ({ page }) => {
     await passwordFields[0].fill(username_and_password);
     await passwordFields[1].fill(username_and_password);
 
-    await expect(page.locator('.error')).toBeEmpty()
+    await expect(page.getByRole('alert')).toHaveCount(0);
 
     expect(await page.context().cookies()).toHaveLength(0);
 
