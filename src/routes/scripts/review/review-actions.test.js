@@ -91,9 +91,9 @@ describe('review scripts route', () => {
         expect(createScriptContentHash).toHaveBeenCalledWith('alert(1);');
         expect(sql.mock.calls[0]).toEqual([
             expect.any(Array),
+            source_url,
             'a'.repeat(64),
             'script-1',
-            source_url
         ]);
     });
 

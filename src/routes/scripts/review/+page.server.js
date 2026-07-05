@@ -6,6 +6,14 @@ import { createScriptContentHash } from "$lib/server/scriptHash";
 
 const SCRIPT_STATUSES = new Set(['needs_review', 'accepted', 'rejected']);
 
+/**
+ * @param {unknown} error
+ * @returns {boolean}
+ */
+function isUniqueViolation(error) {
+    return typeof error === 'object' && error !== null && 'code' in error && error.code === '23505';
+}
+
 export const load = checkPermissions_MW(
     'review_scripts',
     async () => {
@@ -59,14 +67,22 @@ export const actions = {
                 return fail(400, {error: 'Could not fetch script content for review'});
             }
 
-            await sql`
-                UPDATE scripts
-                SET
-                    status = 'accepted',
-                    content_hash = ${content_hash}
-                WHERE script_id = ${script_id}
-                    AND source_url = ${source_url}
-            `;
+            try {
+                await sql`
+                    UPDATE scripts
+                    SET
+                        source_url = ${source_url},
+                        status = 'accepted',
+                        content_hash = ${content_hash}
+                    WHERE script_id = ${script_id}
+                        AND status = 'needs_review'
+                `;
+            } catch (error) {
+                if (isUniqueViolation(error)) {
+                    return fail(400, {error: 'URL already exists in database'});
+                }
+                throw error;
+            }
 
             return {accepted: script_id};
         }
@@ -125,7 +141,7 @@ export const actions = {
                     WHERE script_id = ${script_id}
                 `;
             } catch (error) {
-                if (typeof error === 'object' && error !== null && 'code' in error && error.code === '23505') {
+                if (isUniqueViolation(error)) {
                     return fail(400, {error: 'URL already exists in database'});
                 }
                 throw error;

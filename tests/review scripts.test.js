@@ -87,6 +87,55 @@ test('reviewer can accept a script needing review', async ({ page, context }) =>
     );
 });
 
+test('reviewer can edit a script needing review before accepting it', async ({ page, context }) => {
+    await loginAsMaster(context);
+    const id = randomUUID();
+    const originalName = `Review Original ${id}`;
+    const editedName = `Review Edited ${id}`;
+    const originalSource = `// @name ${originalName}\nalert("original");`;
+    const editedSource = `// @name ${editedName}\nalert("edited");`;
+    const originalUrl = dataUrlFromSource(originalSource);
+
+    await sql`
+        INSERT INTO scripts (source_url, status, content_hash)
+        VALUES (${originalUrl}, ${'needs_review'}, ${createHash('sha256').update(originalSource).digest('hex')})
+    `;
+
+    await page.goto('/admin', {waitUntil: 'networkidle'});
+    const reviewItem = page.locator('main > section.queue > article').filter({
+        has: page.getByRole('heading', {name: originalName})
+    });
+    await expect(reviewItem).toBeVisible();
+
+    await reviewItem.getByRole('button', {name: /Edit/}).click();
+    await reviewItem.locator('.cm-content').click();
+    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+    await page.keyboard.insertText(editedSource);
+    const editedReviewItem = page.locator('main > section.queue > article').filter({
+        has: page.getByRole('heading', {name: editedName})
+    });
+    await expect(editedReviewItem).toBeVisible();
+
+    await editedReviewItem.getByRole('button', {name: 'Accept'}).click();
+
+    const editedUrl = dataUrlFromSource(editedSource);
+    const {rows: [script]} = await sql`
+        SELECT status, source_url, content_hash
+        FROM scripts
+        WHERE source_url = ${editedUrl}
+    `;
+    expect(script.status).toBe('accepted');
+    expect(script.source_url).toBe(editedUrl);
+    expect(script.content_hash).toBe(createHash('sha256').update(editedSource).digest('hex'));
+
+    const {rows: [oldScript]} = await sql`
+        SELECT COUNT(*)::int AS count
+        FROM scripts
+        WHERE source_url = ${originalUrl}
+    `;
+    expect(oldScript.count).toBe(0);
+});
+
 test('reviewer can reject a script needing review', async ({ page, context }) => {
     await loginAsMaster(context);
     const name = `Review Reject ${randomUUID()}`;

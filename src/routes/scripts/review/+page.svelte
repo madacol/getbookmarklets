@@ -1,7 +1,23 @@
 <script>
     import Script from "$lib/components/Script.svelte";
 
+    /**
+     * @typedef {{
+     *   script_id: string,
+     *   source_url: string,
+     *   content_hash: string | null,
+     *   status: string,
+     *   created_at: string
+     * }} ReviewScript
+     */
+
     const { data, form } = $props();
+    let reviewScripts = $state(/** @type {ReviewScript[]} */ ([]));
+
+    $effect(() => {
+        const scripts = /** @type {ReviewScript[]} */ (data.scripts);
+        reviewScripts = scripts.map((script) => ({ ...script }));
+    });
 
     /**
      * @param {SubmitEvent} event
@@ -14,21 +30,21 @@
 <main>
     <header>
         <h1>Review Scripts</h1>
-        <p>{data.scripts.length} scripts need review.</p>
+        <p>{reviewScripts.length} scripts need review.</p>
     </header>
 
     {#if form?.error}
         <p class="error">{form.error}</p>
     {/if}
 
-    {#if data.scripts.length === 0}
+    {#if reviewScripts.length === 0}
         <section class="empty box">
             <h2>No scripts to review</h2>
             <p>New submissions and changed accepted scripts will appear here.</p>
         </section>
     {:else}
         <section class="queue">
-            {#each data.scripts as script}
+            {#each reviewScripts as script (script.script_id)}
                 <article class="box">
                     <div class="meta">
                         <div>
@@ -41,7 +57,7 @@
                         </div>
                     </div>
 
-                    <Script source_url={script.source_url} />
+                    <Script bind:source_url={script.source_url} />
 
                     <div class="actions">
                         <form method="post" action="?/accept">
