@@ -128,7 +128,7 @@
         align-items: center;
         gap: 1rem;
         align-self: stretch;
-        overflow: hidden;
+        overflow: visible;
         flex-wrap: wrap;
 
         .title {

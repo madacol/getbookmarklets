@@ -295,15 +295,58 @@ test('admin mobile install controls do not overlap', async ({ page, context }) =
     });
     await expect(managedItem).toBeVisible();
 
-    const installButton = await requiredBox(managedItem.getByRole('link', {name: `Install ${name}`}).locator('div').first());
-    const installMenu = await requiredBox(managedItem.getByLabel('Install options'));
-    const shareButton = await requiredBox(managedItem.getByLabel('Share').locator('div').first());
+    const installControls = await managedItem.locator('.install').evaluate((row) => {
+        const combo = row.firstElementChild;
+        const share = row.children.item(1);
+        const installButton = combo?.querySelector('a div');
+        const installMenu = combo?.querySelector('button[aria-label="Install options"]');
+        const shareButton = share?.querySelector('div');
+        if (!installButton || !installMenu || !shareButton) {
+            return null;
+        }
+
+        /**
+         * @param {Element} element
+         */
+        function box(element) {
+            const rect = element.getBoundingClientRect();
+            return {
+                x: rect.x,
+                y: rect.y,
+                width: rect.width,
+                height: rect.height
+            };
+        }
+
+        return {
+            installButton: box(installButton),
+            installMenu: box(installMenu),
+            shareButton: box(shareButton)
+        };
+    });
+    expect(installControls).not.toBeNull();
+    const {installButton, installMenu, shareButton} = /** @type {NonNullable<typeof installControls>} */ (installControls);
 
     expect(overlapArea(installButton, installMenu)).toBe(0);
     expect(overlapArea(installButton, shareButton)).toBe(0);
     expect(overlapArea(installMenu, shareButton)).toBe(0);
+    expect(Math.abs(installButton.y - installMenu.y)).toBeLessThan(1);
     expect(Math.abs(installButton.y - shareButton.y)).toBeLessThan(1);
+    expect(Math.abs(installButton.height - installMenu.height)).toBeLessThan(1);
+    expect(Math.abs(installButton.height - shareButton.height)).toBeLessThan(1);
+    expect(installMenu.x).toBeGreaterThan(installButton.x + installButton.width - 1);
     expect(shareButton.x).toBeGreaterThan(installMenu.x + installMenu.width);
+
+    await managedItem.getByRole('button', {name: 'Install options'}).click();
+    const userscriptOption = managedItem.getByRole('menuitem', {name: 'Install as Userscript'});
+    await expect(userscriptOption).toBeVisible();
+    await expect.poll(async () => {
+        return userscriptOption.evaluate((element) => {
+            const rect = element.getBoundingClientRect();
+            const target = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
+            return target ? element.contains(target) : false;
+        });
+    }).toBe(true);
 });
 
 test('homepage hides scripts whose fetched content no longer matches the reviewed hash', async ({ page }) => {

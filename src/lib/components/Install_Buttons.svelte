@@ -14,6 +14,7 @@
 
     let { name, description } = $derived(getScriptMetadata(source, untrack(()=>source_url)))
     let shareCopied = $state(false);
+    let installMenuOpen = $state(false);
     /** @type {ReturnType<typeof setTimeout> | undefined} */
     let shareCopiedResetTimer;
 
@@ -116,6 +117,14 @@
     /**
      * @param {MouseEvent} event
      */
+    function toggleInstallMenu(event) {
+        event.preventDefault();
+        installMenuOpen = !installMenuOpen;
+    }
+
+    /**
+     * @param {MouseEvent} event
+     */
     function handleShareClick(event) {
         event.preventDefault();
         const shareUrl = `/scripts#${source_url}`;
@@ -164,16 +173,25 @@
             <span class="label"><!-- Install bookmarklet / Drag to bookmarks --></span>
             <span class="name">{name}</span>
         </LinkButton>
-        <details class="install-menu">
-            <summary aria-label="Install options" title="Install options">
-                <span aria-hidden="true">▾</span>
-            </summary>
-            <div class="install-menu-panel">
-                <a href={source_url} onclick={handleUserscriptInstall}>
+        <div class="install-menu" class:open={installMenuOpen}>
+            <button
+                type="button"
+                class="install-menu-trigger"
+                aria-label="Install options"
+                aria-expanded={installMenuOpen}
+                title="Install options"
+                onclick={toggleInstallMenu}
+            >
+                <span class="chevron" aria-hidden="true"></span>
+            </button>
+            {#if installMenuOpen}
+            <div class="install-menu-panel" role="menu">
+                <a href={source_url} role="menuitem" onclick={handleUserscriptInstall}>
                     Install as Userscript
                 </a>
             </div>
-        </details>
+            {/if}
+        </div>
     </div>
     <LinkButton
         class="share-button"
@@ -198,6 +216,7 @@
     .install {
         --install-combo-width: 10.75rem;
         --install-share-size: 3.25rem;
+        --install-control-height: 3.25rem;
         --install-gap: 0.65rem;
         display: flex;
         gap: var(--install-gap);
@@ -213,30 +232,41 @@
         flex: 0 0 var(--install-combo-width);
         min-width: min(100%, var(--install-combo-width));
         max-width: 100%;
+        border-radius: var(--radius-md, 0.75rem);
+        background: var(--primary-color);
+        box-shadow: var(--shadow-md, 0 0.3rem 0.9rem rgba(6, 81, 126, 0.18));
     }
-    :global(.bookmarklet-install) {
+    .install :global(.bookmarklet-install) {
         flex: 1 1 auto;
         min-width: 0;
+        height: var(--install-control-height);
     }
-    :global(.bookmarklet-install > div) {
+    .install :global(.bookmarklet-install div) {
         border-radius: var(--radius-md, 0.75rem) 0 0 var(--radius-md, 0.75rem);
         box-sizing: border-box;
-        min-height: 3.25rem;
-        height: 100%;
+        min-height: var(--install-control-height);
+        height: var(--install-control-height);
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0.95rem 1rem;
+        padding: 0 1rem;
+        line-height: 1;
+        box-shadow: none;
     }
     .install-menu {
+        display: flex;
         flex: 0 0 var(--install-share-size);
         min-width: var(--install-share-size);
+        height: var(--install-control-height);
     }
-    .install-menu summary {
-        height: 100%;
-        min-height: 3.25rem;
+    .install-menu-trigger {
+        width: 100%;
+        height: var(--install-control-height);
+        min-height: 0;
+        margin: 0;
+        padding: 0;
         box-sizing: border-box;
-        list-style: none;
+        border: 0;
         background: var(--primary-color);
         color: white;
         cursor: pointer;
@@ -244,17 +274,25 @@
         align-items: center;
         justify-content: center;
         font-size: 1.15rem;
+        font-family: inherit;
         font-weight: 700;
+        line-height: 1;
         border-radius: 0 var(--radius-md, 0.75rem) var(--radius-md, 0.75rem) 0;
-        box-shadow: var(--shadow-md, 0 0.3rem 0.9rem rgba(6, 81, 126, 0.18));
+        border-left: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: none;
         user-select: none;
+        appearance: none;
     }
-    .install-menu summary::-webkit-details-marker {
-        display: none;
-    }
-    .install-menu[open] summary,
-    .install-menu summary:hover {
+    .install-menu.open .install-menu-trigger,
+    .install-menu-trigger:hover {
         background: var(--primary-hover-color);
+    }
+    .chevron {
+        width: 0;
+        height: 0;
+        border-left: 0.28rem solid transparent;
+        border-right: 0.28rem solid transparent;
+        border-top: 0.42rem solid currentColor;
     }
     .install-menu-panel {
         position: absolute;
@@ -293,20 +331,21 @@
         opacity: 0;
         pointer-events: none;
     }
-    :global(.share-button) {
+    .install :global(.share-button) {
         flex: 0 0 var(--install-share-size);
     }
-    :global(.share-button > div) {
+    .install :global(.share-button div) {
         width: var(--install-share-size);
-        height: 100%;
-        min-height: var(--install-share-size);
+        height: var(--install-control-height);
+        min-height: var(--install-control-height);
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 0;
+        line-height: 0;
         border-radius: var(--radius-md, 0.75rem);
     }
-    :global(.share-button svg) {
+    .install :global(.share-button svg) {
         width: 1.35rem;
         height: 1.35rem;
     }
