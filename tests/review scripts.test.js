@@ -38,6 +38,25 @@ function dataUrlFromSource(source) {
 }
 
 /**
+ * @param {import('@playwright/test').Locator} locator
+ */
+async function requiredBox(locator) {
+    const box = await locator.boundingBox();
+    expect(box).not.toBeNull();
+    return /** @type {NonNullable<typeof box>} */ (box);
+}
+
+/**
+ * @param {{ x: number, y: number, width: number, height: number }} first
+ * @param {{ x: number, y: number, width: number, height: number }} second
+ */
+function overlapArea(first, second) {
+    const width = Math.max(0, Math.min(first.x + first.width, second.x + second.width) - Math.max(first.x, second.x));
+    const height = Math.max(0, Math.min(first.y + first.height, second.y + second.height) - Math.max(first.y, second.y));
+    return width * height;
+}
+
+/**
  * @param {import('node:http').Server} server
  * @returns {Promise<void>}
  */
@@ -255,6 +274,34 @@ test('admin lists other scripts newest first and can edit or delete them', async
         WHERE source_url = ${editedUrl}
     `;
     expect(deletedScript.count).toBe(0);
+});
+
+test('admin mobile install controls do not overlap', async ({ page, context }) => {
+    await page.setViewportSize({width: 432, height: 900});
+    await loginAsMaster(context);
+    const id = randomUUID();
+    const name = `Mobile Managed ${id}`;
+    const source = `// @name ${name}\nalert("mobile");`;
+    const sourceUrl = dataUrlFromSource(source);
+
+    await sql`
+        INSERT INTO scripts (source_url, status, content_hash)
+        VALUES (${sourceUrl}, ${'accepted'}, ${createHash('sha256').update(source).digest('hex')})
+    `;
+
+    await page.goto('/admin', {waitUntil: 'networkidle'});
+    const managedItem = page.locator('article.managed-script').filter({
+        has: page.getByRole('heading', {name})
+    });
+    await expect(managedItem).toBeVisible();
+
+    const installButton = await requiredBox(managedItem.getByRole('link', {name: `Install ${name}`}).locator('div').first());
+    const installMenu = await requiredBox(managedItem.getByLabel('Install options'));
+    const shareButton = await requiredBox(managedItem.getByLabel('Share').locator('div').first());
+
+    expect(overlapArea(installButton, installMenu)).toBe(0);
+    expect(overlapArea(installButton, shareButton)).toBe(0);
+    expect(overlapArea(installMenu, shareButton)).toBe(0);
 });
 
 test('homepage hides scripts whose fetched content no longer matches the reviewed hash', async ({ page }) => {

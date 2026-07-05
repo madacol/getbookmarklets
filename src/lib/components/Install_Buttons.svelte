@@ -200,24 +200,37 @@
         gap: 0.65rem;
         flex-wrap: wrap;
         align-items: stretch;
+        max-width: 100%;
     }
     .install-combo {
         display: flex;
         position: relative;
-        min-width: min(100%, 16rem);
-        flex: 1 1 16rem;
+        flex: 0 1 10.75rem;
+        min-width: min(100%, 10.75rem);
+        max-width: 100%;
     }
     :global(.bookmarklet-install) {
         flex: 1 1 auto;
+        min-width: 0;
     }
     :global(.bookmarklet-install > div) {
         border-radius: var(--radius-md, 0.75rem) 0 0 var(--radius-md, 0.75rem);
+        box-sizing: border-box;
+        min-height: 3.25rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.95rem 1rem;
     }
     .install-menu {
         flex: 0 0 3.25rem;
+        min-width: 3.25rem;
     }
     .install-menu summary {
         height: 100%;
+        min-height: 3.25rem;
+        box-sizing: border-box;
         list-style: none;
         background: var(--primary-color);
         color: white;
@@ -263,6 +276,7 @@
     }
     span.label::after {
         content: "Install";
+        display: inline-block;
         color: white;
         min-width: 4.5rem;
     }
@@ -273,6 +287,9 @@
         position: absolute;
         opacity: 0;
         pointer-events: none;
+    }
+    :global(.share-button) {
+        flex: 0 0 3.25rem;
     }
     :global(.share-button > div) {
         width: 3.25rem;
@@ -287,13 +304,5 @@
     :global(.share-button svg) {
         width: 1.35rem;
         height: 1.35rem;
-    }
-    @media (max-width: 480px) {
-        .install {
-            flex-wrap: nowrap;
-        }
-        .install-combo {
-            min-width: 0;
-        }
     }
 </style>
