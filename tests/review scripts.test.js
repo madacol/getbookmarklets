@@ -92,8 +92,9 @@ test('reviewer can accept a script needing review', async ({ page, context }) =>
         has: page.getByRole('heading', {name})
     });
     await expect(reviewItem).toBeVisible();
+    await expect(reviewItem.getByText('Saved hash')).toBeVisible();
 
-    await reviewItem.getByRole('button', {name: 'Accept'}).click();
+    await reviewItem.getByRole('button', {name: 'Accept original version'}).click();
 
     const {rows: [script]} = await sql`
         SELECT status, content_hash
@@ -134,8 +135,13 @@ test('reviewer can edit a script needing review before accepting it', async ({ p
         has: page.getByRole('heading', {name: editedName})
     });
     await expect(editedReviewItem).toBeVisible();
+    await expect(editedReviewItem.getByText('Unsaved edits')).toBeVisible();
+    await expect(editedReviewItem.getByText('Edited hash preview')).toBeVisible();
+    await expect(editedReviewItem.getByText(
+        createHash('sha256').update(editedSource).digest('hex')
+    )).toBeVisible();
 
-    await editedReviewItem.getByRole('button', {name: 'Accept'}).click();
+    await editedReviewItem.getByRole('button', {name: 'Accept edited version'}).click();
 
     const editedUrl = dataUrlFromSource(editedSource);
     const {rows: [script]} = await sql`

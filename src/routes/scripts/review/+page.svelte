@@ -1,11 +1,15 @@
 <script>
     import Script from "$lib/components/Script.svelte";
+    import { createBrowserScriptContentHash } from "$lib/scriptLoader.js";
 
     /**
      * @typedef {{
      *   script_id: string,
      *   source_url: string,
+     *   saved_source_url: string,
      *   content_hash: string | null,
+     *   edited_content_hash: string | null,
+     *   edited_hash_status: 'idle' | 'loading' | 'ready' | 'error',
      *   status: string,
      *   created_at: string
      * }} ReviewScript
@@ -15,9 +19,47 @@
     let reviewScripts = $state(/** @type {ReviewScript[]} */ ([]));
 
     $effect(() => {
-        const scripts = /** @type {ReviewScript[]} */ (data.scripts);
-        reviewScripts = scripts.map((script) => ({ ...script }));
+        const scripts = /** @type {Omit<ReviewScript, 'saved_source_url' | 'edited_content_hash' | 'edited_hash_status'>[]} */ (data.scripts);
+        reviewScripts = scripts.map((script) => ({
+            ...script,
+            saved_source_url: script.source_url,
+            edited_content_hash: null,
+            edited_hash_status: 'idle'
+        }));
     });
+
+    /**
+     * @param {ReviewScript} script
+     */
+    function hasUnsavedEdits(script) {
+        return script.source_url !== script.saved_source_url;
+    }
+
+    /**
+     * @param {ReviewScript} script
+     * @param {{ source_url: string, source: string }} metadata
+     */
+    async function updateEditedHash(script, metadata) {
+        if (!hasUnsavedEdits(script)) {
+            script.edited_content_hash = null;
+            script.edited_hash_status = 'idle';
+            return;
+        }
+
+        const sourceUrl = metadata.source_url;
+        script.edited_hash_status = 'loading';
+
+        try {
+            const hash = await createBrowserScriptContentHash(metadata.source);
+            if (script.source_url !== sourceUrl) return;
+            script.edited_content_hash = hash;
+            script.edited_hash_status = 'ready';
+        } catch (error) {
+            if (script.source_url !== sourceUrl) return;
+            script.edited_content_hash = null;
+            script.edited_hash_status = 'error';
+        }
+    }
 
     /**
      * @param {SubmitEvent} event
@@ -45,6 +87,7 @@
     {:else}
         <section class="queue">
             {#each reviewScripts as script (script.script_id)}
+                {@const edited = hasUnsavedEdits(script)}
                 <article class="box">
                     <div class="meta">
                         <div>
@@ -52,18 +95,40 @@
                             <time datetime={script.created_at}>{new Date(script.created_at).toLocaleString()}</time>
                         </div>
                         <div>
-                            <span class="label">Stored Hash</span>
+                            <span class="label">Saved hash</span>
                             <code>{script.content_hash ?? 'none'}</code>
                         </div>
+                        {#if edited}
+                            <div>
+                                <span class="label">Edited hash preview</span>
+                                {#if script.edited_hash_status === 'error'}
+                                    <span class="hash-error">Unavailable</span>
+                                {:else}
+                                    <code>{script.edited_content_hash ?? 'Computing...'}</code>
+                                {/if}
+                            </div>
+                        {/if}
                     </div>
 
-                    <Script bind:source_url={script.source_url} />
+                    <Script
+                        bind:source_url={script.source_url}
+                        onmetadata={(metadata) => updateEditedHash(script, metadata)}
+                    />
+
+                    {#if edited}
+                        <div class="draft-state">
+                            <span class="badge">Unsaved edits</span>
+                            <span>Accepting will replace the saved script with this edited version.</span>
+                        </div>
+                    {/if}
 
                     <div class="actions">
                         <form method="post" action="?/accept">
                             <input type="hidden" name="script_id" value={script.script_id}>
                             <input type="hidden" name="source_url" value={script.source_url}>
-                            <button class="accept" type="submit">Accept</button>
+                            <button class="accept" type="submit">
+                                {edited ? 'Accept edited version' : 'Accept original version'}
+                            </button>
                         </form>
                         <form method="post" action="?/reject">
                             <input type="hidden" name="script_id" value={script.script_id}>
@@ -103,7 +168,7 @@
                                 <strong>{script.status}</strong>
                             </div>
                             <div>
-                                <span class="label">Stored Hash</span>
+                                <span class="label">Saved hash</span>
                                 <code>{script.content_hash ?? 'none'}</code>
                             </div>
                         </div>
@@ -177,6 +242,33 @@
     }
     code {
         overflow-wrap: anywhere;
+    }
+    .draft-state {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        background: #fff6d7;
+        border: 1px solid #e0c36b;
+        color: #4f3b00;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+    }
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        background: #6c4a00;
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0.35rem 0.55rem;
+        white-space: nowrap;
+    }
+    .hash-error {
+        color: #a32424;
+        font-weight: 700;
     }
     .actions {
         display: flex;
