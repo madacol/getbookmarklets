@@ -139,10 +139,10 @@ test('homepage only shows accepted scripts', async ({ page }) => {
     const reviewUrl = dataUrlFromSource(`// @name ${reviewName}\nalert("review");`);
 
     await sql`
-        INSERT INTO scripts (source_url, status)
+        INSERT INTO scripts (source_url, status, content_hash)
         VALUES
-            (${acceptedUrl}, ${'accepted'}),
-            (${reviewUrl}, ${'needs_review'})
+            (${acceptedUrl}, ${'accepted'}, ${createHash('sha256').update(`// @name ${acceptedName}\nalert("accepted");`).digest('hex')}),
+            (${reviewUrl}, ${'needs_review'}, ${createHash('sha256').update(`// @name ${reviewName}\nalert("review");`).digest('hex')})
     `;
 
     await page.goto('/', {waitUntil: 'networkidle'});

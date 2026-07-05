@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { createHash } from 'node:crypto';
 import { randomUUID } from 'node:crypto';
 import { createServer } from 'node:http';
 import { sql } from './db.js';
@@ -59,10 +60,10 @@ test('search filters scripts on the homepage', async ({ page }) => {
 
         await sql`DELETE FROM scripts`;
         await sql`
-            INSERT INTO scripts (source_url, status)
+            INSERT INTO scripts (source_url, status, content_hash)
             VALUES
-                (${alphaUrl}, ${'accepted'}),
-                (${betaUrl}, ${'accepted'})
+                (${alphaUrl}, ${'accepted'}, ${createHash('sha256').update(alphaSource).digest('hex')}),
+                (${betaUrl}, ${'accepted'}, ${createHash('sha256').update(betaSource).digest('hex')})
         `;
 
         await page.goto('/', {waitUntil: 'domcontentloaded'});
@@ -81,7 +82,8 @@ test('search filters scripts on the homepage', async ({ page }) => {
         await expect(page.getByText('1 of 2 scripts')).toBeVisible();
 
         await searchInput.fill(`missing-${id}`);
-        await expect(page.getByText('No scripts match your search.')).toBeVisible();
+        await expect(page.getByText('No scripts match')).toBeVisible();
+        await expect(page.getByText(`"missing-${id}"`)).toBeVisible();
     } finally {
         releaseAlpha();
         await close(server);
