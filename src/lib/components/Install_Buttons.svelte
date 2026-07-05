@@ -185,7 +185,10 @@
             {#if shareCopied}
                 <path d="m5 13 4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
             {:else}
-                <path d="M12 3v12m0-12 4 4m-4-4-4 4M5 13v6h14v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 11 16 7M8 13l8 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="5" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
+                <circle cx="19" cy="5" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
+                <circle cx="19" cy="19" r="3" fill="none" stroke="currentColor" stroke-width="2"/>
             {/if}
         </svg>
     </LinkButton>
@@ -259,9 +262,9 @@
         background: var(--secondary-color);
     }
     span.label::after {
-        content: "Install bookmarklet";
+        content: "Install";
         color: white;
-        min-width: 10rem;
+        min-width: 4.5rem;
     }
     :global(a:hover) span.label::after {
         content: "Drag to bookmarks";
