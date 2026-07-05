@@ -2,7 +2,7 @@
 
 ## Active
 
-- [Resolve live admin 500](active/live-admin-500.md)
+- None.
 
 ## Pending
 
@@ -16,3 +16,4 @@
 
 - [Fixed pending review edit-and-accept flow](done/review-edit-accept.md)
 - [Polished mobile install/share controls](done/mobile-install-share-polish.md)
+- [Resolved live admin 500](done/live-admin-500.md)
