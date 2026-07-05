@@ -42,7 +42,8 @@ test('install as userscript', async ({ page }) => {
     await page.keyboard.press('Control+A');
     await page.keyboard.insertText(sourceWithSpecialChars);
 
-    // Click the "Install as Userscript" button
+    // Open the install menu and click the "Install as Userscript" option
+    await page.getByLabel('Install options').click();
     await page.locator('text=Install as Userscript').click();
 
     // Verify it navigates to the `/userscript/...` URL

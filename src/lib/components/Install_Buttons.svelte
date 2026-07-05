@@ -13,6 +13,9 @@
     let isDataURL = $derived(source_url.startsWith('data:'));
 
     let { name, description } = $derived(getScriptMetadata(source, untrack(()=>source_url)))
+    let shareCopied = $state(false);
+    /** @type {ReturnType<typeof setTimeout> | undefined} */
+    let shareCopiedResetTimer;
 
     let bookmarklet = $derived.by(() => {
         try {
@@ -131,13 +134,11 @@
         } else {
             navigator.clipboard.writeText(shareableUrl)
             .then(() => {
-                if (!(event.target instanceof HTMLElement)) return;
-                const button = event.target;
-                const originalText = button.textContent;
-                button.textContent = '✓ Copied!';
+                shareCopied = true;
+                clearTimeout(shareCopiedResetTimer);
 
-                setTimeout(() => {
-                    button.textContent = originalText;
+                shareCopiedResetTimer = setTimeout(() => {
+                    shareCopied = false;
                 }, 2000);
 
                 navigator.sendBeacon(`/signal/share_copy/${encodeURIComponent(source_url)}`);
@@ -151,31 +152,111 @@
 </script>
 
 <div class="install">
+    <div class="install-combo">
+        <LinkButton
+            class="bookmarklet-install"
+            href={bookmarklet}
+            onclick={handleBookmarkletClick}
+            disabled={!bookmarklet}
+            ondragstart={handleBookmarkletDragStart}
+            oncontextmenu={()=>navigator.sendBeacon(`/signal/rightclick/${encodeURIComponent(source_url)}`)}
+        >
+            <span class="label"><!-- Install bookmarklet / Drag to bookmarks --></span>
+            <span class="name">{name}</span>
+        </LinkButton>
+        <details class="install-menu">
+            <summary aria-label="Install options" title="Install options">
+                <span aria-hidden="true">▾</span>
+            </summary>
+            <div class="install-menu-panel">
+                <a href={source_url} onclick={handleUserscriptInstall}>
+                    Install as Userscript
+                </a>
+            </div>
+        </details>
+    </div>
     <LinkButton
-        href={bookmarklet}
-        onclick={handleBookmarkletClick}
-        disabled={!bookmarklet}
-        ondragstart={handleBookmarkletDragStart}
-        oncontextmenu={()=>navigator.sendBeacon(`/signal/rightclick/${encodeURIComponent(source_url)}`)}
-    >
-        <span class="label"><!-- Install bookmarklet / Drag to bookmarks --></span>
-        <span class="name">{name}</span>
-    </LinkButton>
-    <LinkButton disabled={!isUserscript} href={source_url} onclick={handleUserscriptInstall}>
-        Install as Userscript
-    </LinkButton>
-    <LinkButton
+        class="share-button"
         onclick={handleShareClick}
+        aria-label="Share"
+        title="Share"
     >
-        <span class="share-icon">🔗</span> Share
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            {#if shareCopied}
+                <path d="m5 13 4 4L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            {:else}
+                <path d="M12 3v12m0-12 4 4m-4-4-4 4M5 13v6h14v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            {/if}
+        </svg>
     </LinkButton>
 </div>
 
 <style>
     .install {
         display: flex;
-        gap: 1rem;
+        gap: 0.65rem;
         flex-wrap: wrap;
+        align-items: stretch;
+    }
+    .install-combo {
+        display: flex;
+        position: relative;
+        min-width: min(100%, 16rem);
+        flex: 1 1 16rem;
+    }
+    :global(.bookmarklet-install) {
+        flex: 1 1 auto;
+    }
+    :global(.bookmarklet-install > div) {
+        border-radius: var(--radius-md, 0.75rem) 0 0 var(--radius-md, 0.75rem);
+    }
+    .install-menu {
+        flex: 0 0 3.25rem;
+    }
+    .install-menu summary {
+        height: 100%;
+        list-style: none;
+        background: var(--primary-color);
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        font-weight: 700;
+        border-radius: 0 var(--radius-md, 0.75rem) var(--radius-md, 0.75rem) 0;
+        box-shadow: var(--shadow-md, 0 0.3rem 0.9rem rgba(6, 81, 126, 0.18));
+        user-select: none;
+    }
+    .install-menu summary::-webkit-details-marker {
+        display: none;
+    }
+    .install-menu[open] summary,
+    .install-menu summary:hover {
+        background: var(--primary-hover-color);
+    }
+    .install-menu-panel {
+        position: absolute;
+        z-index: 20;
+        top: calc(100% + 0.35rem);
+        left: 0;
+        min-width: 100%;
+        background: white;
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: var(--radius-md, 0.75rem);
+        box-shadow: var(--shadow-lg, 0 0.5rem 1.5rem rgba(6, 81, 126, 0.18));
+        overflow: hidden;
+    }
+    .install-menu-panel a {
+        display: block;
+        padding: 0.85rem 1rem;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+    .install-menu-panel a:hover {
+        background: var(--secondary-color);
     }
     span.label::after {
         content: "Install bookmarklet";
@@ -190,8 +271,26 @@
         opacity: 0;
         pointer-events: none;
     }
-    .share-icon {
-        display: inline-block;
-        margin-right: 0.3rem;
+    :global(.share-button > div) {
+        width: 3.25rem;
+        height: 100%;
+        min-height: 3.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: var(--radius-md, 0.75rem);
+    }
+    :global(.share-button svg) {
+        width: 1.35rem;
+        height: 1.35rem;
+    }
+    @media (max-width: 480px) {
+        .install {
+            flex-wrap: nowrap;
+        }
+        .install-combo {
+            min-width: 0;
+        }
     }
 </style>
