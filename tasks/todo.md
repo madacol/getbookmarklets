@@ -14,6 +14,7 @@
 
 ## Done
 
+- [Refreshed outdated E2E tests](done/refresh-outdated-e2e-tests.md)
 - [Fixed install dropdown touch behavior](done/install-dropdown-touch.md)
 - [Kept mobile install/share controls on one row](done/mobile-install-controls-one-row.md)
 - [Fixed pending review edit-and-accept flow](done/review-edit-accept.md)
