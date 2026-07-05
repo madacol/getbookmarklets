@@ -1,0 +1,4 @@
+.svelte-kit/**
+.svelte-kit-test/**
+.pglite/**
+.vercel/**
