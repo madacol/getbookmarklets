@@ -1,6 +1,6 @@
 import { env } from "$env/dynamic/private";
 
-const PERSISTENT_COOKIE_MAX_AGE = 2147483647; // ~68 years, effectively non-expiring
+const NON_EXPIRING_COOKIE_EXPIRES_AT = new Date('9999-12-31T23:59:59.999Z');
 const DATABASE_URL = env.DATABASE_URL ?? "";
 
 export const database = {
@@ -18,7 +18,7 @@ export const database = {
 }
 
 export const cookies_options = {
-  maxAge: PERSISTENT_COOKIE_MAX_AGE,
+  expires: NON_EXPIRING_COOKIE_EXPIRES_AT,
   httpOnly: true,
   sameSite: true,
   secure: env.NODE_ENV === 'production',

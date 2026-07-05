@@ -34,7 +34,7 @@ describe('session persistence', () => {
 		vi.clearAllMocks();
 	});
 
-	it('uses a persistent cookie max age', async () => {
+	it('uses a non-expiring cookie expiration', async () => {
 		vi.doMock('$env/dynamic/private', () => ({
 			env: {
 				DATABASE_URL: 'postgres://example.test/db',
@@ -45,7 +45,8 @@ describe('session persistence', () => {
 
 		const { cookies_options } = await import('../lib/server/config.js');
 
-		expect(cookies_options.maxAge).toBe(2147483647);
+		expect(cookies_options).not.toHaveProperty('maxAge');
+		expect(cookies_options.expires).toEqual(new Date('9999-12-31T23:59:59.999Z'));
 	});
 
 	it('creates a non-expiring session during login', async () => {
@@ -57,7 +58,7 @@ describe('session persistence', () => {
 			.mockResolvedValueOnce({
 				rows: [{ session_id: 'session-1' }]
 			});
-		const cookies_options = { path: '/', maxAge: 2147483647 };
+		const cookies_options = { path: '/', expires: new Date('9999-12-31T23:59:59.999Z') };
 
 		vi.doMock('argon2', () => ({
 			default: {
@@ -93,7 +94,7 @@ describe('session persistence', () => {
 			.mockResolvedValueOnce({
 				rows: [{ session_id: 'session-1' }]
 			});
-		const cookies_options = { path: '/', maxAge: 2147483647 };
+		const cookies_options = { path: '/', expires: new Date('9999-12-31T23:59:59.999Z') };
 
 		vi.doMock('argon2', () => ({
 			default: {
