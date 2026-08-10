@@ -42,14 +42,14 @@
         });
     }
 
-    async function loadJavaScriptSupport() {
+    async function loadCodeIntelligenceSupport() {
         if (!editor || languageLoaded || languageLoading) return;
 
         languageLoading = true;
         try {
-            const { javascript } = await import('@codemirror/lang-javascript');
+            const { typescriptCodeIntelligence } = await import('$lib/editor/typescriptCodeIntelligence.js');
             editor?.dispatch({
-                effects: languageCompartment.reconfigure(javascript().extension)
+                effects: languageCompartment.reconfigure(typescriptCodeIntelligence())
             });
             languageLoaded = true;
         } finally {
@@ -69,11 +69,11 @@
                 EditorView.lineWrapping,
                 EditorView.domEventHandlers({
                     focus: () => {
-                        void loadJavaScriptSupport();
+                        void loadCodeIntelligenceSupport();
                         return false;
                     },
                     beforeinput: () => {
-                        void loadJavaScriptSupport();
+                        void loadCodeIntelligenceSupport();
                         return false;
                     }
                 }),
@@ -83,7 +83,7 @@
             ],
         });
 
-        void loadJavaScriptSupport();
+        void loadCodeIntelligenceSupport();
 
         return () => {
             editor?.destroy();

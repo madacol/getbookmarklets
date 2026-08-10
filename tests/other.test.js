@@ -10,6 +10,21 @@ test('CodeMirror highlights JavaScript after mounting', async ({ page }) => {
     await expect.poll(async () => page.locator('.cm-content span').count()).toBeGreaterThan(0);
 });
 
+test('CodeMirror suggests browser DOM APIs from TypeScript intelligence', async ({ page }) => {
+    test.setTimeout(40000);
+
+    await page.goto('/scripts/add', {waitUntil: "networkidle"});
+
+    await page.locator('label.tab-label').filter({ hasText: 'From Code' }).click();
+    await expect(page.locator('input[name="tab"][value="code"]')).toBeChecked();
+    await expect(page.locator('.cm-content')).toBeVisible();
+    await page.locator('.cm-content').click();
+    await page.keyboard.insertText("document.querySelector('button').ad");
+    await page.keyboard.press('Control+Space');
+
+    await expect(page.locator('.cm-tooltip-autocomplete')).toContainText('addEventListener', { timeout: 30000 });
+});
+
 test('edit script with CodeMirror editor', async ({ page }) => {
     // Navigate to a script page
     await page.goto('/scripts/data:text/javascript,alert(1)', {waitUntil: "networkidle"});
