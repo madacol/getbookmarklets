@@ -7,7 +7,7 @@ const config = {
 	kit: {
 		outDir,
 		adapter: adapter({
-			runtime: 'nodejs20.x',
+			runtime: 'nodejs24.x',
 		}),
 		csrf: {
 			trustedOrigins: [
